@@ -1,0 +1,96 @@
+<div class="p-4 max-w-5xl mx-auto">
+    <h1 class="text-2xl font-bold mb-6 text-center">Agenda de Clientes</h1>
+
+    <div class="flex justify-center mb-6">
+        <button (click)="abrirModal()"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition duration-200">
+            <span class="text-lg">➕</span>
+            <span>Nuevo Cliente</span>
+        </button>
+    </div>
+
+    <!-- Tabla para desktop -->
+    <table class="hidden md:table w-full text-left bg-white rounded-lg shadow">
+        <thead class="bg-gray-100 text-gray-700">
+            <tr>
+                <th class="p-3">Nombre</th>
+                <th class="p-3">Teléfono</th>
+                <th class="p-3">Email</th>
+                <th class="p-3">Dirección</th>
+                <th class="p-3 text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (cargando()) {
+            <div class="flex justify-center my-6">
+                <div class="animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+            </div>
+            }
+              
+            @for (cliente of clientes(); track cliente.id) {
+            <tr class="border-t">
+                <td class="p-3">{{ cliente.nombre }}</td>
+                <td class="p-3">{{ cliente.telefono }}</td>
+                <td class="p-3">{{ cliente.email }}</td>
+                <td class="p-3">{{ cliente.direccion }}</td>
+                <td class="p-3 text-center">
+                    <button (click)="editar(cliente)" class="text-blue-600 hover:text-blue-800 mx-1"
+                        title="Editar">✏️</button>
+                    <button (click)="eliminar(cliente.id)" class="text-red-600 hover:text-red-800 mx-1"
+                        title="Eliminar">🗑️</button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Tarjetas para mobile -->
+    <ul class="md:hidden">
+        @for (cliente of clientes(); track cliente.id) {
+        <li class="mb-4 p-4 bg-white rounded-lg shadow-sm flex items-center justify-between">
+            <div class="flex gap-2">
+                <button (click)="editar(cliente)" class="text-blue-600 hover:text-blue-800" title="Editar">✏️</button>
+                <button (click)="eliminar(cliente.id)" class="text-red-600 hover:text-red-800"
+                    title="Eliminar">🗑️</button>
+            </div>
+
+            <div class="text-right flex-1 ml-4">
+                <strong class="block text-lg font-medium">{{ cliente.nombre }}</strong>
+                <div class="text-gray-600 text-sm">
+                    <div>{{ cliente.telefono }}</div>
+                    <div>{{ cliente.email }}</div>
+                    <div>{{ cliente.direccion }}</div>
+                </div>
+            </div>
+        </li>
+        }
+    </ul>
+
+    <!-- Modal -->
+    @if (mostrarModal) {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+            <h2 class="text-xl font-bold mb-4">
+                {{ cliente.id ? 'Editar Cliente' : 'Agregar Cliente' }}
+            </h2>
+
+            <input type="text" [(ngModel)]="cliente.nombre" placeholder="Nombre"
+                class="w-full px-4 py-2 mb-3 border border-gray-300 rounded" />
+            <input type="tel" [(ngModel)]="cliente.telefono" placeholder="Teléfono"
+                class="w-full px-4 py-2 mb-3 border border-gray-300 rounded" />
+            <input type="email" [(ngModel)]="cliente.email" placeholder="Email"
+                class="w-full px-4 py-2 mb-3 border border-gray-300 rounded" />
+            <input type="text" [(ngModel)]="cliente.direccion" placeholder="Dirección"
+                class="w-full px-4 py-2 mb-4 border border-gray-300 rounded" />
+
+            <div class="flex justify-end gap-2">
+                <button (click)="cerrarModal()"
+                    class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Cancelar</button>
+                <button (click)="guardar()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    {{ cliente.id ? 'Actualizar' : 'Agregar' }}
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+</div>

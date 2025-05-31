@@ -1,0 +1,14 @@
+<div class="w-full">
+    <label
+        class="w-full cursor-pointer inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition text-center">
+        <input type="file" accept=".xlsx, .xls" (change)="onFileChange($event)" hidden />
+        📁 <span class="ml-2">Importar Excel</span>
+    </label>
+
+    @if (mensaje()) {
+    <div class="text-green-600 font-medium text-center mt-2">
+        {{ mensaje() }}
+    </div>
+    }
+</div>
+  

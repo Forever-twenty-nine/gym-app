@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ClientesListComponent } from './components/clientes-list/clientes-list.component';
+import { ImportarClientesComponent } from "./components/importar-clientes/importar-clientes.component";
+import { ExportarClientesComponent } from "./components/exportar-clientes/exportar-clientes.component";
+
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [ClientesListComponent, ImportarClientesComponent, ExportarClientesComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'agenda-clientes';
