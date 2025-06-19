@@ -27,10 +27,10 @@ export class ImportarClientesComponent {
       const jsonData = XLSX.utils.sheet_to_json(sheet);
 
       const clientesImportados: Cliente[] = (jsonData as any[]).map(row => ({
-        nombre: row.nombre || '',
-        telefono: row.telefono || '',
-        email: row.email || '',
-        direccion: row.direccion || '',
+        nombre: row.nombre || row.Nombre || '',
+        telefono: row.telefono || row.Teléfono || row.Telefono || '',
+        email: row.email || row.Email || '',
+        direccion: row.direccion || row.Dirección || row.Direccion || '',
       }));
 
       const validos = clientesImportados.filter(
