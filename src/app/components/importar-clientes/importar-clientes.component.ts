@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import * as XLSX from 'xlsx';
-import { Cliente } from '../.././models/cliente.model';
+import { Cliente } from '../../models/cliente.model';
 import { inject } from '@angular/core';
 import { ClientesService } from '../../services/clientes.service';
 import { ToastService } from '../../services/toast.service';
