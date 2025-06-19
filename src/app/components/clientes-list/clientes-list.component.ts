@@ -27,18 +27,18 @@ export class ClientesListComponent {
   }
 
   mostrarModal = false;
-  cliente: Cliente = { id: '', nombre: '', telefono: '', email: '', direccion: '' };
+  cliente: Cliente = { nombre: '', telefono: '', email: '', direccion: '' };
 
   readonly clientes = this.clientesService.clientes;
 
   abrirModal() {
     this.mostrarModal = true;
-    this.cliente = { id: '', nombre: '', telefono: '', email: '', direccion: '' };
+    this.cliente = { nombre: '', telefono: '', email: '', direccion: '' };
   }
 
   cerrarModal() {
     this.mostrarModal = false;
-    this.cliente = { id: '', nombre: '', telefono: '', email: '', direccion: '' };
+    this.cliente = { nombre: '', telefono: '', email: '', direccion: '' };
   }
 
   async guardar() {
@@ -47,7 +47,7 @@ export class ClientesListComponent {
       if (id) {
         await this.clientesService.actualizar(this.cliente);
       } else {
-        await this.clientesService.agregar(this.cliente);
+        await this.clientesService.agregar({ nombre, telefono, email, direccion });
       }
       this.cerrarModal();
     }
