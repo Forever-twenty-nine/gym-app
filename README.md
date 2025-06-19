@@ -46,13 +46,10 @@ ng test
 
 ## Running end-to-end tests
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+This project does not include an end-to-end (e2e) testing framework out of the box.
+Before you can run e2e tests you will need to install and configure one, such as
+[Cypress](https://www.cypress.io/) or [Protractor](https://github.com/angular/protractor).
+Refer to the chosen framework's documentation for setup and usage instructions.
 
 ## Additional Resources
 
