@@ -1,0 +1,31 @@
+[
+    {
+        "id": "1",
+        "nombre": "Empresa Alpha",
+        "telefono": "123456789",
+        "email": "contacto@alpha.com",
+        "direccion": "Calle Falsa 123"
+    },
+    {
+        "id": "2",
+        "nombre": "Beta Solutions",
+        "telefono": "987654321",
+        "email": "info@beta.com",
+        "direccion": "Avenida Principal 456"
+    },
+    {
+        "id": "3",
+        "nombre": "Gamma Tech",
+        "telefono": "555666777",
+        "email": "contacto@alpha.com",
+        "direccion": "Calle Secundaria 789"
+    },
+    {
+        "id": "4",
+        "nombre": "Delta Innovations",
+        "telefono": "444333222",
+        "email": "delta@gmail.com",
+        "direccion": "Boulevard de la Innovación 101"
+    }
+
+]

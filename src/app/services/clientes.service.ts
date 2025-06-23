@@ -1,71 +1,49 @@
-import { Injectable, inject, signal, Injector, runInInjectionContext } from '@angular/core';
-import {
-  Firestore,
-  collection,
-  collectionData,
-  addDoc,
-  deleteDoc,
-  doc,
-  updateDoc,
-  getDocs,
-  CollectionReference,
-} from '@angular/fire/firestore';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs/operators';
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Cliente } from '../models/cliente.model';
 
 @Injectable({ providedIn: 'root' })
 export class ClientesService {
-  private firestore = inject(Firestore);
-  private injector = inject(Injector); // 🔥 Este es el truco clave
-  private clientesRef: CollectionReference = collection(this.firestore, 'clientes');
 
-  readonly clientes = toSignal(
-    collectionData(this.clientesRef, { idField: 'id' }).pipe(
-      map(data => data as Cliente[])
-    ),
-    { initialValue: [] }
-  );
+  private http = inject(HttpClient);
+  private _clientes = signal<Cliente[]>([]);
+  readonly clientes = this._clientes;
 
-  async agregar(cliente: Omit<Cliente, 'id'>) {
-    runInInjectionContext(this.injector, async () => {
-      try {
-        const docRef = await addDoc(this.clientesRef, cliente);
-        console.log('✅ Cliente agregado con ID:', docRef.id);
-      } catch (error) {
-        console.error('❌ Error al agregar cliente:', error);
-      }
+  cargarMock() {
+    this.http.get<Cliente[]>('/assets/mocks/clientes.json').subscribe({
+      next: (data) => this._clientes.set(data),
+      error: (err) => console.error('❌ Error cargando clientes mock:', err),
     });
   }
 
-  async eliminar(id: string) {
-    runInInjectionContext(this.injector, async () => {
-      const clienteDoc = doc(this.firestore, `clientes/${id}`);
-      await deleteDoc(clienteDoc);
-    });
+  constructor() {
+    this.cargarMock();
   }
 
-  async actualizar(cliente: Cliente) {
-    runInInjectionContext(this.injector, async () => {
-      const clienteDoc = doc(this.firestore, `clientes/${cliente.id}`);
-      const { id, ...resto } = cliente;
-      await updateDoc(clienteDoc, resto);
-    });
+  agregar(cliente: Omit<Cliente, 'id'>) {
+    const nuevo: Cliente = {
+      ...cliente,
+      id: crypto.randomUUID(), // genera ID único local
+    };
+    this._clientes.update(clientes => [...clientes, nuevo]);
   }
 
-  async importar(clientes: Omit<Cliente, 'id'>[]) {
-    for (const cliente of clientes) {
-      await this.agregar(cliente); // ya envuelto
-    }
+  eliminar(id: string) {
+    this._clientes.update(clientes => clientes.filter(c => c.id !== id));
   }
 
-  async obtenerTodos(): Promise<Cliente[]> {
-    return await runInInjectionContext(this.injector, async () => {
-      const snapshot = await getDocs(this.clientesRef);
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Cliente[];
-    });
+  actualizar(cliente: Cliente) {
+    this._clientes.update(clientes =>
+      clientes.map(c => (c.id === cliente.id ? { ...c, ...cliente } : c))
+    );
+  }
+
+  importar(clientes: Omit<Cliente, 'id'>[]) {
+    const nuevos = clientes.map(c => ({ ...c, id: crypto.randomUUID() }));
+    this._clientes.update(actuales => [...actuales, ...nuevos]);
+  }
+
+  obtenerTodos(): Cliente[] {
+    return this._clientes();
   }
 }

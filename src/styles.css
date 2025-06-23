@@ -1,1 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
+
+/* ─────────────────────────────────────────────── */
+/* 🎨 TOKENS BASE: Definición de paleta (modo claro) */
+/* ─────────────────────────────────────────────── */
+:root {
+    /* 🌕 Modo claro */
+
+    /* Fondos */
+    --bg-primary: #f9fafb;
+    --bg-muted: #dbe3f0;
+    --bg-elevated: #f0e9f3;
+    --bg-header-mobile: #f0e9f3;
+    --bg-nav-active: #6574aa;
+    --bg-strong: #1b212a;
+
+    /* Texto */
+    --text-primary: #242b36;
+    --text-secondary: #6574aa;
+    --text-secondary-muted: color-mix(in srgb, #6574aa 60%, transparent);
+    --text-inverse: #ffffff;
+
+    /* Bordes */
+    --border-default: #9aa6c5;
+    --border-strong: #6574aa;
+
+    /* Sombra */
+    --shadow-elevated: 0 8px 16px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.12);
+
+    /* Acciones */
+    --accent: #6da7cb;
+    /* botones, enlaces primarios */
+    --accent-hover: #497aa0;
+    --danger: #f78c6b;
+    --danger-hover: #d4684a;
+
+    /* Alertas */
+    --success: #3aa78d;
+    --success-bg: #d2f4ed;
+    --warning: #d9a548;
+    --warning-bg: #fff4d6;
+
+    /* Foco accesible */
+    --focus-ring: 0 0 0 3px rgba(109, 167, 203, 0.45);
+}
+
+/* ─────────────────────────────────────────────── */
+/* 🌙 MODO OSCURO: Override completo */
+/* ─────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+
+    :root {
+        /* Fondos */
+        --bg-primary: #12151a;
+        --bg-muted: #2e3447;
+        --bg-elevated: #2f2a30;
+        --bg-header-mobile: #2f2a30;
+        --bg-nav-active: #55638f;
+        --bg-strong: #2f3640;
+
+        /* Texto */
+        --text-primary: #e5e7eb;
+        --text-secondary: #a1acc3;
+        --text-secondary-muted: color-mix(in srgb, #a1acc3 60%, transparent);
+        --text-inverse: #ffffff;
+
+        /* Bordes */
+        --border-default: #3f4a63;
+        --border-strong: #55638f;
+
+        /* Acciones */
+        --accent: #5a8db3;
+        --accent-hover: #3d6a89;
+        --danger: #d97a5f;
+        --danger-hover: #f2a792;
+
+        /* Alertas */
+        --success: #3aa78d;
+        --success-bg: #1c3931;
+        --warning: #d9a548;
+        --warning-bg: #3f361c;
+
+        /* Foco accesible */
+        --focus-ring: 0 0 0 3px rgba(90, 141, 179, 0.45);
+    }
+
+    /* Estilos específicos para modo oscuro */
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+        opacity: 0;
+        display: none;
+    }
+
+    input:-webkit-autofill {
+        background-color: var(--bg-primary) !important;
+        -webkit-box-shadow: 0 0 0px 1000px var(--bg-primary) inset !important;
+        -webkit-text-fill-color: var(--text-primary) !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+}
+
+/* ─────────────────────────────────────────────── */
+/* ✍️ TIPOGRAFÍA: Fuente base y tamaños */
+/* ─────────────────────────────────────────────── */
+:root {
+    /* Familias tipográficas */
+    --font-base: 'Manrope', system-ui, sans-serif;
+    --font-heading: 'Manrope', system-ui, sans-serif;
+    --font-mono: 'Fira Code', ui-monospace, monospace;
+
+    /* Tamaños (rem) */
+    --text-xs: 0.75rem;
+    /* 12px */
+    --text-sm: 0.875rem;
+    /* 14px */
+    --text-base: 1rem;
+    /* 16px */
+    --text-lg: 1.125rem;
+    /* 18px */
+    --text-xl: 1.25rem;
+    /* 20px */
+    --text-2xl: 1.5rem;
+    /* 24px */
+    --text-3xl: 1.875rem;
+    /* 30px */
+    --text-4xl: 2.25rem;
+    /* 36px */
+    --text-5xl: 3rem;
+    /* 48px */
+}
+
+/* Aplicar tipografía base global */
+html {
+    font-family: var(--font-base);
+    font-size: var(--text-base);
+}
+
+@layer utilities {
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fade-in 0.15s ease-out both;
+    }
+}

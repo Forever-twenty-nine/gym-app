@@ -1,0 +1,35 @@
+<section class="p-4 max-w-5xl mx-auto">
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Total de clientes -->
+        <div class="bg-[var(--bg-elevated)] rounded-2xl shadow p-6 text-center">
+            <div class="text-sm text-[var(--text-secondary)]">Total de clientes</div>
+            <div class="text-4xl font-bold text-[var(--accent)] mt-2">{{ total() }}</div>
+        </div>
+        <!-- Dominios únicos -->
+        <div class="bg-[var(--bg-elevated)] rounded-2xl shadow p-6 text-center">
+            <div class="text-sm text-[var(--text-secondary)]">Dominios de email únicos</div>
+            <div class="text-4xl font-bold text-[var(--success)] mt-2">{{ dominios() }}</div>
+        </div>
+        <!-- Clientes por inicial -->
+        <div class="bg-[var(--bg-elevated)] rounded-2xl shadow p-6">
+            <div class="text-sm text-[var(--text-secondary)] text-center mb-2">Clientes por inicial</div>
+            <ul class="space-y-1 text-sm text-[var(--text-primary)]">
+                @for (entrada of porInicial(); track entrada[0]) {
+                <li>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="font-semibold text-[var(--text-primary)]">{{ entrada[0] }}</span>
+                        <span class="text-[var(--text-secondary-muted)]">{{ entrada[1] }}</span>
+                    </div>
+                    <div class="h-2 rounded-full bg-[var(--accent-hover)]/30">
+                        <div class="h-2 rounded-full bg-[var(--accent)] transition-all"
+                            [style.width.%]="(entrada[1] / total()) * 100">
+                        </div>
+                    </div>
+                </li>
+                }
+            </ul>
+        </div>
+    </div>
+</section>
+  

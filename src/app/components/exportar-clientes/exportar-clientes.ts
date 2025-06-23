@@ -5,10 +5,9 @@ import { ClientesService } from '../../services/clientes.service';
 
 @Component({
   selector: 'app-exportar-clientes',
-  standalone: true,
-  templateUrl: './exportar-clientes.component.html',
+  templateUrl: './exportar-clientes.html',
 })
-export class ExportarClientesComponent {
+export class ExportarClientes {
 
   constructor(private clientesService: ClientesService) { }
 

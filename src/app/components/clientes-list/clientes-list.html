@@ -1,0 +1,69 @@
+<div class="p-4 max-w-5xl mx-auto text-[var(--text-primary)]">
+    <!-- ➕ Botón para abrir el modal -->
+    <div class="flex justify-center mb-6">
+        <button (click)="abrirModal()"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl shadow transition text-white bg-[var(--success)] hover:bg-[var(--success-hover)]">
+            <span class="text-lg">➕</span>
+            <span>Nuevo Cliente</span>
+        </button>
+    </div>
+    <!-- 🖥️ Tabla para escritorio -->
+    <div
+        class="hidden md:grid grid-cols-5 auto-rows-auto bg-[var(--border-default)] rounded-xl overflow-hidden shadow text-[var(--text-primary)] text-sm">
+    
+        <!-- 🧠 Encabezados -->
+        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]">Nombre</div>
+        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]">Teléfono</div>
+        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]">Email</div>
+        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]">Dirección</div>
+        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]"></div>
+    
+        <!-- 📦 Filas -->
+        @for (cliente of clientes(); track cliente.id) {
+        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">{{ cliente.nombre }}</div>
+        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">{{ cliente.telefono }}</div>
+        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">{{ cliente.email }}</div>
+        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">{{ cliente.direccion }}</div>
+        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)] text-center whitespace-nowrap">
+            <button (click)="editar(cliente)" class="text-[var(--accent)] hover:text-[var(--accent-hover)] mx-1">✏️</button>
+            <button (click)="eliminar(cliente)"
+                class="text-[var(--danger)] hover:text-[var(--danger-hover)] mx-1">🗑️</button>
+        </div>
+        }
+        
+    </div>
+    <!-- 📱 Vista móvil -->
+    <ul class="md:hidden">
+        @for (cliente of clientes(); track cliente.id) {
+        <li class="mb-4 p-4 bg-[var(--bg-elevated)] text-[var(--text-primary)] rounded-2xl shadow flex flex-col gap-2">
+            <div class="flex justify-between items-center">
+                <strong class="text-lg font-semibold">{{ cliente.nombre }}</strong>
+                <div class="flex gap-2">
+                    <button (click)="editar(cliente)"
+                        class="text-[var(--accent)] hover:text-[var(--accent-hover)]">✏️</button>
+                    <button (click)="eliminar(cliente)"
+                        class="text-[var(--danger)] hover:text-[var(--danger-hover)]">🗑️</button>
+                </div>
+            </div>
+            <div class="text-sm text-[var(--text-secondary)]">
+                <div>📞 {{ cliente.telefono }}</div>
+                <div>✉️ {{ cliente.email }}</div>
+                <div>📍 {{ cliente.direccion }}</div>
+            </div>
+        </li>
+        }
+    </ul>
+    <!-- 🪟 Modal de formulario -->
+    @if (mostrarModal()) {
+    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div class="w-full max-w-md p-4">
+            <app-cliente-form [cliente]="cliente()" [mostrar]="mostrarModal()" (guardarCliente)="guardar($event)"
+                (cancelar)="cerrarModal()" />
+        </div>
+    </div>
+    }
+
+</div>
+<!-- 🗑️ Confirmación de eliminación -->
+<app-confirmar-eliminacion [mostrar]="mostrarConfirmar()" [nombre]="clienteAEliminar()?.nombre || ''"
+    (confirmar)="confirmarEliminacion()" (cancelar)="mostrarConfirmar.set(false)" />

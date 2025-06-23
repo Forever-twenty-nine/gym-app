@@ -1,0 +1,21 @@
+@if (mostrar) {
+<div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div
+        class="bg-[var(--bg-elevated)] text-[var(--text-primary)] rounded-xl shadow-2xl w-full max-w-sm p-6 animate-fade-in">
+        <h3 class="text-xl font-bold mb-4">¿Eliminar Cliente?</h3>
+        <p class="mb-6 text-[var(--text-secondary)]">
+            ¿Estás seguro de que querés eliminar a <strong>{{ nombre }}</strong>? Esta acción no se puede deshacer.
+        </p>
+        <div class="flex justify-end gap-2">
+            <button (click)="cancelar.emit()"
+                class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition">
+                Cancelar
+            </button>
+            <button (click)="confirmar.emit()"
+                class="bg-[var(--danger)] text-white px-4 py-2 rounded-lg hover:bg-[var(--danger-hover)] transition">
+                Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+}
