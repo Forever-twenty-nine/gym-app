@@ -1,17 +1,17 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Cliente } from '../../models/cliente.model';
 import { CLIENTE_FORM_FIELDS } from '../../utils/utils';
+import { ModalBase } from '../modal-base/modal-base';
 
 @Component({
-  selector: 'app-cliente-form',
-  standalone: true,
-  imports: [ReactiveFormsModule],
+  selector: 'cliente-form',
+  imports: [ReactiveFormsModule, ModalBase],
   templateUrl: './cliente-form.html',
 })
 export class ClienteForm implements OnInit {
+
   @Input() cliente!: Cliente;
-  @Input() mostrar!: boolean;
   @Output() guardarCliente = new EventEmitter<Cliente>();
   @Output() cancelar = new EventEmitter<void>();
 
@@ -28,7 +28,10 @@ export class ClienteForm implements OnInit {
     this.form = this.fb.group(grupo);
   }
 
+  intentoGuardar = false;
+
   guardar() {
+    this.intentoGuardar = true;
     if (this.form.valid) {
       this.guardarCliente.emit({ ...this.cliente, ...this.form.value });
     } else {
@@ -38,13 +41,22 @@ export class ClienteForm implements OnInit {
 
   campoInvalido(nombre: string): boolean {
     const control = this.form.get(nombre);
-    return !!(control && control.invalid && control.touched);
+    return !!(control && control.invalid && (control.touched || this.intentoGuardar));
   }
+
 
   errorKeys(nombre: keyof Cliente): string[] {
     const control = this.form.get(nombre as string);
     return control && control.errors ? Object.keys(control.errors) : [];
   }
   
-  
+  @ViewChild(ModalBase) modal!: ModalBase;
+
+  cerrarAnimado() {
+    this.modal.cerrarConAnimacion();
+  }
+
+  onCerrar() {
+    this.cancelar.emit(); // esto se llama tras animación
+  }
 }

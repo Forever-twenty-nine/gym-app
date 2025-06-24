@@ -1,13 +1,12 @@
 import { Component, signal, effect, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClienteForm } from '../cliente-form/cliente-form';
+import { ConfirmarEliminacion } from '../confirmar-eliminacion/confirmar-eliminacion';
+import { ClienteDetail } from '../cliente-detail/cliente-detail';
 import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../models/cliente.model';
-import { ConfirmarEliminacion } from '../confirmar-eliminacion/confirmar-eliminacion';
-// Importa los módulos necesarios y los componentes que se usarán en la plantilla
 import { FieldMeta } from '../../models/field-meta.model';
 import { CLIENTE_FORM_FIELDS } from '../../utils/utils';
-import { ClienteDetail } from '../cliente-detail/cliente-detail';
 
 @Component({
   selector: 'app-clientes-list',
@@ -16,83 +15,76 @@ import { ClienteDetail } from '../cliente-detail/cliente-detail';
   templateUrl: './clientes-list.html',
 })
 export class ClientesList {
-  cargando = signal(true);
   private readonly servicio = inject(ClientesService);
+
+  readonly cargando = signal(true);
   readonly clientes = this.servicio.clientes;
-
   readonly fields = signal<FieldMeta<Cliente>[]>(CLIENTE_FORM_FIELDS);
-
-  readonly visibleColumnNames = signal<(keyof Cliente)[]>([
-    'nombre',
-    'email',
-  ]);
-
+  readonly visibleColumnNames = signal<(keyof Cliente)[]>(['nombre', 'email']);
   readonly visibleFields = computed(() =>
     this.fields().filter(f => this.visibleColumnNames().includes(f.name))
   );
 
-  readonly modalDetalleActivo = signal(false);
   readonly clienteSeleccionado = signal<Cliente | null>(null);
+  readonly clienteAEditar = signal<Cliente | null>(null);
+  readonly clienteAEliminar = signal<Cliente | null>(null);
 
-  abrirDetalle(cliente: Cliente) {
-    this.clienteSeleccionado.set(cliente);
-    this.modalDetalleActivo.set(true);
-  }
-
-  cerrarDetalle() {
-    this.modalDetalleActivo.set(false);
-  }
-
-  clienteAEliminar = signal<Cliente | null>(null);
-  mostrarConfirmar = signal(false);
-  mostrarModal = signal(false);
-
-  cliente = signal<Cliente>({ nombre: '', telefono: '', email: '', direccion: '' });
+  readonly mostrarDetalle = signal(false);
+  readonly mostrarFormulario = signal(false);
+  readonly mostrarConfirmacion = signal(false);
 
   constructor() {
     this.servicio.cargarMock();
 
     effect(() => {
-      const lista = this.servicio.clientes();
-      if (lista.length > 0 || !this.cargando()) {
+      if (this.servicio.clientes().length > 0 || !this.cargando()) {
         this.cargando.set(false);
       }
     });
   }
 
-  abrirModal() {
-    this.mostrarModal.set(true);
-    this.cliente.set({ nombre: '', telefono: '', email: '', direccion: '' });
+  // 📄 Detalle
+  abrirDetalle(cliente: Cliente) {
+    this.clienteSeleccionado.set(cliente);
+    this.mostrarDetalle.set(true);
+  }
+  cerrarDetalle() {
+    this.mostrarDetalle.set(false);
+    this.clienteSeleccionado.set(null);
   }
 
-  cerrarModal() {
-    this.mostrarModal.set(false);
+  // 📝 Formulario
+  abrirFormulario(cliente?: Cliente) {
+    this.clienteAEditar.set(cliente ? { ...cliente } : { nombre: '', telefono: '', email: '', direccion: '' });
+    this.mostrarFormulario.set(true);
   }
-
+  cerrarFormulario() {
+    this.mostrarFormulario.set(false);
+    this.clienteAEditar.set(null);
+  }
   guardar(cliente: Cliente) {
     if (cliente.id) {
       this.servicio.actualizar(cliente);
     } else {
       this.servicio.agregar(cliente);
     }
-    this.cerrarModal();
+    this.cerrarFormulario();
   }
 
-  eliminar(cliente: Cliente) {
+  // 🗑️ Confirmar eliminación
+  confirmarEliminar(cliente: Cliente) {
     this.clienteAEliminar.set(cliente);
-    this.mostrarConfirmar.set(true);
+    this.mostrarConfirmacion.set(true);
   }
-
-  confirmarEliminacion() {
+  cancelarEliminacion() {
+    this.mostrarConfirmacion.set(false);
+    this.clienteAEliminar.set(null);
+  }
+  eliminarConfirmado() {
     const cliente = this.clienteAEliminar();
     if (cliente?.id) {
       this.servicio.eliminar(cliente.id);
     }
-    this.mostrarConfirmar.set(false);
-  }
-
-  editar(cliente: Cliente) {
-    this.cliente.set({ ...cliente });
-    this.mostrarModal.set(true);
+    this.mostrarConfirmacion.set(false);
   }
 }

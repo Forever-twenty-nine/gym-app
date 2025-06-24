@@ -1,103 +1,80 @@
 <div class="p-4 max-w-5xl mx-auto text-[var(--text-primary)]">
+
     <!-- ➕ Botón para abrir el modal -->
     <div class="flex justify-center mb-6">
-        <button (click)="abrirModal()"
+        <button (click)="abrirFormulario()"
             class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl shadow transition text-white bg-[var(--success)] hover:bg-[var(--success-hover)]">
             <span class="text-lg">➕</span>
             <span>Nuevo Cliente</span>
         </button>
     </div>
+
     <!-- 🖥️ Tabla para escritorio -->
     <div class="hidden md:grid auto-rows-auto bg-[var(--border-default)] rounded-xl overflow-hidden shadow text-[var(--text-primary)] text-sm"
         [style.gridTemplateColumns]="'repeat(' + (visibleFields().length + 1) + ', 1fr)'">
-        <!-- Encabezados dinámicos según visibleFields -->
         @for (field of visibleFields(); track field.name) {
         <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]">
             {{ field.label }}
         </div>
         }
-        <!-- Columna de acciones -->
         <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]"></div>
 
-        <!-- Filas -->
         @for (cliente of clientes(); track cliente.id) {
-        <!-- una celda por cada campo visible -->
         @for (field of visibleFields(); track field.name) {
         <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">
             {{ cliente[field.name] }}
         </div>
         }
-        <!-- acciones -->
-        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)] flex justify-end items-center gap-2">
-            <button (click)="abrirDetalle(cliente)" class="text-[var(--accent)] hover:text-[var(--accent-hover)]"
-                title="Ver Detalles">
-                👁️
-            </button>
-            <button (click)="editar(cliente)" class="text-[var(--accent)] hover:text-[var(--accent-hover)]">
-                ✏️
-            </button>
-            <button (click)="eliminar(cliente)" class="text-[var(--danger)] hover:text-[var(--danger-hover)]">
-                🗑️
-            </button>
+        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)] flex justify-end gap-2">
+            <button (click)="abrirDetalle(cliente)"
+                class="text-[var(--accent)] hover:text-[var(--accent-hover)]">👁️</button>
+            <button (click)="abrirFormulario(cliente)"
+                class="text-[var(--accent)] hover:text-[var(--accent-hover)]">✏️</button>
+            <button (click)="confirmarEliminar(cliente)"
+                class="text-[var(--danger)] hover:text-[var(--danger-hover)]">🗑️</button>
         </div>
-
         }
     </div>
+
 
     <!-- 📱 Vista móvil -->
     <ul class="md:hidden">
         @for (cliente of clientes(); track cliente.id) {
         <li class="mb-4 p-4 bg-[var(--bg-elevated)] text-[var(--text-primary)] rounded-2xl shadow flex flex-col gap-2">
-            <!-- Campo destacado (primero del array visibleFields) -->
-            @if (visibleFields().length > 0) {
             <div class="flex justify-between items-center">
-                <strong class="text-lg font-semibold">
-                    {{ cliente[visibleFields()[0].name] }}
-                </strong>
+                <strong class="text-lg font-semibold">{{ cliente[visibleFields()[0].name] }}</strong>
                 <div class="flex gap-2">
-                    <button (click)="editar(cliente)" class="text-[var(--accent)] hover:text-[var(--accent-hover)]">
-                        ✏️
-                    </button>
-                    <button (click)="eliminar(cliente)" class="text-[var(--danger)] hover:text-[var(--danger-hover)]">
-                        🗑️
-                    </button>
+                    <button (click)="abrirDetalle(cliente)"
+                        class="text-[var(--accent)] hover:text-[var(--accent-hover)]">👁️</button>
+                    <button (click)="abrirFormulario(cliente)"
+                        class="text-[var(--accent)] hover:text-[var(--accent-hover)]">✏️</button>
+                    <button (click)="confirmarEliminar(cliente)"
+                        class="text-[var(--danger)] hover:text-[var(--danger-hover)]">🗑️</button>
                 </div>
             </div>
-            }
-    
-            <!-- Resto de los campos -->
             <div class="text-sm text-[var(--text-secondary)]">
                 @for (field of visibleFields(); track field.name) {
                 @if (field !== visibleFields()[0]) {
-                <div>
-                    {{ field.label }}:
-                    <span class="text-[var(--text-primary)]">
-                        {{ cliente[field.name] }}
-                    </span>
-                </div>
+                <div>{{ field.label }}: <span class="text-[var(--text-primary)]">{{ cliente[field.name] }}</span></div>
                 }
                 }
             </div>
         </li>
         }
     </ul>
-      
-    <!-- 🪟 Modal de formulario -->
-    @if (mostrarModal()) {
-    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        <div class="w-full max-w-md p-4">
-            <app-cliente-form [cliente]="cliente()" [mostrar]="mostrarModal()" (guardarCliente)="guardar($event)"
-                (cancelar)="cerrarModal()" />
-        </div>
-    </div>
+
+    <!-- 👁️ Detalle -->
+    @if ( mostrarDetalle() && clienteSeleccionado() !== null) {
+    <cliente-detail [cliente]="clienteSeleccionado()!" (cerrar)="cerrarDetalle()" />
     }
 
-</div>
-<!-- 🗑️ Confirmación de eliminación -->
-<app-confirmar-eliminacion [mostrar]="mostrarConfirmar()" [nombre]="clienteAEliminar()?.nombre || ''"
-    (confirmar)="confirmarEliminacion()" (cancelar)="mostrarConfirmar.set(false)" />
+    <!-- 📝 Formulario -->
+    @if (mostrarFormulario() && clienteAEditar() !== null) {
+    <cliente-form [cliente]="clienteAEditar()!" (cancelar)="cerrarFormulario()" (guardarCliente)="guardar($event)" />
+    }
 
-<!-- 🖥️ Modal de detalle -->
-<app-cliente-detail [mostrar]="modalDetalleActivo()" [cliente]="clienteSeleccionado()"
-(cerrar)="cerrarDetalle()"
-/>
+    <!-- 🗑️ Confirmación -->
+    @if (mostrarConfirmacion() && clienteAEliminar() !== null) {
+    <confirmar-eliminacion [cliente]="clienteAEliminar()!" (cancelar)="cancelarEliminacion()"
+        (confirmar)="eliminarConfirmado()" />
+    }

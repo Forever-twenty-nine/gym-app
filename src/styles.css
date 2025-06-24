@@ -155,8 +155,8 @@ html {
 }
 /* Define animaciones en el contexto del tema */
 @theme {
-    --animate-modal-fade-in: modal-fade-in 200ms ease-out backwards;
-    --animate-modal-fade-out: modal-fade-out 200ms ease-in forwards;
+    --animate-modal-fade-in: modal-fade-in 300ms ease-out backwards;
+    --animate-modal-fade-out: modal-fade-out 300ms ease-in forwards;
 
     @keyframes modal-fade-in {
         from {
