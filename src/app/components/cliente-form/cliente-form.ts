@@ -42,10 +42,9 @@ export class ClienteForm implements OnInit {
   }
 
   errorKeys(nombre: keyof Cliente): string[] {
-    const control = this.form.get(nombre);
-    return control && control.invalid && (control.dirty || control.touched)
-      ? Object.keys(control.errors ?? {})
-      : [];
+    const control = this.form.get(nombre as string);
+    return control && control.errors ? Object.keys(control.errors) : [];
   }
+  
   
 }

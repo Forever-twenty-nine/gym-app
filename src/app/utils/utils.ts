@@ -1,16 +1,17 @@
 import { ValidatorFn, Validators } from '@angular/forms';
 import { Cliente } from '../models/cliente.model';
 
-export interface FieldMeta {
-    name: keyof Cliente;
+export interface FieldMeta<T = any> {
+    name: keyof T;
     label: string;
-    type?: 'text' | 'email' | 'tel' | 'textarea';
+    type?: 'text' | 'email' | 'tel' | 'textarea' | 'password' | 'number';
     validators?: ValidatorFn[];
     placeholder?: string;
     validationMessages?: { [key: string]: string };
 }
+  
 
-export const CLIENTE_FORM_FIELDS: FieldMeta[] = [
+export const CLIENTE_FORM_FIELDS: FieldMeta<Cliente>[] = [
     {
         name: 'nombre',
         label: 'Nombre',
