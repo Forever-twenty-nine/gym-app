@@ -8,51 +8,80 @@
         </button>
     </div>
     <!-- 🖥️ Tabla para escritorio -->
-    <div
-        class="hidden md:grid grid-cols-5 auto-rows-auto bg-[var(--border-default)] rounded-xl overflow-hidden shadow text-[var(--text-primary)] text-sm">
-    
-        <!-- 🧠 Encabezados -->
-        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]">Nombre</div>
-        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]">Teléfono</div>
-        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]">Email</div>
-        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]">Dirección</div>
-        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]"></div>
-    
-        <!-- 📦 Filas -->
-        @for (cliente of clientes(); track cliente.id) {
-        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">{{ cliente.nombre }}</div>
-        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">{{ cliente.telefono }}</div>
-        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">{{ cliente.email }}</div>
-        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">{{ cliente.direccion }}</div>
-        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)] text-center whitespace-nowrap">
-            <button (click)="editar(cliente)" class="text-[var(--accent)] hover:text-[var(--accent-hover)] mx-1">✏️</button>
-            <button (click)="eliminar(cliente)"
-                class="text-[var(--danger)] hover:text-[var(--danger-hover)] mx-1">🗑️</button>
+    <div class="hidden md:grid auto-rows-auto bg-[var(--border-default)] rounded-xl overflow-hidden shadow text-[var(--text-primary)] text-sm"
+        [style.gridTemplateColumns]="'repeat(' + (visibleFields().length + 1) + ', 1fr)'">
+        <!-- Encabezados dinámicos según visibleFields -->
+        @for (field of visibleFields(); track field.name) {
+        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]">
+            {{ field.label }}
         </div>
         }
-        
+        <!-- Columna de acciones -->
+        <div class="bg-[var(--bg-muted)] p-3 font-medium text-[var(--text-secondary)]"></div>
+
+        <!-- Filas -->
+        @for (cliente of clientes(); track cliente.id) {
+        <!-- una celda por cada campo visible -->
+        @for (field of visibleFields(); track field.name) {
+        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">
+            {{ cliente[field.name] }}
+        </div>
+        }
+        <!-- acciones -->
+        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)] flex justify-end items-center gap-2">
+            <button (click)="abrirDetalle(cliente)" class="text-[var(--accent)] hover:text-[var(--accent-hover)]"
+                title="Ver Detalles">
+                👁️
+            </button>
+            <button (click)="editar(cliente)" class="text-[var(--accent)] hover:text-[var(--accent-hover)]">
+                ✏️
+            </button>
+            <button (click)="eliminar(cliente)" class="text-[var(--danger)] hover:text-[var(--danger-hover)]">
+                🗑️
+            </button>
+        </div>
+
+        }
     </div>
+
     <!-- 📱 Vista móvil -->
     <ul class="md:hidden">
         @for (cliente of clientes(); track cliente.id) {
         <li class="mb-4 p-4 bg-[var(--bg-elevated)] text-[var(--text-primary)] rounded-2xl shadow flex flex-col gap-2">
+            <!-- Campo destacado (primero del array visibleFields) -->
+            @if (visibleFields().length > 0) {
             <div class="flex justify-between items-center">
-                <strong class="text-lg font-semibold">{{ cliente.nombre }}</strong>
+                <strong class="text-lg font-semibold">
+                    {{ cliente[visibleFields()[0].name] }}
+                </strong>
                 <div class="flex gap-2">
-                    <button (click)="editar(cliente)"
-                        class="text-[var(--accent)] hover:text-[var(--accent-hover)]">✏️</button>
-                    <button (click)="eliminar(cliente)"
-                        class="text-[var(--danger)] hover:text-[var(--danger-hover)]">🗑️</button>
+                    <button (click)="editar(cliente)" class="text-[var(--accent)] hover:text-[var(--accent-hover)]">
+                        ✏️
+                    </button>
+                    <button (click)="eliminar(cliente)" class="text-[var(--danger)] hover:text-[var(--danger-hover)]">
+                        🗑️
+                    </button>
                 </div>
             </div>
+            }
+    
+            <!-- Resto de los campos -->
             <div class="text-sm text-[var(--text-secondary)]">
-                <div>📞 {{ cliente.telefono }}</div>
-                <div>✉️ {{ cliente.email }}</div>
-                <div>📍 {{ cliente.direccion }}</div>
+                @for (field of visibleFields(); track field.name) {
+                @if (field !== visibleFields()[0]) {
+                <div>
+                    {{ field.label }}:
+                    <span class="text-[var(--text-primary)]">
+                        {{ cliente[field.name] }}
+                    </span>
+                </div>
+                }
+                }
             </div>
         </li>
         }
     </ul>
+      
     <!-- 🪟 Modal de formulario -->
     @if (mostrarModal()) {
     <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -67,3 +96,8 @@
 <!-- 🗑️ Confirmación de eliminación -->
 <app-confirmar-eliminacion [mostrar]="mostrarConfirmar()" [nombre]="clienteAEliminar()?.nombre || ''"
     (confirmar)="confirmarEliminacion()" (cancelar)="mostrarConfirmar.set(false)" />
+
+<!-- 🖥️ Modal de detalle -->
+<app-cliente-detail [mostrar]="modalDetalleActivo()" [cliente]="clienteSeleccionado()"
+(cerrar)="cerrarDetalle()"
+/>

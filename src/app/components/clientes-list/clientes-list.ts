@@ -1,14 +1,18 @@
-import { Component, signal, effect, inject } from '@angular/core';
+import { Component, signal, effect, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClienteForm } from '../cliente-form/cliente-form';
 import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../models/cliente.model';
 import { ConfirmarEliminacion } from '../confirmar-eliminacion/confirmar-eliminacion';
+// Importa los módulos necesarios y los componentes que se usarán en la plantilla
+import { FieldMeta } from '../../models/field-meta.model';
+import { CLIENTE_FORM_FIELDS } from '../../utils/utils';
+import { ClienteDetail } from '../cliente-detail/cliente-detail';
 
 @Component({
   selector: 'app-clientes-list',
   standalone: true,
-  imports: [CommonModule, ClienteForm ,ConfirmarEliminacion],
+  imports: [CommonModule, ClienteForm, ConfirmarEliminacion, ClienteDetail],
   templateUrl: './clientes-list.html',
 })
 export class ClientesList {
@@ -16,10 +20,33 @@ export class ClientesList {
   private readonly servicio = inject(ClientesService);
   readonly clientes = this.servicio.clientes;
 
+  readonly fields = signal<FieldMeta<Cliente>[]>(CLIENTE_FORM_FIELDS);
+
+  readonly visibleColumnNames = signal<(keyof Cliente)[]>([
+    'nombre',
+    'email',
+  ]);
+
+  readonly visibleFields = computed(() =>
+    this.fields().filter(f => this.visibleColumnNames().includes(f.name))
+  );
+
+  readonly modalDetalleActivo = signal(false);
+  readonly clienteSeleccionado = signal<Cliente | null>(null);
+
+  abrirDetalle(cliente: Cliente) {
+    this.clienteSeleccionado.set(cliente);
+    this.modalDetalleActivo.set(true);
+  }
+
+  cerrarDetalle() {
+    this.modalDetalleActivo.set(false);
+  }
+
   clienteAEliminar = signal<Cliente | null>(null);
   mostrarConfirmar = signal(false);
   mostrarModal = signal(false);
-  
+
   cliente = signal<Cliente>({ nombre: '', telefono: '', email: '', direccion: '' });
 
   constructor() {

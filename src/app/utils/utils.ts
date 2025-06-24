@@ -1,16 +1,8 @@
-import { ValidatorFn, Validators } from '@angular/forms';
+import { Validators } from '@angular/forms';
 import { Cliente } from '../models/cliente.model';
+import { FieldMeta } from '../models/field-meta.model';
 
-export interface FieldMeta<T = any> {
-    name: keyof T;
-    label: string;
-    type?: 'text' | 'email' | 'tel' | 'textarea' | 'password' | 'number';
-    validators?: ValidatorFn[];
-    placeholder?: string;
-    validationMessages?: { [key: string]: string };
-}
-  
-
+// Define los campos del formulario para el modelo Cliente  
 export const CLIENTE_FORM_FIELDS: FieldMeta<Cliente>[] = [
     {
         name: 'nombre',
