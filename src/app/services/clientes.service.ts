@@ -11,31 +11,46 @@ export class ClientesService {
 
   cargarMock() {
     this.http.get<Cliente[]>('/assets/mocks/clientes.json').subscribe({
-      next: (data) => this._clientes.set(data),
+      next: (data) => {
+        const clientes = data.map(c => ({
+          ...c,
+          fechaCreacion: c.fechaCreacion ? new Date(c.fechaCreacion) : undefined,
+          fechaActualizacion: c.fechaActualizacion ? new Date(c.fechaActualizacion) : undefined
+        }));
+        this._clientes.set(clientes);
+      },
       error: (err) => console.error('❌ Error cargando clientes mock:', err),
     });
   }
+
 
   constructor() {
     this.cargarMock();
   }
 
-  agregar(cliente: Omit<Cliente, 'id'>) {
+  agregar(cliente: Omit<Cliente, 'id' | 'fechaCreacion' | 'fechaActualizacion'>) {
+    const ahora = new Date();
     const nuevo: Cliente = {
       ...cliente,
-      id: crypto.randomUUID(), // genera ID único local
+      id: crypto.randomUUID(),
+      fechaCreacion: ahora,
+      fechaActualizacion: ahora,
     };
     this._clientes.update(clientes => [...clientes, nuevo]);
   }
 
-  eliminar(id: string) {
-    this._clientes.update(clientes => clientes.filter(c => c.id !== id));
-  }
-
   actualizar(cliente: Cliente) {
     this._clientes.update(clientes =>
-      clientes.map(c => (c.id === cliente.id ? { ...c, ...cliente } : c))
+      clientes.map(c =>
+        c.id === cliente.id
+          ? { ...c, ...cliente, fechaActualizacion: new Date() }
+          : c
+      )
     );
+  }
+  // Método para eliminar un cliente por ID
+  eliminar(id: string) {
+    this._clientes.update(clientes => clientes.filter(c => c.id !== id));
   }
 
   importar(clientes: Omit<Cliente, 'id'>[]) {

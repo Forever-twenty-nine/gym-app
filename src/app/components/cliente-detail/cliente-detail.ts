@@ -18,7 +18,14 @@ export class ClienteDetail {
   readonly campos = signal<FieldMeta<Cliente>[]>(CLIENTE_FORM_FIELDS);
 
   leerCampo(nombre: keyof Cliente): string {
-    return this.cliente?.[nombre] ?? '—';
+    const valor = this.cliente?.[nombre];
+    if (valor === undefined || valor === null) {
+      return '—';
+    }
+    if (valor instanceof Date) {
+      return valor.toLocaleDateString();
+    }
+    return String(valor);
   }
 
   onCerrar() {

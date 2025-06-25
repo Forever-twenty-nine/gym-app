@@ -1,0 +1,11 @@
+<svg [attr.width]="size" [attr.height]="size" viewBox="0 0 42 42" class="block mx-auto">
+    <circle cx="21" cy="21" r="15.9155" stroke="#e5e7eb" stroke-width="10" fill="transparent"></circle>
+
+    @for (slice of slices; track slice.offset) {
+    <circle cx="21" cy="21" r="15.9155" [attr.stroke]="slice.color" stroke-width="10" fill="transparent"
+        stroke-linecap="round" [attr.stroke-dasharray]="slice.dash" [attr.stroke-dashoffset]="slice.offset"
+        transform="rotate(-90 21 21)"></circle>
+    }
+</svg>
+  
+  

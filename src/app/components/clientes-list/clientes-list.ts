@@ -6,7 +6,7 @@ import { ClienteDetail } from '../cliente-detail/cliente-detail';
 import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../models/cliente.model';
 import { FieldMeta } from '../../models/field-meta.model';
-import { CLIENTE_FORM_FIELDS } from '../../utils/utils';
+import { CLIENTE_FORM_FIELDS,claseEstado } from '../../utils/utils';
 
 @Component({
   selector: 'app-clientes-list',
@@ -17,10 +17,13 @@ import { CLIENTE_FORM_FIELDS } from '../../utils/utils';
 export class ClientesList {
   private readonly servicio = inject(ClientesService);
 
+  claseEstado = claseEstado;
+
+
   readonly cargando = signal(true);
   readonly clientes = this.servicio.clientes;
   readonly fields = signal<FieldMeta<Cliente>[]>(CLIENTE_FORM_FIELDS);
-  readonly visibleColumnNames = signal<(keyof Cliente)[]>(['nombre', 'email']);
+  readonly visibleColumnNames = signal<(keyof Cliente)[]>(['nombre', 'email','estado']);
   readonly visibleFields = computed(() =>
     this.fields().filter(f => this.visibleColumnNames().includes(f.name))
   );
@@ -43,7 +46,6 @@ export class ClientesList {
     });
 
   }
-
   // 📄 Detalle
   abrirDetalle(cliente: Cliente) {
     this.clienteSeleccionado.set(cliente);
@@ -56,7 +58,7 @@ export class ClientesList {
 
   // 📝 Formulario
   abrirFormulario(cliente?: Cliente) {
-    this.clienteAEditar.set(cliente ? { ...cliente } : { nombre: '', telefono: '', email: '', direccion: '' });
+    this.clienteAEditar.set(cliente ? { ...cliente } : { nombre: '', telefono: '', email: '', direccion: '', estado: 'prospecto' });
     this.mostrarFormulario.set(true);
   }
   cerrarFormulario() {

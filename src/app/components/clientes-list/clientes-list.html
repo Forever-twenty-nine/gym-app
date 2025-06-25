@@ -21,9 +21,16 @@
 
         @for (cliente of clientes(); track cliente.id) {
         @for (field of visibleFields(); track field.name) {
-        <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">
-            {{ cliente[field.name] }}
-        </div>
+            <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)]">
+                @if (field.name === 'estado') {
+                <span [ngClass]="claseEstado(cliente.estado)">
+                    {{ cliente.estado }}
+                </span>
+                } @else {
+                {{ cliente[field.name] }}
+                }
+            </div>
+              
         }
         <div class="bg-[var(--bg-elevated)] p-3 border-t border-[var(--border-default)] flex justify-end gap-2">
             <button (click)="abrirDetalle(cliente)"
