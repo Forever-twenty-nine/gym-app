@@ -11,13 +11,15 @@ export class ModalBase {
 
   readonly cerrando = signal(false);
 
-  cerrarConAnimacion() {
+  cerrarConAnimacion(callback?: () => void) {
     this.cerrando.set(true);
     setTimeout(() => {
       this.cerrando.set(false);
       this.cerrar.emit();
+      callback?.(); // Llama al callback si existe
     }, 300);
   }
+  
 
   @HostListener('document:keydown', ['$event'])
   cerrarConEsc(event: KeyboardEvent) {

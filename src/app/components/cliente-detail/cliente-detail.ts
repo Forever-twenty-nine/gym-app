@@ -14,20 +14,15 @@ export class ClienteDetail {
   @Input() cliente: Cliente | null = null;
   @Output() cerrar = new EventEmitter<void>();
   @ViewChild(ModalBase) modal!: ModalBase;
-  @Output() cancelar = new EventEmitter<void>();
-
-  cerrarAnimado() {
-    this.modal.cerrarConAnimacion();
-  }
-
-  onCerrar() {
-    this.cancelar.emit();
-  }
 
   readonly campos = signal<FieldMeta<Cliente>[]>(CLIENTE_FORM_FIELDS);
 
   leerCampo(nombre: keyof Cliente): string {
     return this.cliente?.[nombre] ?? '—';
+  }
+
+  onCerrar() {
+    this.modal.cerrarConAnimacion();
   }
 
 }

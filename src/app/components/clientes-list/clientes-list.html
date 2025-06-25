@@ -70,11 +70,11 @@
 
     <!-- 📝 Formulario -->
     @if (mostrarFormulario() && clienteAEditar() !== null) {
-    <cliente-form [cliente]="clienteAEditar()!" (cancelar)="cerrarFormulario()" (guardarCliente)="guardar($event)" />
+    <cliente-form [cliente]="clienteAEditar()!" (cerrado)="cerrarFormulario()" (guardarCliente)="guardar($event)" />
     }
 
     <!-- 🗑️ Confirmación -->
     @if (mostrarConfirmacion() && clienteAEliminar() !== null) {
-    <confirmar-eliminacion [cliente]="clienteAEliminar()!" (cancelar)="cancelarEliminacion()"
+    <confirmar-eliminacion [cliente]="clienteAEliminar()!" (cerrar)="cancelarEliminacion()"
         (confirmar)="eliminarConfirmado()" />
     }

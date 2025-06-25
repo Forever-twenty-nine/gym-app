@@ -10,17 +10,17 @@ import { Cliente } from '../../models/cliente.model';
 export class ConfirmarEliminacion {
 
   @Input() cliente!: Cliente;
+  @Output() cerrar = new EventEmitter<void>();
   @Output() confirmar = new EventEmitter<void>();
-  @Output() cancelar = new EventEmitter<void>();
 
   @ViewChild(ModalBase) modal!: ModalBase;
 
-  cerrarAnimado() {
-    this.modal.cerrarConAnimacion();
+  onCerrar() {
+    this.modal.cerrarConAnimacion(() => this.cerrar.emit());
+  }
+  onEliminar() {
+    this.modal.cerrarConAnimacion(() => this.confirmar.emit());
   }
 
-  onCerrar() {
-    this.cancelar.emit();
-  }
 
 }

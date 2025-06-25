@@ -41,6 +41,7 @@ export class ClientesList {
         this.cargando.set(false);
       }
     });
+
   }
 
   // 📄 Detalle
@@ -60,7 +61,8 @@ export class ClientesList {
   }
   cerrarFormulario() {
     this.mostrarFormulario.set(false);
-    this.clienteAEditar.set(null);
+    setTimeout(() => this.clienteAEditar.set(null), 300);
+
   }
   guardar(cliente: Cliente) {
     if (cliente.id) {

@@ -13,10 +13,13 @@ export class ClienteForm implements OnInit {
 
   @Input() cliente!: Cliente;
   @Output() guardarCliente = new EventEmitter<Cliente>();
-  @Output() cancelar = new EventEmitter<void>();
+  @Output() cerrado = new EventEmitter<void>();
+  // modal
+  @ViewChild(ModalBase) modal!: ModalBase;
 
   form!: FormGroup;
   campos = CLIENTE_FORM_FIELDS;
+  intentoGuardar = false;
 
   constructor(private fb: FormBuilder) { }
 
@@ -27,8 +30,6 @@ export class ClienteForm implements OnInit {
     });
     this.form = this.fb.group(grupo);
   }
-
-  intentoGuardar = false;
 
   guardar() {
     this.intentoGuardar = true;
@@ -44,19 +45,13 @@ export class ClienteForm implements OnInit {
     return !!(control && control.invalid && (control.touched || this.intentoGuardar));
   }
 
-
   errorKeys(nombre: keyof Cliente): string[] {
     const control = this.form.get(nombre as string);
     return control && control.errors ? Object.keys(control.errors) : [];
   }
+
+  cerrarConAnimacion() {
+    this.modal.cerrarConAnimacion(() => this.cerrado.emit());
+  }
   
-  @ViewChild(ModalBase) modal!: ModalBase;
-
-  cerrarAnimado() {
-    this.modal.cerrarConAnimacion();
-  }
-
-  onCerrar() {
-    this.cancelar.emit(); // esto se llama tras animación
-  }
 }
