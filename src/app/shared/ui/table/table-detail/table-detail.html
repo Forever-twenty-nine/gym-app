@@ -1,0 +1,36 @@
+<!-- 🌫 Fondo desenfocado -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+
+  <!-- 📦 Contenedor del modal -->
+  <div
+    class="bg-[var(--bg-primary)] rounded-2xl shadow-[var(--shadow-elevated)] w-full max-w-md max-h-[90vh] p-6 overflow-y-auto relative font-[var(--font-base)]">
+
+    <!-- 🧩 Cabecera del modal -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-semibold text-[var(--text-primary)]">{{ title }}</h2>
+      <button (click)="cerrar.emit()" title="Cerrar"
+        class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-lg font-bold transition">
+        ✕
+      </button>
+    </div>
+
+    <!-- 🧾 Detalle del ítem -->
+    <div class="space-y-4 text-sm text-[var(--text-primary)]">
+      @for (key of itemKeys(); track key) {
+      <div
+        class="flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-start bg-[var(--bg-muted)] rounded-xl px-4 py-3 border border-[var(--border-default)]">
+        <span class="font-medium text-[var(--text-secondary)] capitalize whitespace-nowrap sm:min-w-[120px]">
+          {{ getLabel(key) }}
+        </span>
+        <span class="text-[var(--text-primary)] text-right sm:text-left break-words sm:max-w-[60%]">
+          {{ getValorFormateado(key, item[key]) }}
+        </span>
+      </div>
+      }
+    </div>
+
+    <!-- ➕ Contenido adicional desde el padre -->
+    <ng-content select="[detalle-extra]"></ng-content>
+
+  </div>
+</div>

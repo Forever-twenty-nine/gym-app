@@ -1,0 +1,11 @@
+@if (message()) {
+<div class="fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg text-sm font-medium transition-all duration-300"
+  [ngClass]="{
+      'bg-[var(--success)] text-white': message()?.type === 'success',
+      'bg-[var(--danger)] text-white': message()?.type === 'error',
+      'bg-[var(--accent)] text-white': message()?.type === 'info',
+      'bg-[var(--warning-bg)] text-[var(--warning)] border border-[var(--warning)]': message()?.type === 'warning'
+    }">
+  {{ message()?.text }}
+</div>
+}

@@ -1,0 +1,17 @@
+<div class="relative">
+    <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+        {{ label }}
+    </label>
+
+    <input #dateInput type="datetime-local" [value]="value" (input)="onChange($event)" class="w-full px-3 py-2.5 text-sm rounded-lg bg-[var(--bg-primary)] border border-[var(--border-strong)]
+             text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] pr-10" />
+
+    <button type="button" class="absolute right-3 top-[38px] text-[var(--text-secondary)]"
+        (click)="dateInput.showPicker()">
+        <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M8 7V3m8 4V3M3 11h18M5 20h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v11a2 2 0 002 2z" />
+        </svg>
+    </button>
+</div>
+  

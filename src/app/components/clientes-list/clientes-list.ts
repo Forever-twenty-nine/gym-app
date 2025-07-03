@@ -13,7 +13,7 @@ import { IonButton } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-clientes-list',
   standalone: true,
-  imports: [CommonModule, ClienteForm, ConfirmarEliminacion, ClienteDetail, IonButton],
+  imports: [CommonModule, ClienteForm, ConfirmarEliminacion, ClienteDetail],
   templateUrl: './clientes-list.html',
 })
 export class ClientesList {
