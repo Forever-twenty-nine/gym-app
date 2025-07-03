@@ -13,12 +13,13 @@
     "@angular/common": "^20.0.4",
     "@angular/compiler": "^20.0.4",
     "@angular/core": "^20.0.4",
-    "@angular/fire": "^19.2.0",
+    "@angular/fire": "^20.0.1",
     "@angular/forms": "^20.0.4",
     "@angular/platform-browser": "^20.0.4",
     "@angular/platform-browser-dynamic": "^20.0.4",
     "@angular/router": "^20.0.4",
     "@angular/service-worker": "^20.0.4",
+    "@ionic/angular": "^8.6.3",
     "@tailwindcss/postcss": "^4.1.8",
     "file-saver": "^2.0.5",
     "firebase": "^11.8.1",
@@ -26,7 +27,6 @@
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.1.8",
     "tslib": "^2.3.0",
-    "xlsx": "^0.18.5",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

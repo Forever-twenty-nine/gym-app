@@ -7,11 +7,13 @@ import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../models/cliente.model';
 import { FieldMeta } from '../../models/field-meta.model';
 import { CLIENTE_FORM_FIELDS,claseEstado } from '../../utils/utils';
+import { IonButton } from '@ionic/angular/standalone';
+
 
 @Component({
   selector: 'app-clientes-list',
   standalone: true,
-  imports: [CommonModule, ClienteForm, ConfirmarEliminacion, ClienteDetail],
+  imports: [CommonModule, ClienteForm, ConfirmarEliminacion, ClienteDetail, IonButton],
   templateUrl: './clientes-list.html',
 })
 export class ClientesList {
