@@ -39,7 +39,7 @@
         @switch (campo.type) {
         @case ('textarea') {
         @switch (campo.name) {
-        @case ('clienteId') {
+        <!-- @case ('clienteId') {
         <app-dropdown-select [label]="campo.label" [options]="opcionesClientes()" [value]="form.get(campo.name)?.value"
           (valueChange)="form.get(campo.name)?.setValue($event)" />
         }
@@ -54,10 +54,9 @@
         }
         }
         @case ('select') {
-        <!-- Select -->
         <app-dropdown-select [label]="campo.label" [options]="getOpcionesNormalizadas(campo)"
           [value]="form.get(campo.name)?.value" (valueChange)="form.get(campo.name)?.setValue($event)" />
-        }
+        } -->
         <!-- fechas-->
         @case ('datetime') {
         <app-datetime-picker [label]="campo.label" [value]="form.get(campo.name)?.value"
