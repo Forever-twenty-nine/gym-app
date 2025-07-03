@@ -1,0 +1,111 @@
+{
+  "configVersion": 1,
+  "timestamp": 1751558766327,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/chunk-26UTBH2F.js",
+        "/chunk-2YSZFPCQ.js",
+        "/chunk-3IVKBF6N.js",
+        "/chunk-3S7YJICY.js",
+        "/chunk-42C7ZIID.js",
+        "/chunk-57YRIO75.js",
+        "/chunk-C5MO2JOW.js",
+        "/chunk-C5RQ2IC2.js",
+        "/chunk-CYP4HII5.js",
+        "/chunk-DKVMNLG7.js",
+        "/chunk-FA25AEA4.js",
+        "/chunk-FNDAEW3W.js",
+        "/chunk-GD6VFYTL.js",
+        "/chunk-JHI3MBHO.js",
+        "/chunk-JVT3KGOA.js",
+        "/chunk-M2X7KQLB.js",
+        "/chunk-R5HL6L5F.js",
+        "/chunk-R5SHVWC7.js",
+        "/chunk-RMRSSIQI.js",
+        "/chunk-UCEP2LYU.js",
+        "/chunk-ULUBRAOE.js",
+        "/chunk-VCHLP75Z.js",
+        "/chunk-YDARD4JA.js",
+        "/index.html",
+        "/main-5WZ4DBH6.js",
+        "/manifest.webmanifest",
+        "/polyfills-B6TNHZQ6.js",
+        "/styles-QUYOVBLT.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-512x512.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/assets/icons/icon-192x192.png": "0788a8e7e2a279c7f88984a0ae1a9dce9394e4bc",
+    "/assets/icons/icon-512x512.png": "52a875a865f15f3efabf953439b68226dedadb6f",
+    "/chunk-26UTBH2F.js": "76039244c98a083632f10b753a5017bce4e2bf7c",
+    "/chunk-2YSZFPCQ.js": "24059a303257ee4b1b2709f81e7640627fdaa6d9",
+    "/chunk-3IVKBF6N.js": "ef8068152706c31234cf778c4a289bc39072e80f",
+    "/chunk-3S7YJICY.js": "be617a83e7039f009a27884ca54f0f9beee3680a",
+    "/chunk-42C7ZIID.js": "9a4312a44cc8ab8573488a48a18c01a6bb352c6b",
+    "/chunk-57YRIO75.js": "7646de8327c9bcd10d9e5774e7203a933e36be11",
+    "/chunk-C5MO2JOW.js": "ee6bd7c89c2b9050e69a0b9a3941b54fdfdd40c5",
+    "/chunk-C5RQ2IC2.js": "e04375ce73344ebf6057a814b6d3be1852c7d5c7",
+    "/chunk-CYP4HII5.js": "06fb663e8df3d783e8a4d9d6aa5de737664680d5",
+    "/chunk-DKVMNLG7.js": "f8fdc55b5fac3103f69ac517ccedcabc0c7abe4a",
+    "/chunk-FA25AEA4.js": "67b189f290ca6770c1314e442b21f2feb4f64d07",
+    "/chunk-FNDAEW3W.js": "f9c654f9184e2913e55d1c05e7c73c97ccd9d0fd",
+    "/chunk-GD6VFYTL.js": "978eeb10c13b3357edda8361f190aacc41e545a3",
+    "/chunk-JHI3MBHO.js": "a36b3242848dc514776e1c7fd2cc5d64f3a737b2",
+    "/chunk-JVT3KGOA.js": "1ef5aef5d9e03ad39211bbcc5fcfa5b5637a95e9",
+    "/chunk-M2X7KQLB.js": "7610d018b4a45d32351f6d9f64fb4fa41b99fe9e",
+    "/chunk-R5HL6L5F.js": "00bd4b45b0b53fb73a0df82c7b4665e53715a1c3",
+    "/chunk-R5SHVWC7.js": "a06401b42fec9d12302a1c29f615d031cc734230",
+    "/chunk-RMRSSIQI.js": "b96ab38190c0eeeb700c0208e35762579580e392",
+    "/chunk-UCEP2LYU.js": "882d5084eaaf298da5a14468955ebe555c358772",
+    "/chunk-ULUBRAOE.js": "9a1b7a7124e98ca9ae8cfcdeb031307dfe1611bb",
+    "/chunk-VCHLP75Z.js": "e2994e221761f5b45f682324490debf71e25e4cb",
+    "/chunk-YDARD4JA.js": "31e1d0f909bd25dad2b20cd2b4ed8e4550fda2a3",
+    "/index.html": "83f31138bc4653269531fc45656746044d0c0347",
+    "/main-5WZ4DBH6.js": "1727a2ca033685400d069909024552c73d313e9e",
+    "/manifest.webmanifest": "5132b2fd60a70bcd8b0a05cb23072ec9af597b55",
+    "/polyfills-B6TNHZQ6.js": "bf76ac291d7f51c1139b7edcf86b359a30c08c64",
+    "/styles-QUYOVBLT.css": "3e4db7e05064e12b8b5816b2311593e3b5390cc4"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}

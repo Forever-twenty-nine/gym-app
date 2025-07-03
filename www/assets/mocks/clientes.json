@@ -1,0 +1,40 @@
+[
+    {
+        "id": "1",
+        "nombre": "Empresa Alpha",
+        "telefono": "123456789",
+        "email": "contacto@alpha.com",
+        "direccion": "Calle Falsa 123",
+        "estado": "cliente",
+        "fechaCreacion": "2024-01-01T00:00:00.000Z",
+        "fechaActualizacion": "2024-05-01T00:00:00.000Z"
+    },
+    {
+        "id": "2",
+        "nombre": "Beta Solutions",
+        "telefono": "987654321",
+        "email": "info@beta.com",
+        "direccion": "Avenida Principal 456",
+        "estado": "presupuesto",
+        "fechaCreacion": "2024-03-10T00:00:00.000Z"
+    },
+    {
+        "id": "3",
+        "nombre": "Gamma Tech",
+        "telefono": "555666777",
+        "email": "contacto@gamma.com",
+        "direccion": "Calle Secundaria 789",
+        "estado": "prospecto",
+        "fechaCreacion": "2024-04-05T00:00:00.000Z"
+    },
+    {
+        "id": "4",
+        "nombre": "Delta Innovations",
+        "telefono": "444333222",
+        "email": "delta@gmail.com",
+        "direccion": "Boulevard de la Innovación 101",
+        "estado": "cliente",
+        "fechaCreacion": "2023-12-20T00:00:00.000Z",
+        "fechaActualizacion": "2024-06-01T00:00:00.000Z"
+    }
+]
