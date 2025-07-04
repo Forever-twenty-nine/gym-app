@@ -15,12 +15,12 @@ export const routes: Routes = [
     {
         path: 'gimnasio',
         loadChildren: () =>
-            import('./gimnasios/gimnasios-routing.module').then(m => m.default)
+            import('./gimnasios/gimnasios-routes').then(m => m.default)
     },
     {
         path: 'entrenador',
         loadChildren: () =>
-            import('./entrenadores/entrenadores-routing.module').then(m => m.default)
+            import('./entrenadores/entrenadores-routes').then(m => m.default)
     },
 
 ];

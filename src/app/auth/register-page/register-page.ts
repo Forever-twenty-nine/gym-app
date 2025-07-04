@@ -71,13 +71,9 @@ export class RegisterPage {
 
     this.auth.loginWithGoogle()
       .then(perfil => {
-        if (perfil.empresaId === 'pendiente') {
-          this.toast.show('Registro con Google exitoso', 'success');
 
-          this.router.navigateByUrl('/perfil');
-        } else {
-          this.router.navigateByUrl('/dashboard');
-        }
+        this.router.navigateByUrl('/dashboard');
+
       })
       .catch(() => {
         this.toast.show('No se pudo iniciar sesión con Google', 'error');

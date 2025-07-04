@@ -4,11 +4,11 @@ import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 
-// Uncomment the following imports if you are using service worker and Firebase
-//import { provideServiceWorker } from '@angular/service-worker';
-//import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-//import { environment } from '../environments/environment';
-//import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { provideServiceWorker } from '@angular/service-worker';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { environment } from './enviroments/enviroment';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,11 +16,12 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideIonicAngular(),
-    // provideServiceWorker('ngsw-worker.js', {
-    //   enabled: !isDevMode(),
-    //   registrationStrategy: 'registerWhenStable:30000'
-    // }),
-    //provideFirebaseApp(() => initializeApp(environment.firebase)),
-    //provideFirestore(() => getFirestore()),
+    provideAuth(() => getAuth()),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
     ]
 };
