@@ -9,3 +9,5 @@ export const AUTH_ROUTES: Routes = [
     { path: 'forgot-password', component: ForgotPassword },
     { path: '**', redirectTo: 'login' }
 ];
+
+export default AUTH_ROUTES;

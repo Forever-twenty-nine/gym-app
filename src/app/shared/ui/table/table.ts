@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, computed, signal, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { formatearFechaHoraLocal } from '../../../utils/form-utils';
-import { ClientesService } from '../../../services/clientes.service';
+import { formatearFechaHoraLocal } from '../../utils/form-utils';
+import { ClientesService } from '../../services/clientes.service';
 
 @Component({
   selector: 'app-table',

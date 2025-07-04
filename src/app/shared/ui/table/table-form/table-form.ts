@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output, inject, signal, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ClientesService } from '../../../../services/clientes.service';
+import { ClientesService } from '../../../services/clientes.service';
 import { DropdownSelect } from '../../dropdown-select/dropdown-select';
 import { DatePicker } from '../../date-picker/date-picker';
 import { DatetimePicker } from '../../datetime-picker/datetime-picker';
+import { FieldMeta } from '../../../utils/field-meta.model';
 
 
 @Component({
@@ -15,7 +16,6 @@ import { DatetimePicker } from '../../datetime-picker/datetime-picker';
 export class TableForm {
   // 🧩 Servicios inyectados
   private clientesService = inject(ClientesService);
-
 
   // 📥 Inputs del formulario
   @Input() title: string = 'Formulario';
@@ -34,6 +34,7 @@ export class TableForm {
 
   // 🔄 Lista dinámica filtrada por cliente
   readonly polizasFiltradas = signal<{ id: string; label: string }[]>([]);
+  fields: any;
 
  
   constructor() {
@@ -41,8 +42,6 @@ export class TableForm {
     effect(() => {
       const clienteId = this.form.get('clienteId')?.value;
       if (!clienteId) return;
-
-     
     
     });
   }
@@ -51,24 +50,23 @@ export class TableForm {
   getValorMostrado(nombreCampo: string): string {
     const valor = this.form.get(nombreCampo)?.value;
 
-
     return valor ?? '';
   }
-  // metodo par hacer dos columnas
-  // get camposVisibles(): number {
-  //   return this.fields.filter(f => f.type !== 'hidden').length;
-  // }
+  //metodo par hacer dos columnas
+  get camposVisibles(): number {
+    return this.fields.filter((f: { type: string; }) => f.type !== 'hidden').length;
+  }
 
-  // get usarDosColumnas(): boolean {
-  //   return this.camposVisibles > 5;
-  // }
-  // // 🔄 Normaliza opciones de campos select
-  // getOpcionesNormalizadas(campo: FieldMeta): { label: string; value: string }[] {
-  //   if (!campo.options) return [];
-  //   return campo.options.map(opt =>
-  //     typeof opt === 'string' ? { label: opt, value: opt } : opt
-  //   );
-  // }
+  get usarDosColumnas(): boolean {
+    return this.camposVisibles > 5;
+  }
+  // 🔄 Normaliza opciones de campos select
+  getOpcionesNormalizadas(campo: FieldMeta): { label: string; value: string }[] {
+    if (!campo.options) return [];
+    return campo.options.map(opt =>
+      typeof opt === 'string' ? { label: opt, value: opt } : opt
+    );
+  }
 
 
 }

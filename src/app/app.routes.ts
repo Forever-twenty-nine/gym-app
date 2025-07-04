@@ -1,15 +1,26 @@
 import { Routes } from '@angular/router';
-import { ClientesList } from './components/clientes-list/clientes-list';
-import { Resumen } from './components/resumen/resumen';
 
 export const routes: Routes = [
+
     {
         path: 'auth',
         loadChildren: () =>
-            import('./auth/auth.routes').then(m => m.AUTH_ROUTES)
+            import('./auth/auth.routes').then(m => m.default)
     },
-    {path: '', redirectTo: 'clientes', pathMatch: 'full'},
-    {path: 'clientes', component: ClientesList},
-    {path: 'resumen', component: Resumen}
-    
+    {
+        path: 'cliente',
+        loadChildren: () =>
+            import('./clientes/clientes-routes').then(m => m.default)
+    },
+    {
+        path: 'gimnasio',
+        loadChildren: () =>
+            import('./gimnasios/gimnasios-routing.module').then(m => m.default)
+    },
+    {
+        path: 'entrenador',
+        loadChildren: () =>
+            import('./entrenadores/entrenadores-routing.module').then(m => m.default)
+    },
+
 ];
