@@ -8,12 +8,11 @@ import { User } from '../../shared/models/user.model';
 import { UserService } from '../../shared/services/user.service';
 
 @Component({
-  selector: 'app-login-page',
-  standalone: true,
+  selector: 'app-login',
   imports: [ReactiveFormsModule],
-  templateUrl: './login-page.html',
+  templateUrl: './login.html',
 })
-export class LoginPage {
+export class Login {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private toast = inject(ToastService);
@@ -30,27 +29,27 @@ export class LoginPage {
   });
 
   submit() {
-    if (this.form.invalid) return;
+  if (this.form.invalid) return;
 
-    const { email, password } = this.form.value;
-    this.loading.set(true);
+  const { email, password } = this.form.value;
+  this.loading.set(true);
 
-    this.auth.login(email!, password!)
-      .then(async cred => {
-        const uid = cred.user.uid;
-        const ref = doc(this.firestore, 'users', uid);
-        const snap = await getDoc(ref);
-        const perfil = snap.data() as User;
+  this.auth.login(email!, password!)
+    .then(perfil => {
+      // perfil ya es un User
+      this.userService.setUsuario(perfil);
 
-        this.userService.setUsuario(perfil);
-
-
+      // puedes decidir a dónde enviarlo aquí también
+      if (!perfil.gimnasioId) {
+        this.router.navigateByUrl('/onboarding');
+      } else {
         this.router.navigateByUrl('/dashboard');
+      }
+    })
+    .catch(() => this.toast.show('Credenciales inválidas', 'error'))
+    .finally(() => this.loading.set(false));
+}
 
-      })
-      .catch(() => this.toast.show('Credenciales inválidas', 'error'))
-      .finally(() => this.loading.set(false));
-  }
 
   goTo(path: string) {
     this.router.navigateByUrl(`/auth/${path}`);

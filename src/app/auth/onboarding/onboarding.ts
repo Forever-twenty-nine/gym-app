@@ -1,0 +1,45 @@
+import { Component, inject, signal } from '@angular/core';
+import { AuthService } from '../../shared/services/auth.service';
+import { UserService } from '../../shared/services/user.service';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Rol } from '../../shared/enums/rol.enum';
+
+@Component({
+  selector: 'app-onboarding',
+  imports: [FormsModule],
+  templateUrl: './onboarding.html'
+})
+export class Onboarding {
+
+  private auth = inject(AuthService);
+  private user = inject(UserService);
+  private router = inject(Router);
+
+  nombre = signal('');
+  rol = signal<Rol | null>(null);
+  loading = signal(false);
+
+  readonly roles = Object.values(Rol);
+
+  async completar() {
+    if (!this.nombre() || !this.rol()) {
+      console.warn('🛑 Faltan datos');
+      return;
+    }
+
+    this.loading.set(true);
+
+    try {
+      await this.auth.completarOnboarding(this.nombre(), this.rol()!);
+      this.router.navigateByUrl('/dashboard');
+    } catch (e) {
+      console.error('❌ Error al completar onboarding', e);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+
+
+}

@@ -1,0 +1,29 @@
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="w-60 bg-gray-800 text-white p-4">
+    <h2 class="text-xl font-bold mb-4">🏋️ Mi App</h2>
+
+    <nav class="space-y-2">
+      @if (usuario()?.rol === 'cliente') {
+        <a routerLink="/cliente" routerLinkActive="font-bold">Inicio Cliente</a>
+        <a routerLink="/cliente/detalle" routerLinkActive="font-bold">Detalle Cliente</a>
+      } @else if (usuario()?.rol === 'entrenador') {
+        <a routerLink="/entrenador" routerLinkActive="font-bold">Inicio Entrenador</a>
+        <a routerLink="/entrenador/detalle" routerLinkActive="font-bold">Detalle Entrenador</a>
+      } @else if (usuario()?.rol === 'admin' || usuario()?.rol === 'entrenador_admin') {
+        <a routerLink="/gimnasio" routerLinkActive="font-bold">Inicio Gimnasio</a>
+        <a routerLink="/gimnasio/detalle" routerLinkActive="font-bold">Detalle Gimnasio</a>
+      }
+    </nav>
+
+    <div class="mt-6">
+      <button class="bg-red-600 text-white py-1 px-3 rounded">🚪 Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="flex-1 p-6 bg-gray-100">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+

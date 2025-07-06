@@ -1,0 +1,16 @@
+<div class="p-4 max-w-md mx-auto">
+    <h1 class="text-xl font-bold mb-4">🎉 Bienvenido, completa tu perfil</h1>
+
+    <label class="block mb-2">Nombre:</label>
+    <input type="text" [ngModel]="nombre()" (ngModelChange)="nombre.set($event)" class="input mb-4 w-full" />
+
+    <label class="block mb-2">Rol:</label>
+    <select [ngModel]="rol()" (ngModelChange)="rol.set($event)" class="input w-full mb-4">
+        <option [ngValue]="null">Selecciona tu rol</option>
+        <option *ngFor="let r of roles" [ngValue]="r">{{ r }}</option>
+    </select>
+
+    <button (click)="completar()" [disabled]="loading()" class="btn w-full">
+        {{ loading() ? 'Guardando...' : '✅ Continuar' }}
+    </button>
+</div>

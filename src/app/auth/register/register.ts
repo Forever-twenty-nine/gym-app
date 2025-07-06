@@ -6,12 +6,11 @@ import { AuthService } from '../../shared/services/auth.service';
 import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
-  selector: 'app-register-page',
-  standalone: true,
+  selector: 'app-register',
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './register-page.html',
+  templateUrl: './register.html',
 })
-export class RegisterPage {
+export class Register {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private toast = inject(ToastService);
@@ -49,7 +48,7 @@ export class RegisterPage {
     this.auth.register(email!, password!)
       .then(() => {
         this.toast.show('Registro exitoso', 'success');
-        this.router.navigateByUrl('/dashboard'); // o '/'
+        this.router.navigateByUrl('/onboarding'); // o '/'
       })
       .catch((err) => {
         console.error(err);
@@ -72,7 +71,7 @@ export class RegisterPage {
     this.auth.loginWithGoogle()
       .then(perfil => {
 
-        this.router.navigateByUrl('/dashboard');
+        this.router.navigateByUrl('/onboarding');
 
       })
       .catch(() => {
