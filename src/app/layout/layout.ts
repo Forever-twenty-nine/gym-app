@@ -3,12 +3,25 @@ import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/rou
 import { NgIf } from '@angular/common';
 import { Auth, signOut } from '@angular/fire/auth';
 import { UserService } from '../shared/services/user.service';
+import { IonApp, IonHeader, IonToolbar, IonTitle, IonMenu, IonMenuButton, IonContent, IonItem, IonList, IonButton, IonButtons } from '@ionic/angular/standalone';
+
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgIf],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, 
+    IonApp,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonMenu,
+    IonMenuButton,
+    IonContent,
+    IonItem,
+    IonList,
+    IonButton,
+    IonButtons,
+  ],
   templateUrl: './layout.html',
 })
 export class Layout {

@@ -1,49 +1,72 @@
-<div class="flex h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
-  <!-- Sidebar -->
-  <aside class="w-64 bg-[var(--bg-strong)] text-[var(--text-inverse)] flex flex-col">
-    <!-- Logo -->
-    <div class="flex items-center gap-2 p-6 border-b border-[var(--border-default)]">
-      <span class="text-2xl">🏋️</span>
-      <h1 class="text-xl font-bold">Mi App</h1>
-    </div>
+<ion-app>
+  <!-- Sidebar / Menu -->
+  <ion-menu content-id="main-content" side="start" menu-id="first" type="overlay">
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>🏋️ Mi App</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-    <!-- Navigation -->
-    <nav class="flex-1 p-4 overflow-y-auto">
-      <ul class="space-y-2">
-        <li *ngIf="usuario()?.rol === 'cliente'">
-          <a routerLink="/cliente" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
-            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Inicio Cliente</a>
-          <a routerLink="/cliente/detalle" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
-            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Detalle Cliente</a>
-        </li>
+    <ion-content class="ion-padding">
+      <ion-list>
+        @if (usuario()) {
+        @switch (usuario()?.rol) {
+        @case ('cliente') {
+        <ion-item routerLink="/cliente" routerLinkActive="selected">
+          Inicio Cliente
+        </ion-item>
+        <ion-item routerLink="/cliente/detalle" routerLinkActive="selected">
+          Detalle Cliente
+        </ion-item>
+        }
+        @case ('entrenador') {
+        <ion-item routerLink="/entrenador" routerLinkActive="selected">
+          Inicio Entrenador
+        </ion-item>
+        <ion-item routerLink="/entrenador/detalle" routerLinkActive="selected">
+          Detalle Entrenador
+        </ion-item>
+        }
+        @case ('admin') {
+        <ion-item routerLink="/gimnasio" routerLinkActive="selected">
+          Inicio Gimnasio
+        </ion-item>
+        <ion-item routerLink="/gimnasio/detalle" routerLinkActive="selected">
+          Detalle Gimnasio
+        </ion-item>
+        }
+        @case ('entrenador_admin') {
+        <ion-item routerLink="/gimnasio" routerLinkActive="selected">
+          Inicio Gimnasio
+        </ion-item>
+        <ion-item routerLink="/gimnasio/detalle" routerLinkActive="selected">
+          Detalle Gimnasio
+        </ion-item>
+        }
+        }
+        }
+      </ion-list>
 
-        <li *ngIf="usuario()?.rol === 'entrenador'">
-          <a routerLink="/entrenador" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
-            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Inicio Entrenador</a>
-          <a routerLink="/entrenador/detalle" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
-            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Detalle Entrenador</a>
-        </li>
 
-        <li *ngIf="usuario()?.rol === 'admin' || usuario()?.rol === 'entrenador_admin'">
-          <a routerLink="/gimnasio" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
-            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Inicio Gimnasio</a>
-          <a routerLink="/gimnasio/detalle" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
-            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Detalle Gimnasio</a>
-        </li>
-      </ul>
-    </nav>
-
-    <!-- Logout -->
-    <div class="p-4 border-t border-[var(--border-default)]">
-      <button (click)="logout()"
-        class="w-full py-2 px-3 rounded bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--text-inverse)] font-medium shadow">
+      <ion-button expand="block" color="danger" (click)="logout()">
         🚪 Cerrar sesión
-      </button>
-    </div>
-  </aside>
+      </ion-button>
+    </ion-content>
+  </ion-menu>
 
-  <!-- Main -->
-  <main class="flex-1 overflow-auto p-6 bg-[var(--bg-primary)]">
-    <router-outlet></router-outlet>
-  </main>
-</div>
+  <!-- Main content -->
+  <div class="ion-page" id="main-content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Mi App</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content [fullscreen]="true" class="ion-padding">
+      <router-outlet></router-outlet>
+    </ion-content>
+  </div>
+</ion-app>
