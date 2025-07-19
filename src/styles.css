@@ -14,7 +14,7 @@
 
 @theme {
   /* prueba */
-  --color-app: pink;
+  /* --color-app: pink; */
 
   /* estilos a revisar */
     --bg-primary: #f9fafb;
@@ -52,27 +52,14 @@
       --font-heading: 'Manrope', system-ui, sans-serif;
       --font-mono: 'Fira Code', ui-monospace, monospace;
 
-      /* Tamaños (rem) */
-      --text-xs: 0.75rem;
-      /* 12px */
-      --text-sm: 0.875rem;
-      /* 14px */
-      --text-base: 1rem;
-      /* 16px */
-      --text-lg: 1.125rem;
-      /* 18px */
-      --text-xl: 1.25rem;
-      /* 20px */
-      --text-2xl: 1.5rem;
-      /* 24px */
-      --text-3xl: 1.875rem;
-      /* 30px */
-      --text-4xl: 2.25rem;
-      /* 36px */
-      --text-5xl: 3rem;
-      /* 48px */
+
 
   /* estilos finales */
+  --color-brand-primary: #61d26f;
+  --color-brand-secondary: #acfc72;
+  --color-brand-accent: #cefd51;
+  --color-brand-neutral: #d8d8d8;
+  --color-brand-text: #f2f2f2;
 
 }
 
@@ -83,7 +70,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     /* prueba */
-    --color-app: green;
+    /* --color-app: black; */
 
     /* estilos a revisar */
     --bg-primary: #12151a;
@@ -126,7 +113,11 @@
     }
 
     /* estilos finales */
-
+    --color-brand-primary: #61d26f;
+    --color-brand-secondary: #acfc72;
+    --color-brand-accent: #cefd51;
+    --color-brand-neutral: #222222;
+    --color-brand-text: #f2f2f2;
   }
 }
 
@@ -155,6 +146,25 @@
 
 
 
+/* ─────────────────────────────────────────────── */
+/* 📦 Ionic styles
+/* ─────────────────────────────────────────────── */
+
+ion-button{
+  --border-radius: 10px;
+  --border-width: 0;
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+}
+
+ion-button.gym-btn-link {
+  text-transform: initial
+}
+
+ion-button.gym-btn-accent{
+  --background: var(--color-brand-accent);
+  --color: black;
+}
 
 /* A REVISAR */
 /* @layer utilities {

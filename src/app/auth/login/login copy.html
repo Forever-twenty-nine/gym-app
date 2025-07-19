@@ -1,28 +1,22 @@
 <div
-    class="min-h-dvh bg-brand-neutral bg-[url('/assets/bg.jpg')] bg-cover bg-center flex items-end justify-center px-4">
-
-    <div class="fixed inset-0 bg-gradient-to-b from-transparent via-black/80 to-black pointer-events-none z-0"></div>
+    class="min-h-screen bg-brand-neutral bg-[url('/assets/bg.jpg')] bg-cover bg-center flex items-center justify-center px-4">
 
     <form [formGroup]="form" (ngSubmit)="submit()"
-        class="relative px-2 w-full max-w-md space-y-4 animate-fade-in">
+        class="bg-[var(--bg-primary)] shadow-xl border border-[var(--border-default)] rounded-2xl p-8 w-full max-w-md space-y-6 animate-fade-in">
 
         <!-- Encabezado -->
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-medium mb-2 text-white bg-app">
-              Bienvenido a GymApp
-            </h1>
-            <p class="text-md text-gray-300">
-              La mejor app para gestionar tu entrenamiento
-            </p>
+        <div class="text-center">
+            <h1 class="text-2xl font-bold bg-app">Bienvenido</h1>
+            <p class="text-sm text-[var(--text-secondary)]">Ingresá tus credenciales para continuar</p>
         </div>
 
         <!-- Email -->
         <div class="relative">
             <input type="email" formControlName="email" id="email" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)]
                  border-[var(--border-default)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
-            <label for="email" class="absolute left-3 -top-0 px-1 text-sm text-[var(--text-secondary)] transition-all
+            <label for="email" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
                  peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
-                 peer-focus:-top-[1px] peer-focus:text-sm peer-focus:text-[var(--accent)]">
+                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
                 Correo electrónico
             </label>
             @if (form.get('email')?.touched && form.get('email')?.invalid) {
@@ -38,20 +32,11 @@
 
         <!-- Contraseña -->
         <div class="relative">
-            <input
-              type="password"
-              formControlName="password"
-              id="password"
-              placeholder=" "
-              class="peer w-full pt-6 pb-2 px-3 border rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)]
-                 border-[var(--border-default)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
-              />
-            <label
-              for="password"
-              class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
+            <input type="password" formControlName="password" id="password" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)]
+                 border-[var(--border-default)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
+            <label for="password" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
                  peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
-                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]"
-              >
+                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
                 Contraseña
             </label>
             @if (form.get('password')?.touched && form.get('password')?.invalid) {
@@ -72,45 +57,37 @@
             {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
         </button> -->
 
-        <ion-button
-          type="submit" [disabled]="form.invalid || loading()"
-          expand="block"
-          fill="solid"
-          class="gym-btn-accent">
-            {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
+        <ion-button type="submit" [disabled]="form.invalid || loading()" expand="full" fill="solid">
+          {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
         </ion-button>
 
         <!-- Divider -->
-        <p class="text-sm text-center text-gray-400 ">
-          o continuá con
-        </p>
+        <div class="relative">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-[var(--border-default)]"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+                <span class="bg-[var(--bg-primary)] px-2 text-[var(--text-secondary-muted)]">o continuá con</span>
+            </div>
+        </div>
 
         <!-- Google login -->
         <button type="button" (click)="loginConGoogle()"
             class="w-full border border-[var(--border-default)] rounded-lg py-2 px-4 flex items-center justify-center gap-2 hover:bg-[var(--bg-muted)] transition">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
                 alt="Google" />
-            <span class="text-brand-text font-medium">Google</span>
+            <span class="text-[var(--text-primary)] font-medium">Google</span>
         </button>
 
         <!-- Acciones -->
-        <div class="text-sm text-center space-y-2 mt-4 flex justify-center">
-          <ion-button
-            type="button"
-            expand="block"
-            fill="clean"
-            class="gym-btn-link text-white px-0"
-            (click)="goTo('register')">
-            ¿Olvidaste tu contraseña?
-          </ion-button>
-          <ion-button
-            type="button"
-            expand=""
-            fill="clean"
-            class="gym-btn-link text-white px-0"
-            (click)="goTo('register')">
-            Registrarse
-          </ion-button>
+        <div class="text-sm text-center space-y-2 mt-4">
+            <button type="button" class="text-[var(--accent)] hover:underline" (click)="goTo('forgot-password')">
+                ¿Olvidaste tu contraseña?
+            </button>
+            <br />
+            <button type="button" class="text-[var(--text-secondary)] hover:underline" (click)="goTo('register')">
+                Registrarse
+            </button>
         </div>
 
     </form>
