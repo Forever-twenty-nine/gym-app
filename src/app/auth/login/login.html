@@ -51,11 +51,15 @@
         </div>
 
         <!-- Botón iniciar sesión -->
-        <button type="submit"
+        <!-- <button type="submit"
             class="w-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-inverse)] py-3 rounded-lg font-medium transition"
             [disabled]="form.invalid || loading()">
             {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
-        </button>
+        </button> -->
+
+        <ion-button type="submit" [disabled]="form.invalid || loading()" expand="full" fill="solid">
+          {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
+        </ion-button>
 
         <!-- Divider -->
         <div class="relative">
