@@ -1,53 +1,57 @@
 import { Injectable, signal } from '@angular/core';
 import { User } from '../models/user.model';
 
+const STORAGE_KEY = 'usuario';
+
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  // 👤 Usuario actual reactivo (privado)
   private readonly _usuario = signal<User | null>(null);
 
-  // 👀 Signal de solo lectura para que los componentes lo observen
   get usuario() {
     return this._usuario.asReadonly();
   }
 
   constructor() {
-    // 🧠 Restaurar usuario desde localStorage si existe
-    const saved = localStorage.getItem('usuario');
-    if (saved) {
-      try {
-        const user = JSON.parse(saved) as User;
-        this._usuario.set(user);
-      } catch {
-        console.warn('⚠️ Usuario inválido en localStorage');
-        localStorage.removeItem('usuario');
-      }
+    this.restaurar();
+  }
+
+  /** Intenta restaurar el usuario desde localStorage */
+  private restaurar() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+
+    try {
+      const user = JSON.parse(saved) as User;
+      this._usuario.set(user);
+    } catch {
+      console.warn('⚠️ Usuario inválido en localStorage');
+      this._usuario.set(null);
+      localStorage.removeItem(STORAGE_KEY);
     }
   }
 
-  // 📝 Guarda un nuevo usuario y lo persiste
+  /** Guarda un usuario en memoria y en localStorage */
   setUsuario(user: User) {
     this._usuario.set(user);
-    localStorage.setItem('usuario', JSON.stringify(user));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
   }
 
-  // 🔐 Limpia el usuario actual y el storage
+  /** Limpia el usuario */
   logout() {
     this._usuario.set(null);
-    localStorage.removeItem('usuario');
+    localStorage.removeItem(STORAGE_KEY);
   }
 
-  // ✏️ Cambia sólo el nombre del usuario actual
+  /** Cambia sólo el nombre del usuario actual */
   cambiarNombre(nombre: string) {
     const actual = this._usuario();
     if (!actual) return;
 
     const actualizado = { ...actual, nombre };
-    this._usuario.set(actualizado);
-    localStorage.setItem('usuario', JSON.stringify(actualizado));
+    this.setUsuario(actualizado);
   }
 
-  // 🪪 Devuelve el usuario actual (o null) de forma inmediata
+  /** Devuelve el usuario actual sincrónicamente */
   getUsuarioActual(): User | null {
     return this._usuario();
   }

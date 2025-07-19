@@ -115,13 +115,6 @@ export class AuthService {
 
     if (snap.exists()) {
       perfil = snap.data() as User;
-      this.userService.setUsuario(perfil);
-
-      if (!perfil.gimnasioId) {
-        this.router.navigateByUrl('/perfil');
-      } else {
-        this.router.navigateByUrl('/onboarding');
-      }
     } else {
       perfil = {
         uid: firebaseUser.uid,
@@ -129,14 +122,37 @@ export class AuthService {
         nombre: firebaseUser.displayName ?? '',
         rol: Rol.CLIENTE,
         permisos: [Permiso.EJECUTAR_RUTINAS],
-        
       };
-
       await setDoc(ref, perfil);
-      this.userService.setUsuario(perfil);
-      this.router.navigateByUrl('/perfil');
+    }
+
+    this.userService.setUsuario(perfil);
+
+    if (!perfil.gimnasioId) {
+      this.router.navigateByUrl('/onboarding');
+    } else {
+      this.redirectToSection(perfil);
     }
 
     return perfil;
   }
+  // 🚀 Redirigir al usuario a la sección correspondiente según su rol
+  redirectToSection(user: User) {
+    switch (user.rol) {
+      case Rol.CLIENTE:
+        this.router.navigateByUrl('/cliente');
+        break;
+      case Rol.ENTRENADOR:
+        this.router.navigateByUrl('/entrenador');
+        break;
+      case Rol.ADMIN:
+      case Rol.ENTRENADOR_ADMIN:
+        this.router.navigateByUrl('/gimnasio');
+        break;
+      default:
+        this.router.navigateByUrl('/onboarding');
+        break;
+    }
+  }
+
 }

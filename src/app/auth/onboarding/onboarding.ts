@@ -20,26 +20,22 @@ export class Onboarding {
   rol = signal<Rol | null>(null);
   loading = signal(false);
 
-  readonly roles = Object.values(Rol);
+  roles = signal<Rol[]>(Object.values(Rol));
 
   async completar() {
-    if (!this.nombre() || !this.rol()) {
+    if (!this.nombre().trim() || !this.rol()) {
       console.warn('🛑 Faltan datos');
       return;
     }
 
     this.loading.set(true);
-
     try {
       await this.auth.completarOnboarding(this.nombre(), this.rol()!);
-      this.router.navigateByUrl('/dashboard');
+      this.router.navigateByUrl('/'); // o a donde decidas
     } catch (e) {
       console.error('❌ Error al completar onboarding', e);
     } finally {
       this.loading.set(false);
     }
   }
-
-
-
 }

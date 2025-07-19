@@ -1,16 +1,33 @@
-<div class="p-4 max-w-md mx-auto">
-    <h1 class="text-xl font-bold mb-4">🎉 Bienvenido, completa tu perfil</h1>
+<div class="min-h-screen flex items-center justify-center bg-[var(--bg-muted)] p-4">
+    <div
+        class="bg-[var(--bg-primary)] shadow-elevated border border-[var(--border-default)] rounded-xl p-6 w-full max-w-md space-y-4 animate-fade-in">
+        <h1 class="text-2xl font-bold text-[var(--text-primary)] text-center">
+            🎉 Bienvenido
+        </h1>
+        <p class="text-sm text-[var(--text-secondary)] text-center mb-4">
+            Completa tu perfil para continuar
+        </p>
 
-    <label class="block mb-2">Nombre:</label>
-    <input type="text" [ngModel]="nombre()" (ngModelChange)="nombre.set($event)" class="input mb-4 w-full" />
+        <!-- Nombre -->
+        <label for="nombre" class="text-[var(--text-primary)] block mb-1">Nombre</label>
+        <input type="text" id="nombre" [ngModel]="nombre()" (ngModelChange)="nombre.set($event)"
+            class="w-full p-2 rounded border border-[var(--border-default)] bg-[var(--bg-primary)] text-[var(--text-primary)]"
+            placeholder="Tu nombre" />
 
-    <label class="block mb-2">Rol:</label>
-    <select [ngModel]="rol()" (ngModelChange)="rol.set($event)" class="input w-full mb-4">
-        <option [ngValue]="null">Selecciona tu rol</option>
-        <option *ngFor="let r of roles" [ngValue]="r">{{ r }}</option>
-    </select>
+        <!-- Rol -->
+        <label for="rol" class="text-[var(--text-primary)] block mt-4 mb-1">Rol</label>
+        <select id="rol" [ngModel]="rol() ?? ''" (ngModelChange)="rol.set($event)"
+            class="w-full p-2 rounded border border-[var(--border-default)] bg-[var(--bg-primary)] text-[var(--text-primary)]">
+            <option value="">Selecciona tu rol</option>
 
-    <button (click)="completar()" [disabled]="loading()" class="btn w-full">
-        {{ loading() ? 'Guardando...' : '✅ Continuar' }}
-    </button>
+            @for (r of roles(); track r) {
+            <option [ngValue]="r">{{ r }}</option>
+            }
+        </select>
+
+        <button (click)="completar()" [disabled]="loading()"
+            class="w-full mt-6 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-inverse)] py-2 rounded font-medium">
+            {{ loading() ? 'Guardando…' : '✅ Continuar' }}
+        </button>
+    </div>
 </div>

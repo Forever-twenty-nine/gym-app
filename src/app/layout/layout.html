@@ -1,29 +1,49 @@
-<div class="flex min-h-screen">
+<div class="flex h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
   <!-- Sidebar -->
-  <aside class="w-60 bg-gray-800 text-white p-4">
-    <h2 class="text-xl font-bold mb-4">🏋️ Mi App</h2>
+  <aside class="w-64 bg-[var(--bg-strong)] text-[var(--text-inverse)] flex flex-col">
+    <!-- Logo -->
+    <div class="flex items-center gap-2 p-6 border-b border-[var(--border-default)]">
+      <span class="text-2xl">🏋️</span>
+      <h1 class="text-xl font-bold">Mi App</h1>
+    </div>
 
-    <nav class="space-y-2">
-      @if (usuario()?.rol === 'cliente') {
-        <a routerLink="/cliente" routerLinkActive="font-bold">Inicio Cliente</a>
-        <a routerLink="/cliente/detalle" routerLinkActive="font-bold">Detalle Cliente</a>
-      } @else if (usuario()?.rol === 'entrenador') {
-        <a routerLink="/entrenador" routerLinkActive="font-bold">Inicio Entrenador</a>
-        <a routerLink="/entrenador/detalle" routerLinkActive="font-bold">Detalle Entrenador</a>
-      } @else if (usuario()?.rol === 'admin' || usuario()?.rol === 'entrenador_admin') {
-        <a routerLink="/gimnasio" routerLinkActive="font-bold">Inicio Gimnasio</a>
-        <a routerLink="/gimnasio/detalle" routerLinkActive="font-bold">Detalle Gimnasio</a>
-      }
+    <!-- Navigation -->
+    <nav class="flex-1 p-4 overflow-y-auto">
+      <ul class="space-y-2">
+        <li *ngIf="usuario()?.rol === 'cliente'">
+          <a routerLink="/cliente" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
+            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Inicio Cliente</a>
+          <a routerLink="/cliente/detalle" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
+            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Detalle Cliente</a>
+        </li>
+
+        <li *ngIf="usuario()?.rol === 'entrenador'">
+          <a routerLink="/entrenador" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
+            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Inicio Entrenador</a>
+          <a routerLink="/entrenador/detalle" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
+            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Detalle Entrenador</a>
+        </li>
+
+        <li *ngIf="usuario()?.rol === 'admin' || usuario()?.rol === 'entrenador_admin'">
+          <a routerLink="/gimnasio" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
+            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Inicio Gimnasio</a>
+          <a routerLink="/gimnasio/detalle" routerLinkActive="bg-[var(--bg-nav-active)] text-[var(--text-inverse)]"
+            class="block px-3 py-2 rounded hover:bg-[var(--bg-elevated)] transition">Detalle Gimnasio</a>
+        </li>
+      </ul>
     </nav>
 
-    <div class="mt-6">
-      <button class="bg-red-600 text-white py-1 px-3 rounded">🚪 Cerrar sesión</button>
+    <!-- Logout -->
+    <div class="p-4 border-t border-[var(--border-default)]">
+      <button (click)="logout()"
+        class="w-full py-2 px-3 rounded bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--text-inverse)] font-medium shadow">
+        🚪 Cerrar sesión
+      </button>
     </div>
   </aside>
 
-  <!-- Main content -->
-  <main class="flex-1 p-6 bg-gray-100">
+  <!-- Main -->
+  <main class="flex-1 overflow-auto p-6 bg-[var(--bg-primary)]">
     <router-outlet></router-outlet>
   </main>
 </div>
-

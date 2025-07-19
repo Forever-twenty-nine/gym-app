@@ -1,13 +1,25 @@
-import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { NgIf } from '@angular/common';
+import { Auth, signOut } from '@angular/fire/auth';
 import { UserService } from '../shared/services/user.service';
 
 @Component({
   selector: 'app-layout',
-  imports: [RouterOutlet],
-  templateUrl: './layout.html'
+  standalone: true,
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgIf],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './layout.html',
 })
 export class Layout {
+  private auth = inject(Auth);
+  private router = inject(Router);
+  private userService = inject(UserService);
 
-  usuario = inject(UserService).usuario;
+  usuario = this.userService.usuario;
+
+  async logout() {
+    await signOut(this.auth);
+    this.router.navigate(['/auth/login']);
+  }
 }

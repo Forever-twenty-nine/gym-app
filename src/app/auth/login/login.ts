@@ -13,61 +13,55 @@ import { UserService } from '../../shared/services/user.service';
   templateUrl: './login.html',
 })
 export class Login {
+  // Inyección de dependencias
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private toast = inject(ToastService);
   private router = inject(Router);
   private firestore = inject(Firestore);
   private userService = inject(UserService);
-
-
+  // Variable para manejar el estado de carga
   loading = signal(false);
-
+  // Formulario de inicio de sesión
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
+  // Método para verificar si el usuario ya existe en Firestore
   submit() {
-  if (this.form.invalid) return;
+    if (this.form.invalid) return;
 
-  const { email, password } = this.form.value;
-  this.loading.set(true);
+    const { email, password } = this.form.value;
+    this.loading.set(true);
 
-  this.auth.login(email!, password!)
-    .then(perfil => {
-      // perfil ya es un User
-      this.userService.setUsuario(perfil);
+    this.auth.login(email!, password!)
+      .then(perfil => {
 
-      // puedes decidir a dónde enviarlo aquí también
-      if (!perfil.gimnasioId) {
-        this.router.navigateByUrl('/onboarding');
-      } else {
-        this.router.navigateByUrl('/dashboard');
-      }
-    })
-    .catch(() => this.toast.show('Credenciales inválidas', 'error'))
-    .finally(() => this.loading.set(false));
-}
-
-
+        this.userService.setUsuario(perfil);
+        if (!perfil.gimnasioId) {
+          this.router.navigateByUrl('/onboarding');
+        } else {
+          this.router.navigateByUrl('/dashboard');
+        }
+      })
+      .catch(() => this.toast.show('Credenciales inválidas', 'error'))
+      .finally(() => this.loading.set(false));
+  }
+  // Método para verificar si el usuario ya existe en Firestore
   goTo(path: string) {
     this.router.navigateByUrl(`/auth/${path}`);
   }
 
+  // Método para iniciar sesión con Google
   loginConGoogle() {
     this.loading.set(true);
 
     this.auth.loginWithGoogle()
-      .then(perfil => {
-        this.router.navigateByUrl('/dashboard');
-
-      })
       .catch(() => {
         this.toast.show('No se pudo iniciar sesión con Google', 'error');
       })
       .finally(() => this.loading.set(false));
   }
-
 
 }
