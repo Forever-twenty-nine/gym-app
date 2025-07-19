@@ -28,22 +28,33 @@ export class AuthService {
   private injector = inject(Injector);
 
   constructor() {
-    onAuthStateChanged(this.auth, (firebaseUser) => {
-      runInInjectionContext(this.injector, () => {
+    const auth = this.auth;
+    const injector = this.injector;
+
+    onAuthStateChanged(auth, (firebaseUser) => {
+      runInInjectionContext(injector, () => {
         if (firebaseUser) {
           this.loadUser(firebaseUser);
         } else {
           this.userService.logout();
+          this.router.navigateByUrl('/auth/login');
         }
       });
     });
   }
 
+
   // 🔑 Login con email y contraseña
-  async login(email: string, password: string): Promise<User> {
+  async login(email: string, password: string): Promise<void> {
     const cred = await signInWithEmailAndPassword(this.auth, email, password);
 
-    return runInInjectionContext(this.injector, () => this.loadUser(cred.user));
+  }
+
+  // 🔗 Login con Google
+  async loginWithGoogle(): Promise<void> {
+    const provider = new GoogleAuthProvider();
+    const cred = await signInWithPopup(this.auth, provider);
+
   }
 
   // 📝 Registro con email/contraseña
@@ -68,23 +79,48 @@ export class AuthService {
   }
 
   // 🏁 Completar onboarding: asignar nombre y rol al usuario
+  // 🏁 Completar onboarding: asignar nombre, rol y IDs según el rol
   async completarOnboarding(nombre: string, rol: Rol) {
     const currentUser = this.auth.currentUser;
     if (!currentUser) throw new Error('No hay usuario autenticado');
 
     return runInInjectionContext(this.injector, async () => {
-      const perfil: Partial<User> = {
-        uid: currentUser.uid,
+      const uid = currentUser.uid;
+
+      const perfil: User = {
+        uid,
         email: currentUser.email ?? '',
-        nombre,
+        nombre: nombre.trim(),
         rol,
-        permisos: []
+        permisos: [],
       };
 
-      await setDoc(doc(this.firestore, 'users', perfil.uid!), perfil);
-      this.userService.setUsuario(perfil as User);
+      // asignar IDs según rol
+      switch (rol) {
+        case Rol.CLIENTE:
+          perfil.clienteId = uid;
+          perfil.permisos = [Permiso.EJECUTAR_RUTINAS];
+          break;
+        case Rol.ENTRENADOR:
+          perfil.entrenadorId = uid;
+          perfil.permisos = [Permiso.CREAR_RUTINAS, Permiso.EJECUTAR_RUTINAS];
+          break;
+        case Rol.ADMIN:
+        case Rol.ENTRENADOR_ADMIN:
+          perfil.gimnasioId = uid;
+          perfil.permisos = [
+            Permiso.GESTIONAR_USUARIOS,
+            Permiso.CREAR_RUTINAS,
+            Permiso.EJECUTAR_RUTINAS,
+          ];
+          break;
+      }
+
+      await setDoc(doc(this.firestore, 'users', uid), perfil);
+      this.userService.setUsuario(perfil);
     });
   }
+
 
   // 🔄 Recuperar contraseña
   resetPassword(email: string) {
@@ -96,14 +132,6 @@ export class AuthService {
     await signOut(this.auth);
     this.userService.logout();
     this.router.navigateByUrl('/auth/login');
-  }
-
-  // 🔗 Login con Google
-  async loginWithGoogle(): Promise<User> {
-    const provider = new GoogleAuthProvider();
-    const cred = await signInWithPopup(this.auth, provider);
-
-    return runInInjectionContext(this.injector, () => this.loadUser(cred.user));
   }
 
   // 👤 Cargar usuario desde Firestore o crearlo si no existe
@@ -128,14 +156,14 @@ export class AuthService {
 
     this.userService.setUsuario(perfil);
 
-    if (!perfil.gimnasioId) {
+    if (this.needsOnboarding(perfil)) {
       this.router.navigateByUrl('/onboarding');
     } else {
       this.redirectToSection(perfil);
     }
-
     return perfil;
   }
+
   // 🚀 Redirigir al usuario a la sección correspondiente según su rol
   redirectToSection(user: User) {
     switch (user.rol) {
@@ -153,6 +181,20 @@ export class AuthService {
         this.router.navigateByUrl('/onboarding');
         break;
     }
+  }
+  // 🆕 Verificar si el usuario necesita completar el onboarding
+  private needsOnboarding(user: User): boolean {
+    // Si falta nombre o rol
+    if (!user.nombre || !user.rol) return true;
+
+    // Si es ADMIN o ENTRENADOR_ADMIN pero no tiene gimnasioId
+    if (
+      (user.rol === Rol.ADMIN || user.rol === Rol.ENTRENADOR_ADMIN) &&
+      !user.gimnasioId
+    )
+      return true;
+
+    return false;
   }
 
 }

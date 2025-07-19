@@ -37,18 +37,14 @@ export class Login {
     this.loading.set(true);
 
     this.auth.login(email!, password!)
-      .then(perfil => {
-
-        this.userService.setUsuario(perfil);
-        if (!perfil.gimnasioId) {
-          this.router.navigateByUrl('/onboarding');
-        } else {
-          this.router.navigateByUrl('/dashboard');
-        }
+      .catch(() => {
+        this.toast.show('Credenciales inválidas', 'error');
       })
-      .catch(() => this.toast.show('Credenciales inválidas', 'error'))
-      .finally(() => this.loading.set(false));
+      .finally(() => {
+        this.loading.set(false);
+      });
   }
+
   // Método para verificar si el usuario ya existe en Firestore
   goTo(path: string) {
     this.router.navigateByUrl(`/auth/${path}`);
@@ -62,7 +58,9 @@ export class Login {
       .catch(() => {
         this.toast.show('No se pudo iniciar sesión con Google', 'error');
       })
-      .finally(() => this.loading.set(false));
+      .finally(() => {
+        this.loading.set(false);
+      });
   }
 
 }
