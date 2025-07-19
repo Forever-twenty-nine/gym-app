@@ -182,3 +182,8 @@ html {
         }
     }
 }
+
+ion-content {
+    --background: var(--bg-primary) !important;
+    color: var(--text-primary);
+}

@@ -3,7 +3,7 @@
   <ion-menu content-id="main-content" side="start" menu-id="first" type="overlay">
     <ion-header>
       <ion-toolbar color="primary">
-        <ion-title>🏋️ Mi App</ion-title>
+        <ion-title>Gym App</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -15,42 +15,35 @@
         <ion-item routerLink="/cliente" routerLinkActive="selected">
           Inicio Cliente
         </ion-item>
-        <ion-item routerLink="/cliente/detalle" routerLinkActive="selected">
-          Detalle Cliente
-        </ion-item>
+
         }
         @case ('entrenador') {
         <ion-item routerLink="/entrenador" routerLinkActive="selected">
           Inicio Entrenador
         </ion-item>
-        <ion-item routerLink="/entrenador/detalle" routerLinkActive="selected">
-          Detalle Entrenador
-        </ion-item>
+
         }
         @case ('admin') {
         <ion-item routerLink="/gimnasio" routerLinkActive="selected">
           Inicio Gimnasio
         </ion-item>
-        <ion-item routerLink="/gimnasio/detalle" routerLinkActive="selected">
-          Detalle Gimnasio
-        </ion-item>
+
         }
         @case ('entrenador_admin') {
         <ion-item routerLink="/gimnasio" routerLinkActive="selected">
           Inicio Gimnasio
         </ion-item>
-        <ion-item routerLink="/gimnasio/detalle" routerLinkActive="selected">
-          Detalle Gimnasio
-        </ion-item>
+
         }
         }
         }
       </ion-list>
 
 
-      <ion-button expand="block" color="danger" (click)="logout()">
+      <ion-button expand="block" fill="solid" (click)="logout()">
         🚪 Cerrar sesión
       </ion-button>
+
     </ion-content>
   </ion-menu>
 
@@ -65,7 +58,7 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content [fullscreen]="true" class="ion-padding">
+    <ion-content [fullscreen]="true">
       <router-outlet></router-outlet>
     </ion-content>
   </div>
