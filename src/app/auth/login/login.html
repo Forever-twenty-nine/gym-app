@@ -1,12 +1,97 @@
 <div
-    class="min-h-dvh bg-brand-neutral bg-[url('/assets/bg.jpg')] bg-cover bg-center flex items-end justify-center px-4">
+  class="min-h-dvh bg-brand-neutral bg-[url('/assets/bg.jpg')] bg-cover bg-center flex items-end justify-center px-4">
 
-    <div class="fixed inset-0 bg-gradient-to-b from-transparent via-black/80 to-black pointer-events-none z-0"></div>
+  <!-- Gradiente -->
+  <div class="fixed inset-0 bg-gradient-to-b from-transparent via-black/80 to-black pointer-events-none z-0"></div>
 
+  <!-- 1er página -->
+  <div class="z-10">
+    <img src="/src/assets/bg.jpg" alt="" class="w-28 h-20 mb-6">
+    <h1 class="text-white text-left font-semibold font-heading text-4xl mb-4" >
+      <span class="text-brand-accent">Entrenamientos</span> diseñados sólo para ti!
+    </h1>
+    <p class="text-gray-200 text-left mb-5">
+      Sigue un plan personalizado adaptado a tus objetivos, nivel fitnes y preferencias!
+    </p>
+    <div class="flex flex mb-8">
+      <ion-button
+        type="button"
+        expand="block"
+        fill="solid"
+        class="gym-btn-accent w-full">
+        Comenzar
+      </ion-button>
+      <ion-button
+        type="button"
+        expand=""
+        fill="outline"
+        class="gym-btn-link text-center text-white w-[280px]"
+        (click)="goTo('register')">
+        Ya tengo cuenta
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- 2da página -->
+  <!-- <div class="z-10">
+    <h1 class="text-white font-semibold text-center font-heading text-4xl mb-4" >
+      Bienvenido a GymApp
+    </h1>
+    <p class="text-md text-gray-300 mb-4">
+      La mejor app para gestionar tu entrenamiento
+    </p>
     <form [formGroup]="form" (ngSubmit)="submit()"
+      class="relative w-full max-w-md  space-y-4 animate-fade-in mb-10">
+      <ion-button
+          type="submit" [disabled]="form.invalid || loading()"
+          expand="block"
+          fill="outline"
+          class="gym-btn-outline mt-4">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
+          alt="Google"
+          (click)="loginConGoogle()" />
+        <span class="text-brand-text pl-2">Logueate con Google</span>
+      </ion-button>
+
+      <p class="text-sm text-center text-gray-400 ">
+        o continuá con
+      </p>
+
+      <ion-input
+        label="Email"
+        label-placement="floating"
+        fill="outline"
+        errorText="Ingresa un email válido."
+        class="gym-input">
+      </ion-input>
+
+      <ion-input
+        label="Contraseña"
+        label-placement="floating"
+        fill="outline"
+        errorText="Ingresa una contraseña válida"
+        class="gym-input">
+      </ion-input>
+
+      <ion-button
+          type="submit" [disabled]="form.invalid || loading()"
+          expand="block"
+          fill="solid"
+          class="gym-btn-accent">
+            {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
+      </ion-button>
+
+
+    </form>
+  </div> -->
+
+
+
+
+    <!-- Formulario anterior -->
+    <!-- <form [formGroup]="form" (ngSubmit)="submit()"
         class="relative px-2 w-full max-w-md space-y-4 animate-fade-in">
 
-        <!-- Encabezado -->
         <div class="text-center mb-6">
             <h1 class="text-3xl font-medium mb-2 text-white bg-app">
               Bienvenido a GymApp
@@ -16,10 +101,7 @@
             </p>
         </div>
 
-        <!-- Email -->
         <div class="relative">
-            <input type="email" formControlName="email" id="email" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)]
-                 border-[var(--border-default)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
             <label for="email" class="absolute left-3 -top-0 px-1 text-sm text-[var(--text-secondary)] transition-all
                  peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
                  peer-focus:-top-[1px] peer-focus:text-sm peer-focus:text-[var(--accent)]">
@@ -36,7 +118,6 @@
             }
         </div>
 
-        <!-- Contraseña -->
         <div class="relative">
             <input
               type="password"
@@ -65,13 +146,6 @@
             }
         </div>
 
-        <!-- Botón iniciar sesión -->
-        <!-- <button type="submit"
-            class="w-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-inverse)] py-3 rounded-lg font-medium transition"
-            [disabled]="form.invalid || loading()">
-            {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
-        </button> -->
-
         <ion-button
           type="submit" [disabled]="form.invalid || loading()"
           expand="block"
@@ -80,12 +154,10 @@
             {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
         </ion-button>
 
-        <!-- Divider -->
         <p class="text-sm text-center text-gray-400 ">
           o continuá con
         </p>
 
-        <!-- Google login -->
         <button type="button" (click)="loginConGoogle()"
             class="w-full border border-[var(--border-default)] rounded-lg py-2 px-4 flex items-center justify-center gap-2 hover:bg-[var(--bg-muted)] transition">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
@@ -93,7 +165,6 @@
             <span class="text-brand-text font-medium">Google</span>
         </button>
 
-        <!-- Acciones -->
         <div class="text-sm text-center space-y-2 mt-4 flex justify-center">
           <ion-button
             type="button"
@@ -113,5 +184,4 @@
           </ion-button>
         </div>
 
-    </form>
-</div>
+    </form> -->
