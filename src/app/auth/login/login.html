@@ -1,36 +1,79 @@
-<div
-  class="min-h-dvh bg-brand-neutral bg-[url('/assets/bg.jpg')] bg-cover bg-center flex items-end justify-center px-4">
 
-  <!-- Gradiente -->
-  <div class="fixed inset-0 bg-gradient-to-b from-transparent via-black/80 to-black pointer-events-none z-0"></div>
+<div class="relative min-h-dvh bg-brand-neutral px-8 flex items-start justify-center">
 
-  <!-- 1er página -->
-  <div class="z-10">
-    <img src="/src/assets/bg.jpg" alt="" class="w-28 h-20 mb-6">
-    <h1 class="text-white text-left font-semibold font-heading text-4xl mb-4" >
-      <span class="text-brand-accent">Entrenamientos</span> diseñados sólo para ti!
-    </h1>
-    <p class="text-gray-200 text-left mb-5">
-      Sigue un plan personalizado adaptado a tus objetivos, nivel fitnes y preferencias!
-    </p>
-    <div class="flex flex mb-8">
-      <ion-button
-        type="button"
-        expand="block"
-        fill="solid"
-        class="gym-btn-accent w-full">
-        Comenzar
-      </ion-button>
-      <ion-button
-        type="button"
-        expand=""
-        fill="outline"
-        class="gym-btn-link text-center text-white w-[280px]"
-        (click)="goTo('register')">
-        Ya tengo cuenta
-      </ion-button>
-    </div>
+  <!-- Fondo con blur -->
+  <div class="absolute inset-0 z-0">
+    <div class="w-full h-full bg-[url('/assets/bg.jpg')] bg-cover bg-center blur-xs"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/80 to-black pointer-events-none"></div>
   </div>
+
+  <!-- Botón volver para atrás -->
+  <div class="absolute top-0 left-0">
+    <ion-buttons slot="start" class="">
+      <ion-back-button
+        defaultHref="/auth/welcome"
+        class="fixed top-4 left-3  px-2 py-2 rounded-full text-white"
+        mode="md">
+      </ion-back-button>
+    </ion-buttons>
+  </div>
+
+
+  <!-- Contenido encima del fondo -->
+  <div class="z-10 relative mt-28">
+    <img src="/src/assets/bg.jpg" alt="" class="w-28 h-20 mb-6">
+    <h1 class="text-white text-left font-semibold font-heading text-4xl mb-4">
+      Bienvenido a GymApp
+    </h1>
+    <form [formGroup]="form" (ngSubmit)="submit()"
+      class="relative w-full max-w-md  space-y-4 animate-fade-in mb-6">
+      <p class="text-base text-left text-gray-200 mt-8 mb-2">
+        Inicia sesión a través de:
+      </p>
+      <ion-button
+          type="submit"
+          expand="block"
+          fill="outline"
+          class="gym-btn-outline">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
+          alt="Google"
+          (click)="loginConGoogle()" />
+        <span class="text-brand-text pl-2">Logueate con Google</span>
+      </ion-button>
+
+      <p class="text-base text-left text-gray-200 mt-8 mb-2">
+        o continuá con:
+      </p>
+
+      <ion-input
+        label="Email"
+        label-placement="floating"
+        fill="outline"
+        errorText="Ingresa un email válido."
+        class="gym-input text-white mt-0">
+      </ion-input>
+
+      <ion-input
+        label="Contraseña"
+        label-placement="floating"
+        fill="outline"
+        errorText="Ingresa una contraseña válida"
+        class="gym-input">
+      </ion-input>
+
+      <ion-button
+          type="submit" [disabled]="form.invalid || loading()"
+          expand="block"
+          fill="solid"
+          shape="round"
+          class="gym-btn-accent mt-8">
+            {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
+      </ion-button>
+    </form>
+
+  </div>
+
+</div>
 
   <!-- 2da página -->
   <!-- <div class="z-10">

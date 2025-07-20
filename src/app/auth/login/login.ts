@@ -6,11 +6,20 @@ import { ToastService } from '../../shared/services/toast.service';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 import { User } from '../../shared/models/user.model';
 import { UserService } from '../../shared/services/user.service';
-import { IonButton, IonNav, IonInput } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonBackButton, IonInput } from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, IonButton, IonInput],
+  imports: [
+    ReactiveFormsModule,
+    IonButton,
+    IonButtons,
+    IonBackButton,
+    IonInput
+  ],
   templateUrl: './login.html',
 })
 export class Login {

@@ -9,7 +9,7 @@ import { IonApp, IonHeader, IonToolbar, IonTitle, IonMenu, IonMenuButton, IonCon
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, 
+  imports: [RouterOutlet, RouterLink, RouterLinkActive,
     IonApp,
     IonHeader,
     IonToolbar,
@@ -33,6 +33,6 @@ export class Layout {
 
   async logout() {
     await signOut(this.auth);
-    this.router.navigate(['/auth/login']);
+    // this.router.navigate(['/auth/welcome']);
   }
 }

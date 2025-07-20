@@ -154,11 +154,11 @@
 /* ─────────────────────────────────────────────── */
 
 ion-button{
-  --border-radius: 10px;
   --border-width: 1px;
   --border-color: transparent;
   --padding-top: 20px;
   --padding-bottom: 20px;
+  font-size: var(--font-base);
 }
 
 ion-button.gym-btn-link {
@@ -174,11 +174,15 @@ ion-button.gym-btn-accent{
 
 ion-button.gym-btn-outline {
   --border-color: var(--color-brand-secondary);
+  --border-radius: 10px;
   --color: black;
+  text-transform: initial;
 }
 
 ion-input.gym-input{
   --highlight-color: var(--color-brand-accent);
+  --border-radius: 10px !important;
+  --color: white
 }
 
 /* A REVISAR */
