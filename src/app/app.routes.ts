@@ -3,14 +3,27 @@ import { roleGuard } from './guards/role.guard';
 import { Rol } from './shared/enums/rol.enum';
 
 export const routes: Routes = [
+
+  // 1️⃣ Redirige la ruta raíz al módulo de auth
+  {
+    path: '',
+    redirectTo: 'auth',
+    pathMatch: 'full'
+  },
+
+  // 2️⃣ Carga el módulo de auth
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth.routes').then(m => m.default)
+    loadChildren: () => import('./auth/auth.routes').then(m => m.AuthRoutes)
   },
+
+  // 3️⃣ Ruta de onboarding 
   {
     path: 'onboarding',
     loadComponent: () => import('./auth/onboarding/onboarding').then(m => m.Onboarding)
   },
+
+  // 4️⃣ Rutas protegidas por roles
   {
     path: '',
     loadComponent: () => import('./layout/layout').then(m => m.Layout),
@@ -32,14 +45,11 @@ export const routes: Routes = [
       }
     ]
   },
-  {
-    path: '',
-    redirectTo: 'auth/login',
-    pathMatch: 'full'
-  },
+
+  // 5️⃣ Wildcard: cualquier ruta “rara” vuelve a welcome
   {
     path: '**',
-    redirectTo: 'auth/login'
+    redirectTo: 'auth/welcome'
   }
 ];
 

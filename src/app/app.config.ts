@@ -1,6 +1,6 @@
 // app.config.ts (o donde tengas definido appConfig)
 import { ApplicationConfig, provideZoneChangeDetection, isDevMode } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withDebugTracing, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { provideIonicAngular } from '@ionic/angular/standalone';
@@ -14,9 +14,23 @@ import { environment } from './enviroments/enviroment';  // asumo que aquí tien
 
 export const appConfig: ApplicationConfig = {
   providers: [
+
     provideHttpClient(),
+    
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    // 🔹 Aquí ajustamos el router:
+    provideRouter(
+      routes,
+      // 1️⃣ Espera a que terminen los redirect iniciales antes de montar la app
+      withEnabledBlockingInitialNavigation(),
+      // 2️⃣ Habilita el scroll en memoria para restaurar posiciones
+      //withDebugTracing(),
+      // 3️⃣ Configura el router para que maneje el scroll y anclas
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'enabled', // restoración al volver atrás, top en adelante
+        anchorScrolling: 'enabled'             // habilita anclas si hay fragmentos
+      })
+    ),
     provideIonicAngular(),
 
     // 1) inicializa la App con SOLO el objeto firebase:
@@ -25,15 +39,9 @@ export const appConfig: ApplicationConfig = {
     // 2) luego inyecta Auth y Firestore:
     provideAuth(() => {
       const auth = getAuth();
-      auth.useDeviceLanguage();    // opcional, para usar el idioma del navegador
+      auth.useDeviceLanguage();
       return auth;
     }),
     provideFirestore(() => getFirestore()),
-
-    // 3) service worker, etc.
-    provideServiceWorker('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000'
-    }),
   ]
 };

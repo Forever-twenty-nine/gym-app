@@ -19,7 +19,8 @@
         fill="solid"
         shape="round"
         class="gym-btn-accent w-full mb-1"
-        (click)="goToRegister()">
+        [routerLink]="['/auth/register']"
+        >
         Registrarte
     </ion-button>
     <div class="flex justify-center items-center">
@@ -31,7 +32,7 @@
           expand=""
           fill="clean"
           class="gym-btn-link"
-          (click)="goToLogin()"
+          [routerLink]="['/auth/login']"
           >
           Inicia Sesión
       </ion-button>

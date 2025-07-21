@@ -33,6 +33,6 @@ export class Layout {
 
   async logout() {
     await signOut(this.auth);
-    // this.router.navigate(['/auth/welcome']);
+    this.router.navigate(['/auth/welcome']);
   }
 }
