@@ -55,8 +55,8 @@
         type="email"
         fill="outline"
         class="gym-input text-white mt-0"
-
-        [errorText]="form.get('email')?.invalid && form.get('email')?.touched ? 'Ingresa un email válido.' : undefined">
+        [errorText]="form.get('email')?.invalid && form.get('email')?.touched ? 'Ingresa un email válido.' : undefined"
+        mode="md">
       </ion-input>
 
       <ion-input
@@ -66,7 +66,8 @@
         formControlName="password"
         fill="outline"
         class="gym-input text-white mt-0"
-        [errorText]="form.get('password')?.invalid && form.get('password')?.touched ? 'Contraseña inválida (mínimo 6 caracteres).' : undefined">
+        [errorText]="form.get('password')?.invalid && form.get('password')?.touched ? 'Contraseña inválida (mínimo 6 caracteres).' : undefined"
+        mode="md">
       </ion-input>
 
       <ion-button
