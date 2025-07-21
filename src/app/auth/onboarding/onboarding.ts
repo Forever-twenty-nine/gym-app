@@ -4,6 +4,7 @@ import { UserService } from '../../shared/services/user.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Rol } from '../../shared/enums/rol.enum';
+import { Objetivo } from '../../shared/enums/objetivo.enum';
 
 @Component({
   selector: 'app-onboarding',
@@ -18,9 +19,12 @@ export class Onboarding {
 
   nombre = signal('');
   rol = signal<Rol | null>(null);
+  objetivo = signal<Objetivo | null>(null);
+
   loading = signal(false);
 
   roles = signal<Rol[]>(Object.values(Rol));
+  objetivos = signal<Objetivo[]>(Object.values(Objetivo));
 
   async completar() {
     if (!this.nombre().trim() || !this.rol()) {
