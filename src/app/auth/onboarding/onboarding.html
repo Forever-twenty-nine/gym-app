@@ -24,6 +24,17 @@
             <option [ngValue]="r">{{ r }}</option>
             }
         </select>
+        <!-- Objetivo -->
+         @if(rol() === 'cliente') {
+        <label for="objetivo" class="text-[var(--text-primary)] block mt-4 mb-1">Objetivo</label>
+        <select id="objetivo" [ngModel]="objetivo() ?? ''" (ngModelChange)="objetivo.set($event)"
+            class="w-full p-2 rounded border border-[var(--border-default)] bg-[var(--bg-primary)] text-[var(--text-primary)]">
+            <option value="">Selecciona tu objetivo</option>
+            @for (o of objetivos(); track o) {
+            <option [ngValue]="o">{{ o }}</option>
+            }
+        </select>
+        }
 
         <button (click)="completar()" [disabled]="loading()"
             class="w-full mt-6 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-inverse)] py-2 rounded font-medium">
