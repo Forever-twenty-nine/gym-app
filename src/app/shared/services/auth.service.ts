@@ -33,17 +33,23 @@ export class AuthService {
 
     onAuthStateChanged(auth, (firebaseUser) => {
       runInInjectionContext(injector, () => {
+        const url = this.router.url;
+
         if (firebaseUser) {
           this.loadUser(firebaseUser);
         } else {
+          // Limpia estado en tu servicio
           this.userService.logout();
-          this.router.navigateByUrl('/auth/login');
+
+          // Solo redirigir si NO estamos ya en /auth o /onboarding
+          if (!url.startsWith('/auth') && !url.startsWith('/onboarding')) {
+            this.router.navigateByUrl('/auth/login');
+          }
         }
       });
     });
   }
-
-
+  
   // 🔑 Login con email y contraseña
   async login(email: string, password: string): Promise<void> {
     const cred = await signInWithEmailAndPassword(this.auth, email, password);

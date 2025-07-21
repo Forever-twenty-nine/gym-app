@@ -6,11 +6,20 @@ import { ToastService } from '../../shared/services/toast.service';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 import { User } from '../../shared/models/user.model';
 import { UserService } from '../../shared/services/user.service';
-import { IonButton } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonBackButton, IonInput } from '@ionic/angular/standalone';
+
+import { addIcons } from 'ionicons';
+
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, IonButton],
+  imports: [
+    ReactiveFormsModule,
+    IonButton,
+    IonButtons,
+    IonBackButton,
+    IonInput
+  ],
   templateUrl: './login.html',
 })
 export class Login {
@@ -36,7 +45,8 @@ export class Login {
     const { email, password } = this.form.value;
     this.loading.set(true);
 
-    this.auth.login(email!, password!)
+    this.auth
+      .login(email!, password!)
       .catch(() => {
         this.toast.show('Credenciales inválidas', 'error');
       })
@@ -54,7 +64,8 @@ export class Login {
   loginConGoogle() {
     this.loading.set(true);
 
-    this.auth.loginWithGoogle()
+    this.auth
+      .loginWithGoogle()
       .catch(() => {
         this.toast.show('No se pudo iniciar sesión con Google', 'error');
       })
@@ -62,5 +73,4 @@ export class Login {
         this.loading.set(false);
       });
   }
-
 }
