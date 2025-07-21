@@ -3,149 +3,78 @@
 @import "tailwindcss";
 
 
-/* ─────────────────────────────────────────────── */
-/* @theme  */
-/* 🎨 DESIGN TOKENS
-/* ─────────────────────────────────────────────── */
-
-
-/* 🌞 -- Modo Light */
-/* ─────────────────────────────────────────────── */
-/* variables para utilizar: https: //tailwindcss.com/docs/theme */
+/* ───────────────────────────────────────────────────────────────── */
+/* 🌞 Modo Light                                                    */
+/* ───────────────────────────────────────────────────────────────── */
 
 @theme {
-  /* prueba */
-  /* --color-app: pink; */
 
-  /* estilos a revisar */
-    --bg-primary: #f9fafb;
-    --bg-muted: #dbe3f0;
-    --bg-elevated: #f0e9f3;
-    --bg-header-mobile: #f0e9f3;
-    --bg-nav-active: #6574aa;
-    --bg-strong: #1b212a;
-
-    --text-primary: #242b36;
-    --text-secondary: #6574aa;
-    --text-secondary-muted: color-mix(in srgb, #6574aa 60%, transparent);
-    --text-inverse: #ffffff;
-
-    --border-default: #9aa6c5;
-    --border-strong: #6574aa;
-
-    --shadow-elevated: 0 8px 16px rgba(0, 0, 0, 0.08);
-    --shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.12);
-
-    --accent: #6da7cb;
-    --accent-hover: #497aa0;
-    --danger: #f78c6b;
-    --danger-hover: #d4684a;
-
-    --success: #3aa78d;
-    --success-bg: #d2f4ed;
-    --warning: #d9a548;
-    --warning-bg: #fff4d6;
-
-    --focus-ring: 0 0 0 3px rgba(109, 167, 203, 0.45);
-
-    /* Familias tipográficas */
-      --font-base: 'Manrope', system-ui, sans-serif;
-      /* --font-heading: 'Manrope', system-ui, sans-serif; */
-      --font-mono: 'Fira Code', ui-monospace, monospace;
+  /* 🎨 DESIGN TOKENS  */
+  --color-brand-accent: #bff820; /* no cambia*/
+  --color-brand-primary: #ffffff;
+  --color-brand-secondary: #e6e6e6;
+  --color-brand-neutral-500: #a6a6a6;
+  --color-brand-dark: #000000;
+  --color-brand-light: #ffffff;
 
 
-
-  /* Estilos Finales GymApp */
-  --color-brand-primary: #61d26f;
-  --color-brand-secondary: #acfc72;
-  --color-brand-accent: #cefd51;
-  --color-brand-neutral: #d8d8d8;
-  --color-brand-text: #f2f2f2;
-
+  /* Components */
+  --font-base: 'Manrope', system-ui, sans-serif;
   --font-heading: 'Exo', system-ui, sans-serif;
+
+  --text: var(--color-brand-dark);
+  --text-light: var(--color-brand-secondary);
+
+
+  --input-rounded: 10px;
+
 
 }
 
 
+
+
+/* ───────────────────────────────────────────────────────────────── */
 /* 🌙 -- Modo Dark */
-/* ─────────────────────────────────────────────── */
+/* ───────────────────────────────────────────────────────────────── */
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* prueba */
-    /* --color-app: black; */
 
-    /* estilos a revisar */
-    --bg-primary: #12151a;
-    --bg-muted: #2e3447;
-    --bg-elevated: #2f2a30;
-    --bg-header-mobile: #2f2a30;
-    --bg-nav-active: #55638f;
-    --bg-strong: #2f3640;
+    /* 🎨 DESIGN TOKENS  */
+    --color-brand-accent: #bff820; /* no cambia */
+    --color-brand-primary: #202430;
+    --color-brand-secondary: #2f3742;
+    --color-brand-neutral-500: #a6a6a6;
+    --color-brand-dark: #000000;
+    --color-brand-light: #ffffff;
 
-    --text-primary: #e5e7eb;
-    --text-secondary: #a1acc3;
-    --text-secondary-muted: color-mix(in srgb, #a1acc3 60%, transparent);
-    --text-inverse: #ffffff;
 
-    --border-default: #3f4a63;
-    --border-strong: #55638f;
+    /* Components */
+    --font-base: 'Manrope', system-ui, sans-serif;
+    --font-heading: 'Exo', system-ui, sans-serif;
 
-    --accent: #5a8db3;
-    --accent-hover: #3d6a89;
-    --danger: #d97a5f;
-    --danger-hover: #f2a792;
+    --text: var(--color-brand-light);
 
-    --success: #3aa78d;
-    --success-bg: #1c3931;
-    --warning: #d9a548;
-    --warning-bg: #3f361c;
+    --input-rounded: 10px;
 
-    --focus-ring: 0 0 0 3px rgba(90, 141, 179, 0.45);
 
-    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-      opacity: 0;
-      display: none;
-    }
 
-    input:-webkit-autofill {
-      background-color: var(--bg-primary) !important;
-      -webkit-box-shadow: 0 0 0px 1000px var(--bg-primary) inset !important;
-      -webkit-text-fill-color: var(--text-primary) !important;
-      transition: background-color 5000s ease-in-out 0s;
-    }
-
-    /* estilos finales */
-    --color-brand-primary: #61d26f;
-    --color-brand-secondary: #acfc72;
-    --color-brand-accent: #cefd51;
-    --color-brand-neutral: #222222;
-    --color-brand-text: #f2f2f2;
   }
 }
 
 
-/* ─────────────────────────────────────────────── */
-/* @layer  */
-/* 🔢 AGREGAR O SOBRESCRIBIR CSS PERSONALIZADO
-/* ─────────────────────────────────────────────── */
 
 
 /* 1️⃣ -- @layer base : Estilos globales  */
 /* ─────────────────────────────────────────────── */
 @layer base {
-  html{
+  html {
+    color: var(--text);
     font-family: var(--font-base);
     font-size: var(--text-base);
   }
 }
-
-/* 2️⃣ -- @layer components : Estilos componentes reutilizables  */
-/* ──────────────────────────────────────────────────────────── */
-
-
-/* 3️⃣ -- @layer utilities : Estilos personalizados  */
-/* ──────────────────────────────────────────────── */
 
 
 
@@ -153,7 +82,8 @@
 /* 📦 Ionic styles
 /* ─────────────────────────────────────────────── */
 
-ion-button{
+/* Button */
+ion-button {
   --border-width: 1px;
   --border-color: transparent;
   --padding-top: 20px;
@@ -167,7 +97,7 @@ ion-button.gym-btn-link {
   font-weight: 200;
 }
 
-ion-button.gym-btn-accent{
+ion-button.gym-btn-accent {
   --background: var(--color-brand-accent);
   --color: black;
 }
@@ -179,57 +109,15 @@ ion-button.gym-btn-outline {
   text-transform: initial;
 }
 
-ion-input.gym-input{
-  --highlight-color: var(--color-brand-accent);
-  --border-radius: 10px !important;
-  --color: white
+
+
+
+
+/* Select */
+ion-select{
+  width: 100%;
+  --border-radius: var(--input-rounded) !important;
 }
-
-/* A REVISAR */
-/* @layer utilities {
-    @keyframes fade-in {
-        from {
-            opacity: 0;
-            transform: translateY(8px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .animate-fade-in {
-        animation: fade-in 0.15s ease-out both;
-    }
-} */
-
-/* A REVISAR */
-/* @theme {
-    --animate-modal-fade-in: modal-fade-in 300ms ease-out backwards;
-    --animate-modal-fade-out: modal-fade-out 300ms ease-in forwards;
-
-    @keyframes modal-fade-in {
-        from {
-            opacity: 0;
-            transform: scale(0.95);
-        }
-
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    @keyframes modal-fade-out {
-        from {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        to {
-            opacity: 0;
-            transform: scale(0.95);
-        }
-    }
-} */
+ion-select::part(text) {
+  color: var(--color-brand-neutral-500);
+}
