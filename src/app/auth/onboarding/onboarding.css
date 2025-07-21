@@ -1,7 +1,0 @@
-/* Input */
-ion-input.gym-input {
-  --border-color: var(--color-brand-secondary);
-  --highlight-color: var(--color-brand-accent);
-  --border-radius: var(--input-rounded);
-  --background: var(--color-brand-secondary);
-}

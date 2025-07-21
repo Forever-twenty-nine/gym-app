@@ -41,7 +41,7 @@
         interface="popover"
         fill="outline"
         placeholder="Selecciona tu rol"
-        class="text-[var(--text-primary)] bg-brand-neutral border border-[var(--border-default)] rounded w-full"
+        class="gym-select"
         [ngModel]="rol() ?? ''"
         (ngModelChange)="rol.set($event)">
 

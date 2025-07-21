@@ -18,7 +18,7 @@ import { IonButton, IonBackButton, IonInput, IonSelect, IonSelectOption } from "
     IonSelectOption,
   ],
   templateUrl: './onboarding.html',
-  styleUrls: ['./onboarding.css'],
+  styleUrls: ['../../ionic-styles.css'],
 })
 export class Onboarding {
   private auth = inject(AuthService);

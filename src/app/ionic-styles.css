@@ -1,0 +1,50 @@
+/* ─────────────────────────────────────────────── */
+/* 📦 Ionic styles
+/* ─────────────────────────────────────────────── */
+/* Input */
+ion-input.gym-input {
+  --border-color: var(--color-brand-secondary);
+  --highlight-color: var(--color-brand-accent);
+  --border-radius: var(--input-rounded);
+  --background: var(--color-brand-secondary);
+}
+
+/* Select */
+ion-select.gym-select {
+  width: 100%;
+  --background: var(--color-brand-secondary);
+  --border-color: var(--color-brand-secondary);
+  --border-radius: var(--input-rounded);
+}
+
+ion-select::part(text) {
+  color: var(--color-brand-neutral-500);
+}
+
+/* Button */
+ion-button {
+  --border-width: 1px;
+  --border-color: transparent;
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+  --box-shadow: none;
+  font-size: var(--font-base);
+}
+
+ion-button.gym-btn-link {
+  --color: var(--color-brand-accent);
+  text-transform: initial;
+  font-weight: 200;
+}
+
+ion-button.gym-btn-accent {
+  --background: var(--color-brand-accent);
+  --color: black;
+}
+
+ion-button.gym-btn-outline {
+  --border-color: var(--color-brand-secondary);
+  --border-radius: 10px;
+  --color: black;
+  text-transform: initial;
+}
