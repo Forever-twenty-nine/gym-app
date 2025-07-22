@@ -21,6 +21,7 @@ import { addIcons } from 'ionicons';
     IonInput
   ],
   templateUrl: './login.html',
+  styleUrls: ['../../ionic-styles.css'],
 })
 export class Login {
   // Inyección de dependencias

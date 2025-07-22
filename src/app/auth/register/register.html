@@ -11,8 +11,7 @@
     <ion-buttons slot="start" class="">
       <ion-back-button
         defaultHref="/auth/welcome"
-        class="fixed top-4 left-3  px-2 py-2 rounded-full text-white"
-        mode="md">
+        class="fixed top-4 left-3  px-2 py-2 rounded-full text-white">
       </ion-back-button>
     </ion-buttons>
   </div>
@@ -37,11 +36,12 @@
           type="submit"
           expand="block"
           fill="outline"
+          size="default"
           class="normal-case border border-gray-300 border-solid rounded-[10px]">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
           alt="Google"
           (click)="loginConGoogle()" />
-        <span class="text-brand-text pl-2">Regístrate con Google</span>
+        <span class="text-[var(--color-brand-neutral-500)] pl-2">Regístrate con Google</span>
       </ion-button>
 
 
@@ -90,6 +90,7 @@
           [disabled]="form.invalid || loading()"
           expand="block"
           fill="solid"
+          size="large"
           shape="round"
           class="gym-btn-accent mt-8"
           mode="">

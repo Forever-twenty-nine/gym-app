@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
   selector: 'app-welcome',
   imports: [IonButton, RouterLink],
   templateUrl: './welcome.html',
+  styleUrls: ['../../ionic-styles.css'],
 })
 export class Welcome {
 

@@ -77,8 +77,8 @@
         <ion-item>
           <ion-select
             aria-label="Objetivo"
-            interface="popover"
             fill="outline"
+            interface="action-sheet"
             label=""
             label-placement="floating"
             placeholder="Selecciona tu objetivo"
@@ -102,6 +102,7 @@
     [disabled]="loading()"
     expand="block"
     fill="solid"
+    size="large"
     shape="round"
     class="gym-btn-accent mt-12">
     {{ loading() ? 'Cargando...' : 'Guardar' }}

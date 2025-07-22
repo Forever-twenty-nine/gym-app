@@ -46,14 +46,25 @@ ion-select::part(text) {
 ion-button {
   --border-width: 1px;
   --border-color: transparent;
-  --padding-top: 20px;
-  --padding-bottom: 20px;
   --box-shadow: none;
   font-size: var(--font-base);
 }
 
+/* Button - size (small, default, large) */
+ion-button.button-default {
+  --padding-top: 16px;
+  --padding-bottom: 16px
+}
+ion-button.button-large{
+  --padding-top: 22px;
+  --padding-bottom: 22px
+}
+
+
+/* Button - fill: clean (type as a link) */
 ion-button.gym-btn-link {
   --color: var(--color-brand-accent);
+  font-size: 0.9rem;
   text-transform: initial;
   font-weight: 200;
 }

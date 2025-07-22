@@ -36,11 +36,12 @@
           type="submit"
           expand="block"
           fill="outline"
+          size="default"
           class="normal-case border border-gray-300 border-solid rounded-[10px]">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
           alt="Google"
           (click)="loginConGoogle()" />
-        <span class="text-brand-text pl-2">Logueate con Google</span>
+        <span class="text-[var(--color-brand-neutral-500)] pl-2">Logueate con Google</span>
       </ion-button>
 
       <!-- Email login -->
@@ -71,11 +72,23 @@
       </ion-input>
 
       <ion-button
+            type="button"
+            expand="block"
+            fill="clean"
+            size="small"
+            shape="round"
+            class="gym-btn-link text-white"
+            (click)="goTo('register')">
+            ¿Olvidaste tu contraseña?
+      </ion-button>
+
+      <ion-button
           type="submit"
           [disabled]="form.invalid || loading()"
           expand="block"
           fill="solid"
           shape="round"
+          size="large"
           class="gym-btn-accent mt-8">
             {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
       </ion-button>

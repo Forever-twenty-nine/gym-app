@@ -22,6 +22,7 @@ import {
     IonInput,
   ],
   templateUrl: './register.html',
+  styleUrls: ['../../ionic-styles.css'],
 })
 export class Register {
   private fb = inject(FormBuilder);

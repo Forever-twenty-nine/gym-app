@@ -4,12 +4,14 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../shared/services/auth.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { Router } from '@angular/router';
+import { IonButtons, IonBackButton, IonButton } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-forgot-password-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, IonButtons, IonBackButton, IonButton],
   templateUrl: './forgot-password.html',
+  styleUrls: ['../../ionic-styles.css'],
 })
 export class ForgotPassword {
 
@@ -43,5 +45,5 @@ export class ForgotPassword {
   goTo(path: string) {
     this.router.navigateByUrl(`/auth/${path}`);
   }
-  
+
 }
