@@ -10,6 +10,18 @@ ion-input.gym-input {
 }
 
 /* Select */
+ion-list.gym-select-container {
+  background: transparent;
+  padding: 0;
+}
+
+ion-list.gym-select-container ion-item {
+  --background: transparent;
+  --border-color: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
 ion-select.gym-select {
   width: 100%;
   --background: var(--color-brand-secondary);
@@ -20,6 +32,15 @@ ion-select.gym-select {
 ion-select::part(text) {
   color: var(--color-brand-neutral-500);
 }
+
+/* Select interface action-sheet */
+/* ion-action-sheet {
+} */
+
+/* ion-select.gym-select .select-wrapper-inner{
+} */
+
+
 
 /* Button */
 ion-button {

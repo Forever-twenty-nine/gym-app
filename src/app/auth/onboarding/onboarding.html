@@ -36,21 +36,31 @@
     <h1 class="text-2xl font-bold text-center mb-4 text-[var(--text-primary)]">
       ¿Cómo utilizarás la app?
     </h1>
-      <ion-select
-        aria-label="Rol"
-        interface="popover"
-        fill="outline"
-        placeholder="Selecciona tu rol"
-        class="gym-select"
-        [ngModel]="rol() ?? ''"
-        (ngModelChange)="rol.set($event)">
-
-        <ion-select-option value="">Selecciona tu rol</ion-select-option>
-        @for (r of roles(); track r) {
-          <ion-select-option [value]="r">{{ r }}</ion-select-option>
-        }
-      </ion-select>
+    <ion-list
+      class="gym-select-container"
+      >
+      <ion-item>
+        <ion-select
+          aria-label="Rol"
+          fill="outline"
+          class="gym-select"
+          placeholder="Selecciona tu rol"
+          interface="action-sheet"
+          [ngModel]="rol() ?? ''"
+          (ngModelChange)="rol.set($event)"
+          >
+          <ion-select-option value="">
+            Selecciona tu rol
+          </ion-select-option>
+          @for (r of roles(); track r) {
+            <ion-select-option [value]="r">{{ r }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+    </ion-list>
   </div>
+
+
 
   <!-- Objetivo (solo si rol === 'cliente') -->
   @if (rol() === 'cliente') {
@@ -61,22 +71,28 @@
       <p class="mb-6 text-center ">
         Esta información ayudará a tu entrenador a diseñar un plan personalizado para ti.
       </p>
-        <ion-select
-          aria-label="Objetivo"
-          interface="popover"
-          fill="outline"
-          label=""
-          label-placement="floating"
-          placeholder="Selecciona tu objetivo"
-          class="text-[var(--text-primary)] bg-brand-neutral border border-[var(--border-default)] rounded w-full"
-          [ngModel]="objetivo() ?? ''"
-          (ngModelChange)="objetivo.set($event)">
+      <ion-list
+      class="gym-select-container"
+      >
+        <ion-item>
+          <ion-select
+            aria-label="Objetivo"
+            interface="popover"
+            fill="outline"
+            label=""
+            label-placement="floating"
+            placeholder="Selecciona tu objetivo"
+            class="gym-select"
+            [ngModel]="objetivo() ?? ''"
+            (ngModelChange)="objetivo.set($event)">
 
-          <ion-select-option value="">Selecciona tu objetivo</ion-select-option>
-          @for (o of objetivos(); track o) {
-            <ion-select-option [value]="o">{{ o }}</ion-select-option>
-          }
-        </ion-select>
+            <ion-select-option value="">Selecciona tu objetivo</ion-select-option>
+            @for (o of objetivos(); track o) {
+              <ion-select-option [value]="o">{{ o }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      </ion-list>
     </div>
   }
 
@@ -87,7 +103,7 @@
     expand="block"
     fill="solid"
     shape="round"
-    class="gym-btn-accent mt-8">
+    class="gym-btn-accent mt-12">
     {{ loading() ? 'Cargando...' : 'Guardar' }}
   </ion-button>
 
