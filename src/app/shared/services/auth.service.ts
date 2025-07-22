@@ -17,6 +17,7 @@ import { User } from '../models/user.model';
 import { Rol } from '../enums/rol.enum';
 import { Permiso } from '../enums/permiso.enum';
 import { UserService } from './user.service';
+import { Objetivo } from '../enums/objetivo.enum';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -49,7 +50,7 @@ export class AuthService {
       });
     });
   }
-  
+
   // 🔑 Login con email y contraseña
   async login(email: string, password: string): Promise<void> {
     const cred = await signInWithEmailAndPassword(this.auth, email, password);
@@ -65,9 +66,9 @@ export class AuthService {
 
   // 📝 Registro con email/contraseña
   async register(email: string, password: string) {
-    const cred = await createUserWithEmailAndPassword(this.auth, email, password);
-
     return runInInjectionContext(this.injector, async () => {
+      const cred = await createUserWithEmailAndPassword(this.auth, email, password);
+
       const uid = cred.user.uid;
 
       const perfil: User = {
@@ -76,17 +77,19 @@ export class AuthService {
         nombre: '',
         rol: Rol.CLIENTE,
         permisos: [Permiso.EJECUTAR_RUTINAS],
-       
+        onboarded: false
       };
 
       await setDoc(doc(this.firestore, 'users', uid), perfil);
       this.userService.setUsuario(perfil);
+
+      this.router.navigateByUrl('/onboarding');
     });
   }
 
+
   // 🏁 Completar onboarding: asignar nombre y rol al usuario
-  // 🏁 Completar onboarding: asignar nombre, rol y IDs según el rol
-  async completarOnboarding(nombre: string, rol: Rol) {
+  async completarOnboarding(nombre: string, rol: Rol, objetivo: Objetivo) {
     const currentUser = this.auth.currentUser;
     if (!currentUser) throw new Error('No hay usuario autenticado');
 
@@ -98,7 +101,9 @@ export class AuthService {
         email: currentUser.email ?? '',
         nombre: nombre.trim(),
         rol,
+        objetivo,            // 👈 aquí agregamos objetivo
         permisos: [],
+        onboarded: true
       };
 
       // asignar IDs según rol
@@ -124,8 +129,12 @@ export class AuthService {
 
       await setDoc(doc(this.firestore, 'users', uid), perfil);
       this.userService.setUsuario(perfil);
+
+      // Navega a la sección correcta según rol
+      this.redirectToSection(perfil);
     });
   }
+
 
 
   // 🔄 Recuperar contraseña
@@ -190,17 +199,8 @@ export class AuthService {
   }
   // 🆕 Verificar si el usuario necesita completar el onboarding
   private needsOnboarding(user: User): boolean {
-    // Si falta nombre o rol
-    if (!user.nombre || !user.rol) return true;
-
-    // Si es ADMIN o ENTRENADOR_ADMIN pero no tiene gimnasioId
-    if (
-      (user.rol === Rol.ADMIN || user.rol === Rol.ENTRENADOR_ADMIN) &&
-      !user.gimnasioId
-    )
-      return true;
-
-    return false;
+    return !user.onboarded;
   }
+
 
 }

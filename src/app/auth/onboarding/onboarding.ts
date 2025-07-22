@@ -38,18 +38,39 @@ export class Onboarding {
 
   async completar() {
     if (!this.nombre().trim() || !this.rol()) {
-      console.warn('🛑 Faltan datos');
+      console.warn('🛑 Faltan datos obligatorios');
+      return;
+    }
+    if (this.rol() === Rol.CLIENTE && !this.objetivo()) {
+      console.warn('🛑 Objetivo requerido para cliente');
       return;
     }
 
     this.loading.set(true);
     try {
-      await this.auth.completarOnboarding(this.nombre(), this.rol()!);
-      this.router.navigateByUrl('/'); // o a donde decidas
+      if (this.rol() === Rol.CLIENTE) {
+        await this.auth.completarOnboarding(
+          this.nombre(),
+          this.rol()!,
+          this.objetivo()!
+        );
+      } else {
+
+        await this.auth.completarOnboarding(
+          this.nombre(),
+          this.rol()!,
+          Object.values(Objetivo)[0]
+        );
+      }
     } catch (e) {
       console.error('❌ Error al completar onboarding', e);
     } finally {
       this.loading.set(false);
     }
   }
+
+  logout() {
+    this.auth.logout();
+  }
+
 }

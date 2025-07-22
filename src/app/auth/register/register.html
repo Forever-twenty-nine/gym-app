@@ -2,20 +2,17 @@
 
   <!-- Fondo con blur -->
   <div class="absolute inset-0 z-0">
-    <div class="w-full h-full bg-[url('/assets/bg.jpg')] bg-cover bg-center blur-xs"></div>
+    <div class="w-full h-full bg-[url('/assets/images/bg.jpg')] bg-cover bg-center blur-xs"></div>
     <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/80 to-black pointer-events-none"></div>
   </div>
 
   <!-- Botón volver para atrás -->
   <div class="absolute top-0 left-0">
     <ion-buttons slot="start" class="">
-      <ion-back-button
-        defaultHref="/auth/welcome"
-        class="fixed top-4 left-3  px-2 py-2 rounded-full text-white">
+      <ion-back-button defaultHref="/auth/welcome" class="fixed top-4 left-3  px-2 py-2 rounded-full text-white">
       </ion-back-button>
     </ion-buttons>
   </div>
-
 
   <!-- Contenido encima del fondo -->
   <div class="z-10 relative mt-28 w-full">
@@ -24,23 +21,17 @@
       Crear Cuenta
     </h1>
 
-    <form [formGroup]="form" (ngSubmit)="submit()"
-      class="relative w-full max-w-md  space-y-4 animate-fade-in mb-6">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="relative w-full max-w-md  space-y-4 animate-fade-in mb-6">
 
       <!-- Google login -->
       <p class="text-base text-left text-gray-200 mt-8 mb-3">
         A través de:
       </p>
 
-      <ion-button
-          type="submit"
-          expand="block"
-          fill="outline"
-          size="default"
-          class="normal-case border border-gray-300 border-solid rounded-[10px]">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
-          alt="Google"
-          (click)="loginConGoogle()" />
+      <ion-button expand="block" fill="outline" size="default" (click)="loginConGoogle()" 
+        class="normal-case border border-gray-300 border-solid rounded-[10px]">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google"
+          />
         <span class="text-[var(--color-brand-neutral-500)] pl-2">Regístrate con Google</span>
       </ion-button>
 
@@ -50,154 +41,30 @@
         O continuá con:
       </p>
 
-      <ion-input
-        label="Email"
-        label-placement="floating"
-        formControlName="email"
-        type="email"
-        fill="outline"
+      <ion-input label="Email" label-placement="floating" formControlName="email" type="email" fill="outline"
         class="gym-input text-white mt-0"
         [errorText]="form.get('email')?.invalid && form.get('email')?.touched ? 'Ingresa un email válido.' : undefined"
         mode="md">
       </ion-input>
 
-      <ion-input
-        label="Contraseña"
-        label-placement="floating"
-        fill="outline"
-        type="password"
-        formControlName="password"
+      <ion-input label="Contraseña" label-placement="floating" fill="outline" type="password" formControlName="password"
         class="gym-input text-white mt-0"
         [errorText]="form.get('password')?.invalid && form.get('password')?.touched ? 'Contraseña inválida (mínimo 6 caracteres).' : undefined"
         mode="md">
       </ion-input>
 
-      <ion-input
-        label="Repite contraseña"
-        label-placement="floating"
-        fill="outline"
-        type="password"
-        formControlName="confirmPassword"
-        class="gym-input text-white mt-0"
-        [errorText]="form.get('confirmPassword')?.touched && form.hasError('passwordMismatch')
+      <ion-input label="Repite contraseña" label-placement="floating" fill="outline" type="password"
+        formControlName="confirmPassword" class="gym-input text-white mt-0" [errorText]="form.get('confirmPassword')?.touched && form.hasError('passwordMismatch')
         ? 'Las contraseñas no coinciden.'
-        : undefined"
-        mode="md">
+        : undefined" mode="md">
       </ion-input>
 
-      <ion-button
-          type="submit"
-          [disabled]="form.invalid || loading()"
-          expand="block"
-          fill="solid"
-          size="large"
-          shape="round"
-          class="gym-btn-accent mt-8"
-          mode="">
-            {{ loading() ? 'Cargando...' : 'Crear cuenta' }}
+      <ion-button type="submit" [disabled]="form.invalid || loading()" expand="block" fill="solid" size="large"
+        shape="round" class="gym-btn-accent mt-8" mode="">
+        {{ loading() ? 'Cargando...' : 'Crear cuenta' }}
       </ion-button>
     </form>
 
   </div>
 
 </div>
-
-
-<!-- formulario anterior -->
-<!-- <div
-    class="min-h-screen bg-gradient-to-br from-[var(--success)] to-[color-mix(in srgb, var(--success) 15%, white)] flex items-center justify-center px-4">
-
-    <form [formGroup]="form" (ngSubmit)="submit()"
-        class="bg-[var(--bg-primary)] shadow-xl border border-[var(--border-default)] rounded-2xl p-8 w-full max-w-md space-y-6 animate-fade-in">
-
-        <div class="text-center">
-            <h1 class="text-2xl font-bold">Crear cuenta</h1>
-            <p class="text-sm text-[var(--text-secondary)]">Registrate para comenzar a usar la plataforma</p>
-        </div>
-
-        <div class="relative">
-            <input type="email" formControlName="email" id="email" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)]
-                 border-[var(--border-default)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
-            <label for="email" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
-                 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
-                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
-                Correo electrónico
-            </label>
-            @if (form.get('email')?.touched && form.get('email')?.invalid) {
-            <div class="text-sm text-[var(--danger)] mt-1 ml-1">
-                @if (form.get('email')?.errors?.['required']) {
-                El correo es obligatorio.
-                } @else if (form.get('email')?.errors?.['email']) {
-                Ingresá un correo válido.
-                }
-            </div>
-            }
-        </div>
-
-        <div class="relative">
-            <input type="password" formControlName="password" id="password" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)]
-                 border-[var(--border-default)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
-            <label for="password" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
-                 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
-                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
-                Contraseña
-            </label>
-            @if (form.get('password')?.touched && form.get('password')?.invalid) {
-            <div class="text-sm text-[var(--danger)] mt-1 ml-1">
-                @if (form.get('password')?.errors?.['required']) {
-                La contraseña es obligatoria.
-                } @else if (form.get('password')?.errors?.['minlength']) {
-                Mínimo 6 caracteres.
-                }
-            </div>
-            }
-        </div>
-
-        <div class="relative">
-            <input type="password" formControlName="repeat" id="repeat" placeholder=" " class="peer w-full pt-6 pb-2 px-3 border rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)]
-                 border-[var(--border-default)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" />
-            <label for="repeat" class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
-                 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
-                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]">
-                Repetir contraseña
-            </label>
-            @if (form.get('repeat')?.touched && form.get('repeat')?.invalid) {
-            <div class="text-sm text-[var(--danger)] mt-1 ml-1">
-                La repetición es obligatoria.
-            </div>
-            } @else if (form.errors?.['passwordMismatch'] && form.get('repeat')?.touched) {
-            <div class="text-sm text-[var(--danger)] mt-1 ml-1">
-                Las contraseñas no coinciden.
-            </div>
-            }
-        </div>
-
-        <button type="submit"
-            class="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-inverse)] font-medium py-3 rounded-lg w-full transition"
-            [disabled]="form.invalid || loading()">
-            {{ loading() ? 'Registrando...' : 'Crear cuenta' }}
-        </button>
-        <div class="relative mt-4">
-            <div class="absolute inset-0 flex items-center">
-                <div class="w-full border-t border-[var(--border-default)]"></div>
-            </div>
-            <div class="relative flex justify-center text-sm">
-                <span class="bg-[var(--bg-primary)] px-2 text-[var(--text-secondary)]">o continuar con</span>
-            </div>
-        </div>
-
-        <button type="button" (click)="loginConGoogle()"
-            class="w-full mt-4 border border-[var(--border-default)] rounded-lg py-2 px-4 flex items-center justify-center gap-2 hover:bg-[color-mix(in srgb, var(--bg-primary) 90%, black)] transition">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google" />
-            <span class="text-[var(--text-primary)] font-medium">Google</span>
-        </button>
-
-
-        <div class="text-sm text-center mt-4">
-            <button type="button" class="text-[var(--accent)] hover:underline" (click)="goTo('login')">
-                ¿Ya tenés cuenta? Iniciar sesión
-            </button>
-        </div>
-    </form>
-</div>
-   -->

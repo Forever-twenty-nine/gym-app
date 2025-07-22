@@ -20,6 +20,7 @@ import {
     IonBackButton,
     IonButton,
     IonInput,
+
   ],
   templateUrl: './register.html',
   styleUrls: ['../../ionic-styles.css'],
@@ -65,19 +66,22 @@ export class Register {
 
     this.auth
       .register(email!, password!)
-      .then(() => {
-        this.router.navigateByUrl('/home');
-      })
-      .catch(() => {
-        this.toast.show('No se pudo crear la cuenta', 'error');
+      .catch((err) => {
+        console.error(err);
+
+        if (err?.code === 'auth/email-already-in-use') {
+          this.toast.show('Este correo ya está registrado', 'warning');
+        } else if (err?.code === 'auth/invalid-email') {
+          this.toast.show('El correo no es válido', 'error');
+        } else if (err?.code === 'auth/weak-password') {
+          this.toast.show('La contraseña es demasiado débil', 'warning');
+        } else {
+          this.toast.show('No se pudo crear la cuenta', 'error');
+        }
       })
       .finally(() => {
         this.loading.set(false);
       });
-  }
-
-  goTo(path: string) {
-    this.router.navigateByUrl(`/auth/${path}`);
   }
 
   loginConGoogle() {

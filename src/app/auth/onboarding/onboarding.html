@@ -1,10 +1,7 @@
 <div class="relative min-h-dvh bg-brand-primary  px-8 pb-10">
 
   <!-- Botón volver -->
-  <ion-back-button
-    defaultHref="/auth/welcome"
-    class="fixed top-4 left-3 z-10 px-2 py-2 rounded-full"
-    mode="md">
+  <ion-back-button defaultHref="/auth/welcome" class="fixed top-4 left-3 z-10 px-2 py-2 rounded-full" mode="md">
   </ion-back-button>
 
   <!-- Encabezado -->
@@ -19,15 +16,8 @@
     <h1 class="text-2xl font-bold text-center mb-4 text-[var(--text-primary)]">
       ¿Cuál es tu nombre?
     </h1>
-    <ion-input
-      fill="outline"
-      label=""
-      label-placement="floating"
-      placeholder="Tu nombre"
-      id="nombre"
-      class="gym-input "
-      [ngModel]="nombre()"
-      (ngModelChange)="nombre.set($event)">
+    <ion-input fill="outline" label="" label-placement="floating" placeholder="Tu nombre" id="nombre" class="gym-input "
+      [ngModel]="nombre()" (ngModelChange)="nombre.set($event)">
     </ion-input>
   </div>
 
@@ -36,122 +26,54 @@
     <h1 class="text-2xl font-bold text-center mb-4 text-[var(--text-primary)]">
       ¿Cómo utilizarás la app?
     </h1>
-    <ion-list
-      class="gym-select-container"
-      >
+    <ion-list class="gym-select-container">
       <ion-item>
-        <ion-select
-          aria-label="Rol"
-          fill="outline"
-          class="gym-select"
-          placeholder="Selecciona tu rol"
-          interface="action-sheet"
-          [ngModel]="rol() ?? ''"
-          (ngModelChange)="rol.set($event)"
-          >
+        <ion-select aria-label="Rol" fill="outline" class="gym-select" placeholder="Selecciona tu rol"
+          interface="action-sheet" [ngModel]="rol() ?? ''" (ngModelChange)="rol.set($event)">
           <ion-select-option value="">
             Selecciona tu rol
           </ion-select-option>
           @for (r of roles(); track r) {
-            <ion-select-option [value]="r">{{ r }}</ion-select-option>
+          <ion-select-option [value]="r">{{ r }}</ion-select-option>
           }
         </ion-select>
       </ion-item>
     </ion-list>
   </div>
 
-
-
   <!-- Objetivo (solo si rol === 'cliente') -->
   @if (rol() === 'cliente') {
-    <div class="w-full">
-      <h1 class="text-2xl font-bold text-center mb-4 text-[var(--text-primary)]">
-        ¿Cuál es tu objetivo?
-      </h1>
-      <p class="mb-6 text-center ">
-        Esta información ayudará a tu entrenador a diseñar un plan personalizado para ti.
-      </p>
-      <ion-list
-      class="gym-select-container"
-      >
-        <ion-item>
-          <ion-select
-            aria-label="Objetivo"
-            fill="outline"
-            interface="action-sheet"
-            label=""
-            label-placement="floating"
-            placeholder="Selecciona tu objetivo"
-            class="gym-select"
-            [ngModel]="objetivo() ?? ''"
-            (ngModelChange)="objetivo.set($event)">
+  <div class="w-full">
+    <h1 class="text-2xl font-bold text-center mb-4 text-[var(--text-primary)]">
+      ¿Cuál es tu objetivo?
+    </h1>
+    <p class="mb-6 text-center ">
+      Esta información ayudará a tu entrenador a diseñar un plan personalizado para ti.
+    </p>
+    <ion-list class="gym-select-container">
+      <ion-item>
+        <ion-select aria-label="Objetivo" fill="outline" interface="action-sheet" label="" label-placement="floating"
+          placeholder="Selecciona tu objetivo" class="gym-select" [ngModel]="objetivo() ?? ''"
+          (ngModelChange)="objetivo.set($event)">
 
-            <ion-select-option value="">Selecciona tu objetivo</ion-select-option>
-            @for (o of objetivos(); track o) {
-              <ion-select-option [value]="o">{{ o }}</ion-select-option>
-            }
-          </ion-select>
-        </ion-item>
-      </ion-list>
-    </div>
+          <ion-select-option value="">Selecciona tu objetivo</ion-select-option>
+          @for (o of objetivos(); track o) {
+          <ion-select-option [value]="o">{{ o }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </div>
   }
-
-  <ion-button
-    type="submit"
-    (click)="completar()"
-    [disabled]="loading()"
-    expand="block"
-    fill="solid"
-    size="large"
-    shape="round"
-    class="gym-btn-accent mt-12">
+  <!-- Botón Guardar -->
+  <ion-button type="submit" (click)="completar()" [disabled]="loading()" expand="block" fill="solid" size="large"
+    shape="round" class="gym-btn-accent mt-12">
     {{ loading() ? 'Cargando...' : 'Guardar' }}
   </ion-button>
 
+  <ion-button expand="block" color="medium" (click)="logout()">
+    Cerrar sesión
+  </ion-button>
 
 
 </div>
-
-
-<!-- <div class="min-h-screen flex items-center justify-center bg-[var(--bg-muted)] p-4">
-    <div
-        class="bg-[var(--bg-primary)] shadow-elevated border border-[var(--border-default)] rounded-xl p-6 w-full max-w-md space-y-4 animate-fade-in">
-        <h1 class="text-2xl font-bold text-[var(--text-primary)] text-center">
-            🎉 Bienvenido
-        </h1>
-        <p class="text-sm text-[var(--text-secondary)] text-center mb-4">
-            Completa tu perfil para continuar
-        </p>
-
-        <label for="nombre" class="text-[var(--text-primary)] block mb-1">Nombre</label>
-        <input type="text" id="nombre" [ngModel]="nombre()" (ngModelChange)="nombre.set($event)"
-            class="w-full p-2 rounded border border-[var(--border-default)] bg-[var(--bg-primary)] text-[var(--text-primary)]"
-            placeholder="Tu nombre" />
-
-        <label for="rol" class="text-[var(--text-primary)] block mt-4 mb-1">Rol</label>
-        <select id="rol" [ngModel]="rol() ?? ''" (ngModelChange)="rol.set($event)"
-            class="w-full p-2 rounded border border-[var(--border-default)] bg-[var(--bg-primary)] text-[var(--text-primary)]">
-            <option value="">Selecciona tu rol</option>
-
-            @for (r of roles(); track r) {
-            <option [ngValue]="r">{{ r }}</option>
-            }
-        </select>
-
-         @if(rol() === 'cliente') {
-        <label for="objetivo" class="text-[var(--text-primary)] block mt-4 mb-1">Objetivo</label>
-        <select id="objetivo" [ngModel]="objetivo() ?? ''" (ngModelChange)="objetivo.set($event)"
-            class="w-full p-2 rounded border border-[var(--border-default)] bg-[var(--bg-primary)] text-[var(--text-primary)]">
-            <option value="">Selecciona tu objetivo</option>
-            @for (o of objetivos(); track o) {
-            <option [ngValue]="o">{{ o }}</option>
-            }
-        </select>
-        }
-
-        <button (click)="completar()" [disabled]="loading()"
-            class="w-full mt-6 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-inverse)] py-2 rounded font-medium">
-            {{ loading() ? 'Guardando…' : '✅ Continuar' }}
-        </button>
-    </div>
-</div> -->

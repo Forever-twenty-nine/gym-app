@@ -30,10 +30,14 @@ export class UserService {
     }
   }
 
-  /** Guarda un usuario en memoria y en localStorage */
+  // Guarda un usuario en memoria y en localStorage
   setUsuario(user: User) {
     this._usuario.set(user);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    if (user.onboarded) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
   }
 
   /** Limpia el usuario */
