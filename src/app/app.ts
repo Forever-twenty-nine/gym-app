@@ -6,7 +6,7 @@ import { IonToast } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, IonToast],
-  templateUrl: './app.html',
+  templateUrl: './app.html'
 
 })
 export class App {

@@ -1,6 +1,5 @@
-<main class="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
-  <router-outlet />
-</main>
+<router-outlet />
+
 
 <ion-toast [isOpen]="toast.message() !== null" (didDismiss)="onDismiss()" [message]="toast.message()?.text"
 [duration]="3000" [color]="getColor(toast.message()?.type)">
