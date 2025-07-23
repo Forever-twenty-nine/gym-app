@@ -1,22 +1,19 @@
-<div class="relative min-h-dvh bg-brand-neutral px-8 flex items-start justify-center">
+<div class="relative min-h-dvh bg-brand-neutral bg-[url('/assets/images/bg.jpg')] px-8 flex items-start justify-center">
 
   <!-- Fondo con blur -->
   <div class="absolute inset-0 z-0">
-    <div class="w-full h-full bg-[url('/assets/bg.jpg')] bg-cover bg-center blur-xs"></div>
+    <div class="w-full h-full bg-[url('/assets/images/bg.jpg')] bg-cover bg-center blur-xs"></div>
     <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/80 to-black pointer-events-none"></div>
   </div>
 
   <!-- Botón volver para atrás -->
   <div class="absolute top-0 left-0">
     <ion-buttons slot="start" class="">
-      <ion-back-button
-        defaultHref="/auth/welcome"
-        class="fixed top-4 left-3  px-2 py-2 rounded-full text-white"
+      <ion-back-button defaultHref="/auth/welcome" class="fixed top-4 left-3  px-2 py-2 rounded-full text-white"
         mode="md">
       </ion-back-button>
     </ion-buttons>
   </div>
-
 
   <!-- Contenido encima del fondo -->
   <div class="z-10 relative mt-28 w-full">
@@ -24,23 +21,17 @@
       Bienvenido a GymApp
     </h1>
 
-    <form [formGroup]="form" (ngSubmit)="submit()"
-      class="relative w-full max-w-md  space-y-4 animate-fade-in mb-6">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="relative w-full max-w-md  space-y-4 animate-fade-in mb-6">
 
       <!-- Google login -->
       <p class="text-base text-left text-gray-200 mt-8 mb-3">
         Inicia sesión a través de:
       </p>
 
-      <ion-button
-          type="submit"
-          expand="block"
-          fill="outline"
-          class="normal-case border border-gray-300 border-solid rounded-[10px]">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
-          alt="Google"
-          (click)="loginConGoogle()" />
-        <span class="text-brand-text pl-2">Logueate con Google</span>
+      <ion-button expand="block" fill="outline" size="default" (click)="loginConGoogle()"
+        class="normal-case border border-gray-300 border-solid rounded-[10px]">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google" />
+        <span class="text-[var(--color-brand-neutral-500)] pl-2">Logueate con Google</span>
       </ion-button>
 
       <!-- Email login -->
@@ -48,193 +39,29 @@
         O continuá con:
       </p>
 
-      <ion-input
-        label="Email"
-        label-placement="floating"
-        formControlName="email"
-        type="email"
-        fill="outline"
+      <ion-input placeholder="Email" formControlName="email" type="email" fill="outline"
         class="gym-input text-white mt-0"
         [errorText]="form.get('email')?.invalid && form.get('email')?.touched ? 'Ingresa un email válido.' : undefined"
         mode="md">
       </ion-input>
 
-      <ion-input
-        label="Contraseña"
-        label-placement="floating"
-        type="password"
-        formControlName="password"
-        fill="outline"
+      <ion-input placeholder="Contraseña" type="password" formControlName="password" fill="outline"
         class="gym-input text-white mt-0"
         [errorText]="form.get('password')?.invalid && form.get('password')?.touched ? 'Contraseña inválida (mínimo 6 caracteres).' : undefined"
         mode="md">
       </ion-input>
+      <!-- Botón para recuperar contraseña -->
+      <ion-button type="button" expand="block" fill="clean" size="small" shape="round" class="gym-btn-link text-white"
+        (click)="goTo('forgot-password')">
+        ¿Olvidaste tu contraseña?
+      </ion-button>
 
-      <ion-button
-          type="submit"
-          [disabled]="form.invalid || loading()"
-          expand="block"
-          fill="solid"
-          shape="round"
-          class="gym-btn-accent mt-8">
-            {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
+      <ion-button type="submit" [disabled]="form.invalid || loading()" expand="block" fill="solid" shape="round"
+        size="large" class="gym-btn-accent mt-8">
+        {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
       </ion-button>
     </form>
 
   </div>
 
 </div>
-
-  <!-- 2da página -->
-  <!-- <div class="z-10">
-    <h1 class="text-white font-semibold text-center font-heading text-4xl mb-4" >
-      Bienvenido a GymApp
-    </h1>
-    <p class="text-md text-gray-300 mb-4">
-      La mejor app para gestionar tu entrenamiento
-    </p>
-    <form [formGroup]="form" (ngSubmit)="submit()"
-      class="relative w-full max-w-md  space-y-4 animate-fade-in mb-10">
-      <ion-button
-          type="submit" [disabled]="form.invalid || loading()"
-          expand="block"
-          fill="outline"
-          class="gym-btn-outline mt-4">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
-          alt="Google"
-          (click)="loginConGoogle()" />
-        <span class="text-brand-text pl-2">Logueate con Google</span>
-      </ion-button>
-
-      <p class="text-sm text-center text-gray-400 ">
-        o continuá con
-      </p>
-
-      <ion-input
-        label="Email"
-        label-placement="floating"
-        fill="outline"
-        errorText="Ingresa un email válido."
-        class="gym-input">
-      </ion-input>
-
-      <ion-input
-        label="Contraseña"
-        label-placement="floating"
-        fill="outline"
-        errorText="Ingresa una contraseña válida"
-        class="gym-input">
-      </ion-input>
-
-      <ion-button
-          type="submit" [disabled]="form.invalid || loading()"
-          expand="block"
-          fill="solid"
-          class="gym-btn-accent">
-            {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
-      </ion-button>
-
-
-    </form>
-  </div> -->
-
-
-
-
-    <!-- Formulario anterior -->
-    <!-- <form [formGroup]="form" (ngSubmit)="submit()"
-        class="relative px-2 w-full max-w-md space-y-4 animate-fade-in">
-
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-medium mb-2 text-white bg-app">
-              Bienvenido a GymApp
-            </h1>
-            <p class="text-md text-gray-300">
-              La mejor app para gestionar tu entrenamiento
-            </p>
-        </div>
-
-        <div class="relative">
-            <label for="email" class="absolute left-3 -top-0 px-1 text-sm text-[var(--text-secondary)] transition-all
-                 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
-                 peer-focus:-top-[1px] peer-focus:text-sm peer-focus:text-[var(--accent)]">
-                Correo electrónico
-            </label>
-            @if (form.get('email')?.touched && form.get('email')?.invalid) {
-            <div class="text-sm text-[var(--danger)] mt-1 ml-1">
-                @if (form.get('email')?.errors?.['required']) {
-                El correo es obligatorio.
-                } @else if (form.get('email')?.errors?.['email']) {
-                Ingresá un correo válido.
-                }
-            </div>
-            }
-        </div>
-
-        <div class="relative">
-            <input
-              type="password"
-              formControlName="password"
-              id="password"
-              placeholder=" "
-              class="peer w-full pt-6 pb-2 px-3 border rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)]
-                 border-[var(--border-default)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
-              />
-            <label
-              for="password"
-              class="absolute left-3 -top-2 px-1 text-sm bg-[var(--bg-primary)] text-[var(--text-secondary)] transition-all
-                 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-[var(--text-secondary-muted)]
-                 peer-focus:-top-2 peer-focus:text-sm peer-focus:text-[var(--accent)]"
-              >
-                Contraseña
-            </label>
-            @if (form.get('password')?.touched && form.get('password')?.invalid) {
-            <div class="text-sm text-[var(--danger)] mt-1 ml-1">
-                @if (form.get('password')?.errors?.['required']) {
-                La contraseña es obligatoria.
-                } @else if (form.get('password')?.errors?.['minlength']) {
-                Debe tener al menos 6 caracteres.
-                }
-            </div>
-            }
-        </div>
-
-        <ion-button
-          type="submit" [disabled]="form.invalid || loading()"
-          expand="block"
-          fill="solid"
-          class="gym-btn-accent">
-            {{ loading() ? 'Cargando...' : 'Iniciar Sesión' }}
-        </ion-button>
-
-        <p class="text-sm text-center text-gray-400 ">
-          o continuá con
-        </p>
-
-        <button type="button" (click)="loginConGoogle()"
-            class="w-full border border-[var(--border-default)] rounded-lg py-2 px-4 flex items-center justify-center gap-2 hover:bg-[var(--bg-muted)] transition">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5"
-                alt="Google" />
-            <span class="text-brand-text font-medium">Google</span>
-        </button>
-
-        <div class="text-sm text-center space-y-2 mt-4 flex justify-center">
-          <ion-button
-            type="button"
-            expand="block"
-            fill="clean"
-            class="gym-btn-link text-white px-0"
-            (click)="goTo('register')">
-            ¿Olvidaste tu contraseña?
-          </ion-button>
-          <ion-button
-            type="button"
-            expand=""
-            fill="clean"
-            class="gym-btn-link text-white px-0"
-            (click)="goTo('register')">
-            Registrarse
-          </ion-button>
-        </div>
-
-    </form> -->

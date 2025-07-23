@@ -15,6 +15,9 @@ export class ToastService {
         this._toast.set({ text, type });
         setTimeout(() => this._toast.set(null), duration);
     }
+    clear() {
+        this._toast.set(null);
+    }
 
     get message() {
         return this._toast.asReadonly();

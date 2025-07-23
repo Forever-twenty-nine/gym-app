@@ -1,0 +1,82 @@
+/* ─────────────────────────────────────────────── */
+/* 📦 Ionic styles
+/* ─────────────────────────────────────────────── */
+/* Input */
+ion-input.gym-input {
+  --border-color: var(--color-brand-secondary);
+  --highlight-color: var(--color-brand-accent);
+  --border-radius: var(--input-rounded);
+  --background: var(--color-brand-secondary);
+}
+
+/* Select */
+ion-list.gym-select-container {
+  background: transparent;
+  padding: 0;
+}
+
+ion-list.gym-select-container ion-item {
+  --background: transparent;
+  --border-color: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+ion-select.gym-select {
+  width: 100%;
+  --background: var(--color-brand-secondary);
+  --border-color: var(--color-brand-secondary);
+  --border-radius: var(--input-rounded);
+}
+
+ion-select::part(text) {
+  color: var(--color-brand-neutral-500);
+}
+
+/* Select interface action-sheet */
+/* ion-action-sheet {
+} */
+
+/* ion-select.gym-select .select-wrapper-inner{
+} */
+
+
+
+/* Button */
+ion-button {
+  --border-width: 1px;
+  --border-color: transparent;
+  --box-shadow: none;
+  font-size: var(--font-base);
+}
+
+/* Button - size (small, default, large) */
+ion-button.button-default {
+  --padding-top: 16px;
+  --padding-bottom: 16px
+}
+ion-button.button-large{
+  --padding-top: 22px;
+  --padding-bottom: 22px
+}
+
+
+/* Button - fill: clean (type as a link) */
+ion-button.gym-btn-link {
+  --color: var(--color-brand-accent);
+  font-size: 0.9rem;
+  text-transform: initial;
+  font-weight: 200;
+}
+
+ion-button.gym-btn-accent {
+  --background: var(--color-brand-accent);
+  --color: black;
+}
+
+ion-button.gym-btn-outline {
+  --border-color: var(--color-brand-secondary);
+  --border-radius: 10px;
+  --color: black;
+  text-transform: initial;
+}

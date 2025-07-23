@@ -43,5 +43,5 @@ Thumbs.db
 
 src/app/enviroments/enviroment.ts
 
-# build artifacts
-/www/
+# www folder
+/www

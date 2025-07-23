@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { roleGuard } from './guards/role.guard';
 import { Rol } from './shared/enums/rol.enum';
+import { onlyNotOnboardedGuard } from './guards/onlyNotOnboarded.guard';
+import { onBoardingGuard } from './guards/onBoarding.guard';
 
 export const routes: Routes = [
 
@@ -20,7 +22,8 @@ export const routes: Routes = [
   // 3️⃣ Ruta de onboarding 
   {
     path: 'onboarding',
-    loadComponent: () => import('./auth/onboarding/onboarding').then(m => m.Onboarding)
+    loadComponent: () => import('./auth/onboarding/onboarding').then(m => m.Onboarding),
+    canActivate: [onlyNotOnboardedGuard]
   },
 
   // 4️⃣ Rutas protegidas por roles
@@ -31,17 +34,17 @@ export const routes: Routes = [
       {
         path: 'cliente',
         loadChildren: () => import('./clientes/clientes-routes').then(m => m.default),
-        canActivate: [roleGuard([Rol.CLIENTE])]
+        canActivate: [roleGuard([Rol.CLIENTE]),onBoardingGuard]
       },
       {
         path: 'entrenador',
         loadChildren: () => import('./entrenadores/entrenadores-routes').then(m => m.default),
-        canActivate: [roleGuard([Rol.ENTRENADOR])]
+        canActivate: [roleGuard([Rol.ENTRENADOR]),onBoardingGuard]
       },
       {
         path: 'gimnasio',
         loadChildren: () => import('./gimnasios/gimnasios-routes').then(m => m.default),
-        canActivate: [roleGuard([Rol.ADMIN, Rol.ENTRENADOR_ADMIN])]
+        canActivate: [roleGuard([Rol.ADMIN, Rol.ENTRENADOR_ADMIN]),onBoardingGuard]
       }
     ]
   },

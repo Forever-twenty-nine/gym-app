@@ -21,6 +21,7 @@ import { addIcons } from 'ionicons';
     IonInput
   ],
   templateUrl: './login.html',
+  styleUrls: ['../../ionic-styles.css'],
 })
 export class Login {
   // Inyección de dependencias
@@ -30,6 +31,7 @@ export class Login {
   private router = inject(Router);
   private firestore = inject(Firestore);
   private userService = inject(UserService);
+  
   // Variable para manejar el estado de carga
   loading = signal(false);
   // Formulario de inicio de sesión
