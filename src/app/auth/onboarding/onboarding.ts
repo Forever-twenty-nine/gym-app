@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Rol } from '../../shared/enums/rol.enum';
 import { Objetivo } from '../../shared/enums/objetivo.enum';
-import { IonButton, IonBackButton, IonInput, IonList, IonItem, IonSelect, IonSelectOption } from "@ionic/angular/standalone";
+import { IonButton, IonBackButton, IonInput, IonList, IonItem, IonSelect, IonSelectOption, IonToolbar, IonTitle, IonContent, IonHeader } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-onboarding',
@@ -18,7 +18,7 @@ import { IonButton, IonBackButton, IonInput, IonList, IonItem, IonSelect, IonSel
     IonSelectOption,
     IonList,
     IonItem
-  ],
+],
   templateUrl: './onboarding.html',
   styleUrls: ['../../ionic-styles.css'],
 })

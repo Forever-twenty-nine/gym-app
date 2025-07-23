@@ -1,13 +1,13 @@
 <div class="relative min-h-dvh bg-brand-primary  px-8 pb-10">
 
   <!-- Botón volver -->
-  <ion-back-button defaultHref="/auth/welcome" class="fixed top-4 left-3 z-10 px-2 py-2 rounded-full" mode="md">
+  <ion-back-button defaultHref="/auth/welcome" class="fixed top-4 left-3 z-10 px-2 py-2 rounded-full">
   </ion-back-button>
 
   <!-- Encabezado -->
-  <div class="w-full text-center pt-8 mb-12">
-    <p class="text-base text-[var(--text-primary)]">
-      Necesitamos algunos datos más
+  <div class="w-full text-center pt-20 mb-12">
+    <p class="text-lg text-[var(--text-primary)]">
+      Para mejorar tu experiencia, necesitamos algunos datos más:
     </p>
   </div>
 
@@ -16,7 +16,7 @@
     <h1 class="text-2xl font-bold text-center mb-4 text-[var(--text-primary)]">
       ¿Cuál es tu nombre?
     </h1>
-    <ion-input fill="outline" label="" label-placement="floating" placeholder="Tu nombre" id="nombre" class="gym-input "
+    <ion-input fill="outline" placeholder="Tu nombre" id="nombre" class="gym-input "
       [ngModel]="nombre()" (ngModelChange)="nombre.set($event)">
     </ion-input>
   </div>
@@ -71,7 +71,7 @@
     {{ loading() ? 'Cargando...' : 'Guardar' }}
   </ion-button>
 
-  <ion-button expand="block" color="medium" (click)="logout()">
+  <ion-button fill="clean" expand="block" size="default" class="gym-btn-link mt-4" (click)="logout()">
     Cerrar sesión
   </ion-button>
 

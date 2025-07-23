@@ -39,13 +39,13 @@
         O continuá con:
       </p>
 
-      <ion-input label="Email" label-placement="floating" formControlName="email" type="email" fill="outline"
+      <ion-input placeholder="Email" formControlName="email" type="email" fill="outline"
         class="gym-input text-white mt-0"
         [errorText]="form.get('email')?.invalid && form.get('email')?.touched ? 'Ingresa un email válido.' : undefined"
         mode="md">
       </ion-input>
 
-      <ion-input label="Contraseña" label-placement="floating" type="password" formControlName="password" fill="outline"
+      <ion-input placeholder="Contraseña" type="password" formControlName="password" fill="outline"
         class="gym-input text-white mt-0"
         [errorText]="form.get('password')?.invalid && form.get('password')?.touched ? 'Contraseña inválida (mínimo 6 caracteres).' : undefined"
         mode="md">
