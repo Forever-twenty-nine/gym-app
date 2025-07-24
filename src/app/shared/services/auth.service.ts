@@ -1,4 +1,5 @@
 import { Injectable, inject, Injector, NgZone, runInInjectionContext } from '@angular/core';
+import { signal } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   Auth,
@@ -22,6 +23,8 @@ import { hasRol } from '../helpers/rol.helpers';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  // Signal reactivo para el usuario autenticado
+  usuarioSignal = signal<User | null>(null);
   private auth = inject(Auth);
   private firestore = inject(Firestore);
   private userService = inject(UserService);
@@ -179,6 +182,9 @@ export class AuthService {
       };
       await setDoc(ref, perfil);
     }
+
+    this.userService.setUsuario(perfil);
+    this.usuarioSignal.set(perfil);
 
     this.userService.setUsuario(perfil);
 

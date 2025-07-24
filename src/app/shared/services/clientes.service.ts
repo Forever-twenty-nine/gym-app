@@ -1,4 +1,5 @@
 import { Injectable, inject, signal, computed, runInInjectionContext, Injector } from '@angular/core';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { Cliente } from '../models/cliente.model';
 import { Firestore, collection, query, where, onSnapshot, addDoc, doc, updateDoc, deleteDoc } from '@angular/fire/firestore';
@@ -22,8 +23,16 @@ export class ClientesService {
   private unsubscribeClientes?: () => void;
 
   constructor() {
+    const auth = inject(Auth);
     runInInjectionContext(this.injector, () => {
-      this.inicializarListenerClientes();
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.inicializarListenerClientes();
+        } else {
+          this.destruir();
+          this.limpiarClientes();
+        }
+      });
     });
   }
 

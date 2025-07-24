@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-personal-trainer',
-  imports: [],
-  templateUrl: './personal-trainer.html'
+  templateUrl: './personal-trainer.html',
+  imports: [RouterModule]
 })
 export class PersonalTrainer {
 

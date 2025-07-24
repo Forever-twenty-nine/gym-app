@@ -2,11 +2,13 @@
   
   <header class="flex justify-between items-center mb-8 pb-5 border-b-2 border-gray-200">
     <h1 class="text-3xl font-bold text-gray-800">Gestión de Rutinas</h1>
-    <button 
-      (click)="abrirFormularioCrear()"
-      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
-      Nueva Rutina
-    </button>
+    @if (tienePermisoCrearRutinas()) {
+      <button 
+        (click)="abrirFormularioCrear()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+        Nueva Rutina
+      </button>
+    }
   </header>
 
   <!-- Loading state -->
@@ -139,18 +141,20 @@
     <div class="text-center py-16 px-5 bg-gray-100 rounded-lg">
       <h3 class="text-xl font-semibold text-gray-600 mb-2">No hay rutinas asignadas</h3>
       <p class="text-gray-500 mb-6">Comienza creando tu primera rutina para tus clientes</p>
-      <button 
-        (click)="abrirFormularioCrear()"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200">
-        Crear Primera Rutina
-      </button>
+      @if (tienePermisoCrearRutinas()) {
+        <button 
+          (click)="abrirFormularioCrear()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200">
+          Crear Primera Rutina
+        </button>
+      }
     </div>
   }
 
 </div>
 
 <!-- Modal de formulario -->
-@if (mostrarFormulario()) {
+@if (mostrarFormulario() && tienePermisoCrearRutinas()) {
   <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50" (click)="cerrarFormulario()">
     <div class="bg-white rounded-lg w-11/12 max-w-lg max-h-screen overflow-y-auto" (click)="$event.stopPropagation()">
       

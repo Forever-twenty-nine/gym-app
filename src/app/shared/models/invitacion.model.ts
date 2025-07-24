@@ -1,8 +1,8 @@
 export interface Invitacion {
   id?: string;
   gimnasioId: string;
-  entrenadorId: string;
-  clienteId: string;
+  email: string;
+  tipo: 'cliente' | 'entrenador';
   estado: 'pendiente' | 'aceptada' | 'rechazada';
   fechaEnvio: Date;
   fechaRespuesta?: Date;

@@ -1,12 +1,23 @@
 import { Injectable, inject, signal, runInInjectionContext, Injector } from '@angular/core';
-import { Firestore, collection, query, where, onSnapshot, addDoc, updateDoc, doc } from '@angular/fire/firestore';
+import { Firestore, collection, query, onSnapshot, addDoc, updateDoc, doc } from '@angular/fire/firestore';
+import { computed } from '@angular/core';
 import { Invitacion } from '../models/invitacion.model';
 
 @Injectable({ providedIn: 'root' })
 export class InvitacionesService {
+
+  invitacionesCliente(clienteId: string) {
+    throw new Error('Method not implemented.');
+  }
+
+  invitacionesEntrenador(entrenadorId: string) {
+    throw new Error('Method not implemented.');
+  }
+
   private firestore = inject(Firestore);
   private injector = inject(Injector);
   private readonly collectionName = 'invitaciones';
+  private readonly permisoGestionarUsuarios = 'gestionar_usuarios';
 
   private _invitaciones = signal<Invitacion[]>([]);
   private _loading = signal<boolean>(false);
@@ -16,13 +27,22 @@ export class InvitacionesService {
   public loading = this._loading.asReadonly();
   public error = this._error.asReadonly();
 
-  private unsubscribeInvitaciones?: () => void;
+  // Signals computed para invitaciones asociadas por email y tipo
+  public invitacionesPorEmail(email: string, tipo: 'cliente' | 'entrenador') {
+    return computed(() => this._invitaciones().filter(i => i.email === email && i.tipo === tipo));
+  }
+
+  public tieneInvitacion(email: string, tipo: 'cliente' | 'entrenador') {
+    return computed(() => this._invitaciones().some(i => i.email === email && i.tipo === tipo));
+  }
 
   constructor() {
     runInInjectionContext(this.injector, () => {
       this.inicializarListenerInvitaciones();
     });
   }
+
+  private unsubscribeInvitaciones?: () => void;
 
   private inicializarListenerInvitaciones(): void {
     this._loading.set(true);
@@ -46,24 +66,14 @@ export class InvitacionesService {
     );
   }
 
-  obtenerInvitacionesPorCliente(clienteId: string) {
-    return signal(this._invitaciones().filter(i => i.clienteId === clienteId));
-  }
-
-  async responderInvitacion(id: string, estado: 'aceptada' | 'rechazada') {
-    try {
-      this._loading.set(true);
-      const invitacionRef = doc(this.firestore, this.collectionName, id);
-      await updateDoc(invitacionRef, { estado, fechaRespuesta: new Date() });
-      this._loading.set(false);
-    } catch (error: any) {
-      this._error.set(error.message || 'Error al responder invitación');
-      this._loading.set(false);
-      throw error;
+  public async enviarInvitacion(
+    invitacion: Omit<Invitacion, 'id' | 'estado' | 'fechaEnvio'> & { email: string; tipo: 'cliente' | 'entrenador' },
+    permisosUsuario: string[]
+  ) {
+    if (!permisosUsuario.includes(this.permisoGestionarUsuarios)) {
+      this._error.set('No tienes permiso para crear invitaciones');
+      throw new Error('No tienes permiso para crear invitaciones');
     }
-  }
-
-  async enviarInvitacion(invitacion: Omit<Invitacion, 'id' | 'estado' | 'fechaEnvio'>) {
     try {
       this._loading.set(true);
       const invitacionesRef = collection(this.firestore, this.collectionName);
@@ -79,4 +89,18 @@ export class InvitacionesService {
       throw error;
     }
   }
+
+  public async responderInvitacion(id: string, estado: 'aceptada' | 'rechazada') {
+    try {
+      this._loading.set(true);
+      const invitacionRef = doc(this.firestore, this.collectionName, id);
+      await updateDoc(invitacionRef, { estado, fechaRespuesta: new Date() });
+      this._loading.set(false);
+    } catch (error: any) {
+      this._error.set(error.message || 'Error al responder invitación');
+      this._loading.set(false);
+      throw error;
+    }
+  }
 }
+

@@ -1,22 +1,29 @@
 
-import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RutinaService } from '../../services/rutina.service';
 import { EjercicioService } from '../../services/ejercicio.service';
 import { RutinaCliente } from '../../models/rutina.model';
 import { EjercicioRutina } from '../../models/ejercicio.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-rutinas',
   imports: [FormsModule],
   templateUrl: './rutinas.html'
 })
-export class Rutinas implements OnInit, OnDestroy {
+export class Rutinas {
 
+  permisos = signal<string[]>([]);
+
+  private authService = inject(AuthService);
+
+  tienePermisoCrearRutinas(): boolean {
+    return this.permisos().includes('crear_rutinas');
+  }
   ejercicioSeleccionado(ejercicio: EjercicioRutina): boolean {
     return this.ejerciciosSeleccionados().some(e => e && e.id === ejercicio.id);
   }
-
 
   toggleEjercicioSeleccionado(ejercicio: EjercicioRutina, checked: boolean) {
     const seleccionados = this.ejerciciosSeleccionados();
@@ -63,17 +70,19 @@ export class Rutinas implements OnInit, OnDestroy {
     this.rutinasEntrenador?.rutinas()?.length || 0
   );
 
-  ngOnInit() {
+
+  constructor() {
+    effect(() => {
+      const usuario = this.authService.usuarioSignal?.();
+      if (usuario && Array.isArray(usuario.permisos)) {
+        this.permisos.set(usuario.permisos);
+      } else {
+        this.permisos.set([]);
+      }
+    });
     this.cargarRutinasEntrenador();
   }
 
-  ngOnDestroy() {
-    this.rutinasEntrenador?.cleanup();
-  }
-
-  /**
-   * Carga las rutinas del entrenador
-   */
   cargarRutinasEntrenador() {
     const entrenadorId = this.entrenadorId();
     if (entrenadorId) {
@@ -81,36 +90,24 @@ export class Rutinas implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Abre el formulario para crear nueva rutina
-   */
   abrirFormularioCrear() {
     this.rutinaEditando.set(null);
     this.limpiarFormulario();
     this.mostrarFormulario.set(true);
   }
 
-  /**
-   * Abre el formulario para editar rutina existente
-   */
   abrirFormularioEditar(rutina: RutinaCliente) {
     this.rutinaEditando.set(rutina);
     this.cargarDatosFormulario(rutina);
     this.mostrarFormulario.set(true);
   }
 
-  /**
-   * Cierra el formulario
-   */
   cerrarFormulario() {
     this.mostrarFormulario.set(false);
     this.rutinaEditando.set(null);
     this.limpiarFormulario();
   }
 
-  /**
-   * Limpia los datos del formulario
-   */
   limpiarFormulario() {
     this.nombre.set('');
     this.clienteId.set('');
@@ -120,9 +117,6 @@ export class Rutinas implements OnInit, OnDestroy {
     this.ejerciciosSeleccionados.set([]);
   }
 
-  /**
-   * Carga datos de rutina en el formulario
-   */
   cargarDatosFormulario(rutina: RutinaCliente) {
     this.nombre.set(rutina.nombre);
     this.clienteId.set(rutina.clienteId);
@@ -132,9 +126,6 @@ export class Rutinas implements OnInit, OnDestroy {
     this.ejerciciosSeleccionados.set(rutina.ejercicios || []);
   }
 
-  /**
-   * Guarda la rutina (crear o actualizar)
-   */
   async guardarRutina() {
     const rutinaEditando = this.rutinaEditando();
     const ejercicios = this.ejerciciosSeleccionados();
@@ -172,9 +163,6 @@ export class Rutinas implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Elimina una rutina
-   */
   async eliminarRutina(rutina: RutinaCliente) {
     const confirmar = confirm(`¿Eliminar la rutina "${rutina.nombre}"?`);
     
@@ -188,9 +176,6 @@ export class Rutinas implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Cambia el estado activo/inactivo de una rutina
-   */
   async cambiarEstadoRutina(rutina: RutinaCliente) {
     try {
       const nuevoEstado = !rutina.activa;
@@ -202,9 +187,6 @@ export class Rutinas implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Duplica una rutina existente
-   */
   async duplicarRutina(rutina: RutinaCliente) {
     try {
       await this.rutinaService.asignarRutinaACliente(
@@ -222,9 +204,6 @@ export class Rutinas implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Formatea la fecha para mostrar
-   */
   formatearFecha(fecha: Date): string {
     return fecha.toLocaleDateString('es-ES');
   }
