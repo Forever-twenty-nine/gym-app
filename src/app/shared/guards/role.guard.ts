@@ -1,8 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { UserService } from '../shared/services/user.service';
-import { Rol } from '../shared/enums/rol.enum';
-import { hasRol } from '../shared/helpers/rol.helpers';
+import { UserService } from '../services/user.service';
+import { Rol } from '../enums/rol.enum';
+import { hasRol } from '../helpers/rol.helpers';
 
 export const roleGuard =
   (allowedRoles: Rol[]): CanActivateFn =>
@@ -13,13 +13,12 @@ export const roleGuard =
       const user = userService.usuario();
 
       if (!user) {
-        router.navigate(['/auth/login']);
-        return false;
+        return router.createUrlTree(['/auth/login']);
       }
+
       const tieneRolPermitido = allowedRoles.some(rol => hasRol(user, rol));
       if (!tieneRolPermitido) {
-        router.navigate(['/onboarding']);
-        return false;
+        return router.createUrlTree(['/onboarding']);
       }
 
       return true;
