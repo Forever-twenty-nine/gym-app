@@ -8,7 +8,7 @@ export interface User {
   email: string;
   onboarded?: boolean;
   objetivo?: Objetivo;
-  rol: Rol;
+  roles: Rol[]; 
   permisos?: Permiso[];
   clienteId?: string;
   entrenadorId?: string;

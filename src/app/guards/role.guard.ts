@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { UserService } from '../shared/services/user.service';
 import { Rol } from '../shared/enums/rol.enum';
+import { hasRol } from '../shared/helpers/rol.helpers';
 
 export const roleGuard =
   (allowedRoles: Rol[]): CanActivateFn =>
@@ -15,8 +16,8 @@ export const roleGuard =
         router.navigate(['/auth/login']);
         return false;
       }
-
-      if (!allowedRoles.includes(user.rol)) {
+      const tieneRolPermitido = allowedRoles.some(rol => hasRol(user, rol));
+      if (!tieneRolPermitido) {
         router.navigate(['/onboarding']);
         return false;
       }
