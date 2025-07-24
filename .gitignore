@@ -45,3 +45,6 @@ src/app/enviroments/enviroment.ts
 
 # www folder
 /www
+
+# Documentation
+/docs/

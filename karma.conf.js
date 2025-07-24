@@ -11,7 +11,7 @@ module.exports = function (config) {
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     client: {
-      clearContext: false // deja los resultados visibles en el navegador
+      clearContext: false 
     },
     coverageReporter: {
       dir: require('path').join(__dirname, './coverage/gym-app'),
