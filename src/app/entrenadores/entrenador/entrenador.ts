@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-entrenador',
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './entrenador.html'
 })
 export class Entrenador {

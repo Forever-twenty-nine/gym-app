@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonButton } from "@ionic/angular/standalone";
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-cliente',
-  imports: [IonContent, IonHeader, IonToolbar, IonTitle, IonButton],
+  imports: [RouterModule],
   templateUrl: './cliente.html'
 })
 export class Cliente {

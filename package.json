@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-     "android": "bash -c 'ng build --output-path=www && mv www/browser/* www/ && rm -r www/browser/ && npx cap sync android && npx cap run android'"
+    "android": "bash -c 'ng build --output-path=www && mv www/browser/* www/ && rm -r www/browser/ && npx cap sync android && npx cap run android'"
   },
   "private": true,
   "dependencies": {
@@ -46,5 +46,12 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.5.3",
     "typescript": "~5.8.3"
-  }
+  },
+  "browserslist": [
+    "Chrome >=113",
+    "Firefox >=115",
+    "Edge >=113",
+    "Safari >=16.4",
+    "iOS >=16.4"
+  ]
 }

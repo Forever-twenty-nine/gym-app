@@ -1,0 +1,354 @@
+<div class="max-w-7xl mx-auto p-5">
+  
+  <header class="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 pb-5 border-b-2 border-gray-200 gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">Gestión de Ejercicios</h1>
+      <p class="text-gray-600">Administra tu biblioteca de ejercicios para crear rutinas efectivas</p>
+    </div>
+    <div class="flex flex-wrap gap-2 items-center">
+      <button 
+        (click)="abrirFormularioCrear()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+        Nuevo Ejercicio
+      </button>
+    </div>
+  <!-- Botones de desarrollo al final de la página -->
+  <div class="fixed bottom-0 left-0 w-full flex justify-center z-40 pointer-events-none">
+    <div class="flex gap-2 mb-4 pointer-events-auto">
+      <button 
+        (click)="crearEjerciciosEjemplo()"
+        title="Crear ejercicios de ejemplo"
+        class="bg-yellow-500 hover:bg-yellow-700 text-white p-2 rounded-full transition-colors duration-200 flex items-center text-lg shadow-md">
+        <span>🧪</span>
+      </button>
+      <button 
+        (click)="limpiarTodosEjercicios()"
+        title="Limpiar todos los ejercicios"
+        class="bg-yellow-500 hover:bg-yellow-700 text-white p-2 rounded-full transition-colors duration-200 flex items-center text-lg shadow-md">
+        <span>🧹</span>
+      </button>
+    </div>
+  </div>
+  </header>
+
+  <!-- Loading state -->
+  @if (ejercicioService.loading()) {
+    <div class="text-center p-10 bg-gray-100 rounded-lg my-5">
+      <p class="text-gray-600">Cargando ejercicios...</p>
+    </div>
+  }
+
+  <!-- Error state -->
+  @if (ejercicioService.error()) {
+    <div class="text-center p-10 bg-red-100 rounded-lg my-5">
+      <p class="text-red-600">Error: {{ ejercicioService.error() }}</p>
+    </div>
+  }
+
+  <!-- Estadísticas -->
+  @if (!ejercicioService.loading()) {
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <h3 class="text-2xl font-bold mb-1 text-blue-600">{{ totalEjercicios() }}</h3>
+        <p class="text-sm text-gray-600">Total</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <h3 class="text-2xl font-bold mb-1 text-green-600">{{ ejerciciosConPeso() }}</h3>
+        <p class="text-sm text-gray-600">Con Peso</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <h3 class="text-2xl font-bold mb-1 text-gray-500">{{ ejerciciosSinPeso() }}</h3>
+        <p class="text-sm text-gray-600">Corporal</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <h3 class="text-2xl font-bold mb-1 text-purple-600">{{ estadisticas().promedioSeries }}</h3>
+        <p class="text-sm text-gray-600">Avg Series</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <h3 class="text-2xl font-bold mb-1 text-orange-600">{{ estadisticas().promedioRepeticiones }}</h3>
+        <p class="text-sm text-gray-600">Avg Reps</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md text-center">
+        <h3 class="text-2xl font-bold mb-1 text-indigo-600">{{ estadisticas().promedioDescanso }}s</h3>
+        <p class="text-sm text-gray-600">Avg Rest</p>
+      </div>
+    </div>
+  }
+
+  <!-- Filtros y búsqueda -->
+  @if (!ejercicioService.loading()) {
+    <div class="bg-white p-5 rounded-lg shadow-md mb-6">
+      <div class="flex flex-col lg:flex-row gap-4">
+        
+        <!-- Búsqueda -->
+        <div class="flex-1">
+          <label for="busqueda" class="block text-sm font-semibold text-gray-700 mb-2">Buscar ejercicios</label>
+          <input 
+            id="busqueda"
+            type="text"
+            placeholder="Buscar por nombre o descripción..."
+            (input)="actualizarBusqueda($event)"
+            [value]="busquedaNombre()"
+            class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+        </div>
+
+        <!-- Filtros -->
+        <div class="lg:w-64">
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Filtrar por tipo</label>
+          <div class="flex gap-2">
+            <button 
+              (click)="cambiarFiltro('todos')"
+              [class]="filtroActivo() === 'todos' ? 
+                'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+              class="px-3 py-2 rounded text-sm transition-colors duration-200">
+              Todos
+            </button>
+            <button 
+              (click)="cambiarFiltro('conPeso')"
+              [class]="filtroActivo() === 'conPeso' ? 
+                'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+              class="px-3 py-2 rounded text-sm transition-colors duration-200">
+              Con Peso
+            </button>
+            <button 
+              (click)="cambiarFiltro('sinPeso')"
+              [class]="filtroActivo() === 'sinPeso' ? 
+                'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'"
+              class="px-3 py-2 rounded text-sm transition-colors duration-200">
+              Corporal
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumen de filtros -->
+      <div class="mt-4 text-sm text-gray-600">
+        Mostrando <strong>{{ ejerciciosFiltrados().length }}</strong> ejercicios
+        @if (filtroActivo() !== 'todos' || busquedaNombre()) {
+          <span> • Filtro: {{ obtenerTextoFiltro() }}</span>
+          @if (busquedaNombre()) {
+            <span> • Búsqueda: "{{ busquedaNombre() }}"</span>
+          }
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Lista de ejercicios -->
+  @if (!ejercicioService.loading() && ejerciciosFiltrados().length > 0) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (ejercicio of ejerciciosFiltrados(); track ejercicio.id) {
+        <div class="bg-white rounded-lg p-5 shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-200">
+          
+          <!-- Header del ejercicio -->
+          <div class="flex justify-between items-start mb-3">
+            <h3 class="text-lg font-semibold text-gray-800 flex-1 mr-2">
+              <span class="block truncate">{{ ejercicio.nombre }}</span>
+            </h3>
+            <span 
+              [class]="obtenerClasePeso(ejercicio.peso)"
+              class="px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0">
+              {{ formatearPeso(ejercicio.peso) }}
+            </span>
+          </div>
+
+          <!-- Descripción -->
+          @if (ejercicio.descripcion) {
+            <p class="text-sm text-gray-600 mb-4 h-12 overflow-hidden">{{ ejercicio.descripcion }}</p>
+          }
+
+          <!-- Detalles del ejercicio -->
+          <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
+            <div class="bg-gray-50 p-2 rounded">
+              <span class="font-semibold text-gray-700">Series:</span>
+              <span class="text-blue-600 ml-1">{{ ejercicio.series }}</span>
+            </div>
+            <div class="bg-gray-50 p-2 rounded">
+              <span class="font-semibold text-gray-700">Reps:</span>
+              <span class="text-green-600 ml-1">{{ ejercicio.repeticiones }}</span>
+            </div>
+            <div class="bg-gray-50 p-2 rounded col-span-2">
+              <span class="font-semibold text-gray-700">Descanso:</span>
+              <span class="text-purple-600 ml-1">{{ formatearDescanso(ejercicio.descansoSegundos) }}</span>
+            </div>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="flex flex-wrap gap-2">
+            <button 
+              (click)="abrirFormularioEditar(ejercicio)"
+              class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm rounded transition-colors duration-200">
+              Editar
+            </button>
+            <button 
+              (click)="duplicarEjercicio(ejercicio)"
+              class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm rounded transition-colors duration-200">
+              Duplicar
+            </button>
+            <button 
+              (click)="eliminarEjercicio(ejercicio)"
+              class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 text-sm rounded transition-colors duration-200">
+              🗑️
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Estado vacío -->
+  @if (!ejercicioService.loading() && ejerciciosFiltrados().length === 0) {
+    <div class="text-center py-16 px-5 bg-gray-100 rounded-lg">
+      @if (totalEjercicios() === 0) {
+        <h3 class="text-xl font-semibold text-gray-600 mb-2">No hay ejercicios creados</h3>
+        <p class="text-gray-500 mb-6">Comienza creando tu primera biblioteca de ejercicios</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <button 
+            (click)="abrirFormularioCrear()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200">
+            Crear Primer Ejercicio
+          </button>
+          <button 
+            (click)="crearEjerciciosEjemplo()"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors duration-200">
+            Cargar Ejercicios de Ejemplo
+          </button>
+        </div>
+      } @else {
+        <h3 class="text-xl font-semibold text-gray-600 mb-2">No se encontraron ejercicios</h3>
+        <p class="text-gray-500 mb-6">Prueba cambiando los filtros o el término de búsqueda</p>
+        <button 
+          (click)="cambiarFiltro('todos'); busquedaNombre.set('')"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200">
+          Limpiar Filtros
+        </button>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- Modal de formulario -->
+@if (mostrarFormulario()) {
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4" (click)="cerrarFormulario()">
+    <div class="bg-white rounded-lg w-full max-w-2xl max-h-screen overflow-y-auto" (click)="$event.stopPropagation()">
+      
+      <header class="flex justify-between items-center p-5 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-800">
+          {{ ejercicioEditando() ? 'Editar Ejercicio' : 'Nuevo Ejercicio' }}
+        </h2>
+        <button 
+          (click)="cerrarFormulario()" 
+          class="text-gray-500 hover:text-gray-700 text-2xl font-bold bg-none border-none cursor-pointer">
+          ×
+        </button>
+      </header>
+      
+      <form (submit)="guardarEjercicio(); $event.preventDefault()" class="p-5">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          
+          <!-- Nombre -->
+          <div class="md:col-span-2">
+            <label for="nombre" class="block mb-2 font-semibold text-gray-700">Nombre del Ejercicio *</label>
+            <input 
+              id="nombre"
+              name="nombre"
+              type="text" 
+              [(ngModel)]="nombre" 
+              placeholder="Ej: Press de Banca"
+              required
+              class="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-gray-900 placeholder-gray-400 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-400">
+          </div>
+
+          <!-- Descripción -->
+          <div class="md:col-span-2">
+            <label for="descripcion" class="block mb-2 font-semibold text-gray-700">Descripción</label>
+            <textarea 
+              id="descripcion"
+              name="descripcion"
+              [(ngModel)]="descripcion" 
+              placeholder="Describe la técnica y músculos trabajados..."
+              rows="3"
+              class="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-vertical bg-white text-gray-900 placeholder-gray-400 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-400">
+            </textarea>
+          </div>
+
+          <!-- Series -->
+          <div>
+            <label for="series" class="block mb-2 font-semibold text-gray-700">Series *</label>
+            <input 
+              id="series"
+              name="series"
+              type="number" 
+              [(ngModel)]="series" 
+              min="1"
+              max="10"
+              required
+              class="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-gray-900 placeholder-gray-400 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-400">
+          </div>
+
+          <!-- Repeticiones -->
+          <div>
+            <label for="repeticiones" class="block mb-2 font-semibold text-gray-700">Repeticiones *</label>
+            <input 
+              id="repeticiones"
+              name="repeticiones"
+              type="number" 
+              [(ngModel)]="repeticiones" 
+              min="1"
+              max="100"
+              required
+              class="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-gray-900 placeholder-gray-400 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-400">
+          </div>
+
+          <!-- Peso -->
+          <div>
+            <label for="peso" class="block mb-2 font-semibold text-gray-700">Peso (kg)</label>
+            <input 
+              id="peso"
+              name="peso"
+              type="number" 
+              [(ngModel)]="peso" 
+              min="0"
+              max="500"
+              step="0.5"
+              placeholder="0 = Peso corporal"
+              class="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-gray-900 placeholder-gray-400 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-400">
+          </div>
+
+          <!-- Descanso -->
+          <div>
+            <label for="descansoSegundos" class="block mb-2 font-semibold text-gray-700">Descanso (segundos)</label>
+            <input 
+              id="descansoSegundos"
+              name="descansoSegundos"
+              type="number" 
+              [(ngModel)]="descansoSegundos" 
+              min="0"
+              max="600"
+              step="15"
+              class="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white text-gray-900 placeholder-gray-400 dark:bg-gray-900 dark:text-gray-100 dark:placeholder-gray-400">
+          </div>
+
+        </div>
+
+        <!-- Botones -->
+        <div class="flex gap-3 justify-end mt-6 pt-4 border-t border-gray-200">
+          <button 
+            type="submit" 
+            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md transition-colors duration-200">
+            {{ ejercicioEditando() ? 'Actualizar' : 'Crear' }} Ejercicio
+          </button>
+          <button 
+            type="button" 
+            (click)="cerrarFormulario()" 
+            class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-md transition-colors duration-200">
+            Cancelar
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+}

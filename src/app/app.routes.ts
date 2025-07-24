@@ -44,8 +44,14 @@ export const routes: Routes = [
       {
         path: 'gimnasio',
         loadChildren: () => import('./gimnasios/gimnasios-routes').then(m => m.default),
-        canActivate: [roleGuard([Rol.ADMIN, Rol.ENTRENADOR_ADMIN]),onBoardingGuard]
+        canActivate: [roleGuard([Rol.GIMNASIO, Rol.PERSONAL_TRAINER]), onBoardingGuard]
+      },
+      {
+        path: 'personal-trainer',
+        loadChildren: () => import('./personal-trainers/personal-trainer-routes').then(m => m.default),
+        canActivate: [roleGuard([Rol.PERSONAL_TRAINER]), onBoardingGuard]
       }
+
     ]
   },
 

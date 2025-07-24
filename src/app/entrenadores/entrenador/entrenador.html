@@ -1,1 +1,30 @@
-<p>entrenador works!</p>
+<div class="max-w-4xl mx-auto p-6">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">Panel de Entrenador</h1>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Rutinas -->
+    <a routerLink="/entrenador/rutinas" class="block bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg p-6 shadow transition-all duration-200">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-blue-600 text-2xl">📋</span>
+        <span class="text-lg font-semibold text-blue-800">Rutinas</span>
+      </div>
+      <p class="text-gray-600 text-sm">Gestiona y asigna rutinas a tus clientes.</p>
+    </a>
+    <!-- Ejercicios -->
+    <a routerLink="/entrenador/ejercicios" class="block bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg p-6 shadow transition-all duration-200">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-green-600 text-2xl">🏋️‍♂️</span>
+        <span class="text-lg font-semibold text-green-800">Ejercicios</span>
+      </div>
+      <p class="text-gray-600 text-sm">Crea y administra tu biblioteca de ejercicios.</p>
+    </a>
+    <!-- Clientes -->
+    <a routerLink="/entrenador/clientes" class="block bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-lg p-6 shadow transition-all duration-200">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-yellow-600 text-2xl">🧑‍🤝‍🧑</span>
+        <span class="text-lg font-semibold text-yellow-800">Clientes</span>
+      </div>
+      <p class="text-gray-600 text-sm">Visualiza y gestiona tus clientes asignados.</p>
+    </a>
+    
+  </div>
+</div>

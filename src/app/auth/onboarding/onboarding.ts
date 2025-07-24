@@ -55,11 +55,10 @@ export class Onboarding {
           this.objetivo()!
         );
       } else {
-
         await this.auth.completarOnboarding(
           this.nombre(),
           this.rol()!,
-          Object.values(Objetivo)[0]
+          null // No enviar objetivo para otros roles
         );
       }
     } catch (e) {
