@@ -44,4 +44,39 @@
     }
 
   </div>
+  <!-- Listado de invitaciones -->
+  <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow p-6">
+      <h3 class="text-lg font-bold mb-4 text-blue-700 dark:text-blue-300">Invitaciones pendientes</h3>
+      <ul *ngIf="invitacionesPendientes().length; else noPendientes">
+        <li *ngFor="let inv of invitacionesPendientes()" class="border-b border-zinc-200 dark:border-zinc-700 py-2">
+          <span class="font-medium">{{ inv.email }}</span>
+          <span class="ml-2 text-xs text-gray-500">({{ inv.tipo }})</span>
+          <span class="ml-2 text-xs text-gray-400">
+            Enviada:
+            {{ inv.fechaEnvio | toDate | date:'short' }}
+          </span>
+        </li>
+      </ul>
+      <ng-template #noPendientes>
+        <div class="text-gray-500 text-sm">No hay invitaciones pendientes.</div>
+      </ng-template>
+    </div>
+    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow p-6">
+      <h3 class="text-lg font-bold mb-4 text-green-700 dark:text-green-300">Invitaciones aceptadas</h3>
+      <ul *ngIf="invitacionesAceptadas().length; else noAceptadas">
+        <li *ngFor="let inv of invitacionesAceptadas()" class="border-b border-zinc-200 dark:border-zinc-700 py-2">
+          <span class="font-medium">{{ inv.email }}</span>
+          <span class="ml-2 text-xs text-gray-500">({{ inv.tipo }})</span>
+          <span class="ml-2 text-xs text-gray-400">
+            Aceptada:
+            {{ inv.fechaRespuesta | toDate | date:'short' }}
+          </span>
+        </li>
+      </ul>
+      <ng-template #noAceptadas>
+        <div class="text-gray-500 text-sm">No hay invitaciones aceptadas.</div>
+      </ng-template>
+    </div>
+  </div>
 </div>

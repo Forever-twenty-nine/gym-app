@@ -1,11 +1,4 @@
-import {
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, DestroyRef,  effect,  inject,} from '@angular/core';
 import { NotificacionesService } from '../../services/notificaciones.service';
 import { UserService } from '../../services/user.service';
 import { Rol } from '../../enums/rol.enum';
@@ -14,10 +7,10 @@ import { Rol } from '../../enums/rol.enum';
 /** 🔔 Componente que muestra notificaciones de invitaciones */
 @Component({
   selector: 'app-notificaciones',
-  standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './notificaciones.html',
 })
+
 export class Notificaciones {
   private readonly notificacionesService = inject(NotificacionesService);
   private readonly userService = inject(UserService);
