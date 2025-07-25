@@ -1,5 +1,5 @@
 # Archivos de entorno Angular
-src/environments/environment.ts
+src/enviroments/environment.ts
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
@@ -43,10 +43,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
-src/app/enviroments/enviroment.ts
-
 # www folder
 /www
 
 # Documentation
 /docs/
+
