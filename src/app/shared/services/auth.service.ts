@@ -89,10 +89,10 @@ export class AuthService {
     await runInInjectionContext(this.injector, async () => {
       await setDoc(doc(this.firestore, 'users', uid), perfil);
     });
-    this.userService.setUsuario(perfil);
+    await this.userService.initUsuarioSeguro(perfil);
+
     this.router.navigateByUrl('/onboarding');
   }
-
 
   // 4️⃣ Completar onboarding: asignar nombre y rol al usuario
   async completarOnboarding(nombre: string, rol: Rol, objetivo: Objetivo | null) {
@@ -118,12 +118,12 @@ export class AuthService {
         },
         [Rol.GIMNASIO]: {
           roles: [Rol.GIMNASIO],
-          permisos: [Permiso.GESTIONAR_USUARIOS],
+          permisos: [Permiso.GESTIONAR_CLIENTES, Permiso.GESTIONAR_ENTRENADORES],
           gimnasioId: uid,
         },
         [Rol.PERSONAL_TRAINER]: {
           roles: [Rol.PERSONAL_TRAINER],
-          permisos: [Permiso.GESTIONAR_USUARIOS, Permiso.CREAR_RUTINAS],
+          permisos: [Permiso.GESTIONAR_CLIENTES, Permiso.CREAR_RUTINAS],
           entrenadorId: uid,
           gimnasioId: uid,
         },
@@ -141,9 +141,7 @@ export class AuthService {
       if (rol === Rol.CLIENTE && objetivo) {
         (perfil as any).objetivo = objetivo;
       }
-
-      await setDoc(doc(this.firestore, 'users', uid), perfil);
-      this.userService.setUsuario(perfil);
+      await this.userService.initUsuarioSeguro(perfil);
       this.redirectToSection(perfil);
     });
   }
@@ -183,10 +181,8 @@ export class AuthService {
       await setDoc(ref, perfil);
     }
 
-    this.userService.setUsuario(perfil);
+    await this.userService.initUsuarioSeguro(perfil);
     this.usuarioSignal.set(perfil);
-
-    this.userService.setUsuario(perfil);
 
     if (this.needsOnboarding(perfil)) {
       this.router.navigateByUrl('/onboarding');

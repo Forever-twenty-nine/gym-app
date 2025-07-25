@@ -6,26 +6,12 @@ import { IonToast } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, IonToast],
-  templateUrl: './app.html'
+  templateUrl: './app.html',
+  styleUrls: ['./ionic-styles.css']
 
 })
 export class App {
 
   toast = inject(ToastService);
-
-  onDismiss() {
-    this.toast.clear();
-  }
-
-  getColor(type: 'success' | 'error' | 'info' | 'warning' | undefined) {
-    switch (type) {
-      case 'success': return 'success';
-      case 'error': return 'danger';
-      case 'info': return 'primary';
-      case 'warning': return 'warning';
-      default: return 'primary';
-    }
-  }
-
 
 }

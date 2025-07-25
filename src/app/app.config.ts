@@ -1,12 +1,12 @@
-import { ApplicationConfig, provideZoneChangeDetection, isDevMode } from '@angular/core';
-import { provideRouter, withDebugTracing, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
+import { ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
+import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-import { environment } from './enviroments/enviroment'; 
+import { environment } from '../environments/environment'; 
 
 export const appConfig: ApplicationConfig = {
   providers: [

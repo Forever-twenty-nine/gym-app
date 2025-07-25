@@ -1,25 +1,38 @@
 import { Injectable, signal } from '@angular/core';
 
-type ToastType = 'success' | 'error' | 'info' | 'warning';
-
-interface ToastMessage {
-    text: string;
-    type: ToastType;
-}
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
-    private _toast = signal<ToastMessage | null>(null);
+    private _message = signal<string | null>(null);
+    private _type = signal<ToastType>('info');
 
-    show(text: string, type: ToastType = 'info', duration = 3000) {
-        this._toast.set({ text, type });
-        setTimeout(() => this._toast.set(null), duration);
+    show(message: string, type: ToastType = 'info', duration = 3000) {
+        this._message.set(message);
+        this._type.set(type);
+        setTimeout(() => this.clear(), duration);
     }
+
     clear() {
-        this._toast.set(null);
+        this._message.set(null);
     }
 
     get message() {
-        return this._toast.asReadonly();
+        return this._message.asReadonly();
+    }
+
+    get type() {
+        return this._type.asReadonly();
+    }
+
+    get color() {
+        const t = this._type();
+        switch (t) {
+            case 'success': return 'success';
+            case 'error': return 'danger';
+            case 'warning': return 'warning';
+            case 'info':
+            default: return 'primary';
+        }
     }
 }

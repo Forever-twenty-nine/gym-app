@@ -1,3 +1,5 @@
+# Archivos de entorno Angular
+src/environments/environment.ts
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
@@ -45,3 +47,6 @@ src/app/enviroments/enviroment.ts
 
 # www folder
 /www
+
+# Documentation
+/docs/
