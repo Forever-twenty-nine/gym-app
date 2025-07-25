@@ -1,26 +1,64 @@
-import { Component, inject, computed } from '@angular/core';
-import { InvitacionesService } from '../../services/invitaciones.service';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NotificacionesService } from '../../services/notificaciones.service';
+import { UserService } from '../../services/user.service';
+import { Rol } from '../../enums/rol.enum';
 
+
+/** 🔔 Componente que muestra notificaciones de invitaciones */
 @Component({
   selector: 'app-notificaciones',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './notificaciones.html',
 })
 export class Notificaciones {
-  // Simula el email del usuario actual
-  emailUsuario: string = 'usuario@email.com';
-  tipo: 'cliente' | 'entrenador' = 'cliente'; // Cambia según el tipo de usuario
+  private readonly notificacionesService = inject(NotificacionesService);
+  private readonly userService = inject(UserService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  private invitacionesService = inject(InvitacionesService);
+  /** 📩 Invitaciones pendientes (signal reactiva) */
+  readonly invitaciones = this.notificacionesService.invitaciones;
 
-  invitaciones = computed(() => this.invitacionesService.invitacionesPorEmail(this.emailUsuario, this.tipo)());
+  /** 🧠 Email y tipo del usuario actual (computed) */
+  readonly emailUsuario = computed(() => this.userService.getUsuarioActual()?.email ?? '');
+  readonly tipoUsuario = computed<'cliente' | 'entrenador'>(() => {
+    const roles = this.userService.getUsuarioActual()?.roles ?? [];
+    if (roles.includes(Rol.CLIENTE)) return 'cliente';
 
-  async aceptarInvitacion(id?: string) {
-    if (!id) return;
-    await this.invitacionesService.responderInvitacion(id, 'aceptada');
+    return 'entrenador';
+  });
+
+  constructor() {
+    // 🔁 Escucha invitaciones al cargar y limpia automáticamente
+    effect(() => {
+      const email = this.emailUsuario();
+      const tipo = this.tipoUsuario();
+
+      if (email && tipo) {
+        this.notificacionesService.escucharInvitaciones(email, tipo);
+      }
+
+      return () => {
+        this.notificacionesService.limpiar();
+      };
+    });
+
   }
 
-  async rechazarInvitacion(id?: string) {
-    if (!id) return;
-    await this.invitacionesService.responderInvitacion(id, 'rechazada');
+  /** ✅ Aceptar invitación */
+  async aceptarInvitacion(invitacion: any) {
+    await this.notificacionesService.responderInvitacion(invitacion, 'aceptada');
+  }
+
+  /** ❌ Rechazar invitación */
+  async rechazarInvitacion(invitacion: any) {
+    await this.notificacionesService.responderInvitacion(invitacion, 'rechazada');
   }
 }

@@ -1,6 +1,6 @@
 export interface Invitacion {
   id?: string;
-  gimnasioId: string;
+  invitadorId: string
   email: string;
   tipo: 'cliente' | 'entrenador';
   estado: 'pendiente' | 'aceptada' | 'rechazada';

@@ -2,6 +2,9 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InvitacionesService } from '../../services/invitaciones.service';
+import { UserService } from '../../services/user.service';
+import { Permiso } from '../../enums/permiso.enum';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-invitaciones',
@@ -13,24 +16,43 @@ import { InvitacionesService } from '../../services/invitaciones.service';
 export class Invitaciones {
   emailCliente = '';
   emailEntrenador = '';
-  permisosUsuario: string[] = ['gestionar_usuarios'];
-  gimnasioId = 'gim1'; 
 
   invitacionesService = inject(InvitacionesService);
+  userService = inject(UserService);
+  toast = inject(ToastService);
+
+  permisoGestionarClientes = this.userService.tienePermiso(Permiso.GESTIONAR_CLIENTES);
+  permisoGestionarEntrenadores = this.userService.tienePermiso(Permiso.GESTIONAR_ENTRENADORES);
 
   async enviarInvitacionCliente() {
-    await this.invitacionesService.enviarInvitacion(
-      { email: this.emailCliente, gimnasioId: this.gimnasioId, tipo: 'cliente' },
-      this.permisosUsuario
-    );
+    const invitadorId = this.userService.idInvitador();
+    if (!invitadorId) {
+      this.toast.show('❌ No se pudo determinar el ID del invitador', 'error');
+      return;
+    }
+
+    await this.invitacionesService.enviarInvitacion({
+      email: this.emailCliente,
+      invitadorId: invitadorId,
+      tipo: 'cliente'
+    });
+
     this.emailCliente = '';
   }
 
   async enviarInvitacionEntrenador() {
-    await this.invitacionesService.enviarInvitacion(
-      { email: this.emailEntrenador, gimnasioId: this.gimnasioId, tipo: 'entrenador' },
-      this.permisosUsuario
-    );
+    const gimnasioId = this.userService.gimnasioId();
+    if (!gimnasioId) {
+      this.toast.show('❌ No se pudo determinar el ID del gimnasio', 'error');
+      return;
+    }
+
+    await this.invitacionesService.enviarInvitacion({
+      email: this.emailEntrenador,
+      invitadorId: gimnasioId,
+      tipo: 'entrenador'
+    });
+
     this.emailEntrenador = '';
   }
 }
