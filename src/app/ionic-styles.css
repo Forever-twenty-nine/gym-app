@@ -80,6 +80,7 @@ ion-button.gym-btn-outline {
   --color: black;
   text-transform: initial;
 }
+/* revisar nati!!!!!! */
 ion-toast::part(container) {
   color: white !important;
   font-weight: 500;

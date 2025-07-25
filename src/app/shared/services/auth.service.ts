@@ -156,6 +156,16 @@ export class AuthService {
     return runInInjectionContext(this.injector, async () => {
       await signOut(this.auth);
       this.userService.logout();
+      // Limpia listeners de notificaciones para evitar errores de permisos
+      try {
+        const notificacionesService = this.injector.get<any>(
+          // Evita error de import circular
+          (await import('./notificaciones.service')).NotificacionesService
+        );
+        notificacionesService.limpiar();
+      } catch (e) {
+        // Ignora si no está disponible
+      }
       this.router.navigateByUrl('/auth/login');
     });
   }
