@@ -3,7 +3,7 @@ import { ProgresoEjercicio } from "./progreso.model";
 
 export interface RutinaCliente {
     id: string;
-    plantillaRutinaId: string;
+    plantillaRutinaId?: string;
     clienteId: string;
     nombre: string;
     fechaAsignacion: Date;

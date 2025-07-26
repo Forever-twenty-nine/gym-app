@@ -8,7 +8,7 @@ import { EjercicioRutina } from '../../models/ejercicio.model';
   imports: [FormsModule],
   templateUrl: './ejercicios.html'
 })
-export class Ejercicios implements OnInit, OnDestroy {
+ export class Ejercicios {
 
   public ejercicioService = inject(EjercicioService);
   
@@ -34,18 +34,14 @@ export class Ejercicios implements OnInit, OnDestroy {
     const ejercicios = this.ejercicioService.ejercicios();
     const filtro = this.filtroActivo();
     const busqueda = this.busquedaNombre().trim().toLowerCase();
-
     let resultado = ejercicios;
 
-    // Filtrar por nombre si hay búsqueda
     if (busqueda) {
       resultado = resultado.filter(ejercicio => 
         ejercicio.nombre.toLowerCase().includes(busqueda) ||
         (ejercicio.descripcion && ejercicio.descripcion.toLowerCase().includes(busqueda))
       );
     }
-
-    // Filtrar por categoría
     switch (filtro) {
       case 'conPeso':
         resultado = resultado.filter(e => e.peso && e.peso > 0);
@@ -53,25 +49,11 @@ export class Ejercicios implements OnInit, OnDestroy {
       case 'sinPeso':
         resultado = resultado.filter(e => !e.peso || e.peso === 0);
         break;
-      // 'todos' no necesita filtro adicional
     }
-
     return resultado.sort((a, b) => a.nombre.localeCompare(b.nombre));
   });
 
-  // Signals computados para estadísticas
-  totalEjercicios = computed(() => this.ejercicioService.ejercicios().length);
-  ejerciciosConPeso = computed(() => this.ejercicioService.ejerciciosConPeso().length);
-  ejerciciosSinPeso = computed(() => this.ejercicioService.ejerciciosSinPeso().length);
-  estadisticas = this.ejercicioService.estadisticasEjercicios;
-
-  ngOnInit() {
-    // Los ejercicios se cargan automáticamente por el servicio
-  }
-
-  ngOnDestroy() {
-    this.busquedaListener?.cleanup();
-  }
+  // ...existing code...
 
   /**
    * Cambia el filtro activo
@@ -144,31 +126,24 @@ export class Ejercicios implements OnInit, OnDestroy {
    */
   async guardarEjercicio() {
     const ejercicioEditando = this.ejercicioEditando();
+    const datosEjercicio = {
+      nombre: this.nombre(),
+      descripcion: this.descripcion(),
+      series: this.series(),
+      repeticiones: this.repeticiones(),
+      peso: this.peso(),
+      descansoSegundos: this.descansoSegundos()
+    };
 
-    try {
-      const datosEjercicio = {
-        nombre: this.nombre(),
-        descripcion: this.descripcion(),
-        series: this.series(),
-        repeticiones: this.repeticiones(),
-        peso: this.peso(),
-        descansoSegundos: this.descansoSegundos()
-      };
-
-      if (ejercicioEditando) {
-        // Actualizar ejercicio existente
-        await this.ejercicioService.actualizarEjercicio(ejercicioEditando.id, datosEjercicio);
-        console.log('Ejercicio actualizado exitosamente');
-      } else {
-        // Crear nuevo ejercicio
-        await this.ejercicioService.crearEjercicio(datosEjercicio);
-        console.log('Ejercicio creado exitosamente');
-      }
-
-      this.cerrarFormulario();
-    } catch (error) {
-      console.error('Error al guardar ejercicio:', error);
+    if (ejercicioEditando) {
+      // Actualizar ejercicio existente
+      await this.ejercicioService.actualizarEjercicio(ejercicioEditando.id, datosEjercicio);
+    } else {
+      // Crear nuevo ejercicio
+      await this.ejercicioService.crearEjercicio(datosEjercicio);
     }
+
+    this.cerrarFormulario();
   }
 
   /**
@@ -176,14 +151,8 @@ export class Ejercicios implements OnInit, OnDestroy {
    */
   async eliminarEjercicio(ejercicio: EjercicioRutina) {
     const confirmar = confirm(`¿Eliminar el ejercicio "${ejercicio.nombre}"?`);
-    
     if (confirmar) {
-      try {
-        await this.ejercicioService.eliminarEjercicio(ejercicio.id);
-        console.log('Ejercicio eliminado exitosamente');
-      } catch (error) {
-        console.error('Error al eliminar ejercicio:', error);
-      }
+      await this.ejercicioService.eliminarEjercicio(ejercicio.id);
     }
   }
 
@@ -191,87 +160,10 @@ export class Ejercicios implements OnInit, OnDestroy {
    * Duplica un ejercicio existente
    */
   async duplicarEjercicio(ejercicio: EjercicioRutina) {
-    try {
-      await this.ejercicioService.duplicarEjercicio(ejercicio.id);
-      console.log('Ejercicio duplicado exitosamente');
-    } catch (error) {
-      console.error('Error al duplicar ejercicio:', error);
-    }
+    await this.ejercicioService.duplicarEjercicio(ejercicio.id);
   }
 
-  /**
-   * Crea ejercicios de ejemplo
-   */
-  async crearEjerciciosEjemplo() {
-    const ejerciciosEjemplo: Omit<EjercicioRutina, 'id'>[] = [
-      {
-        nombre: 'Press de Banca',
-        descripcion: 'Ejercicio para pecho y tríceps',
-        series: 3,
-        repeticiones: 10,
-        peso: 60,
-        descansoSegundos: 90
-      },
-      {
-        nombre: 'Sentadillas',
-        descripcion: 'Ejercicio para piernas y glúteos',
-        series: 4,
-        repeticiones: 12,
-        peso: 40,
-        descansoSegundos: 120
-      },
-      {
-        nombre: 'Flexiones',
-        descripcion: 'Ejercicio de peso corporal para pecho',
-        series: 3,
-        repeticiones: 15,
-        peso: 0,
-        descansoSegundos: 60
-      },
-      {
-        nombre: 'Dominadas',
-        descripcion: 'Ejercicio de peso corporal para espalda',
-        series: 3,
-        repeticiones: 8,
-        peso: 0,
-        descansoSegundos: 90
-      },
-      {
-        nombre: 'Peso Muerto',
-        descripcion: 'Ejercicio compuesto para toda la cadena posterior',
-        series: 3,
-        repeticiones: 8,
-        peso: 80,
-        descansoSegundos: 180
-      }
-    ];
-
-    try {
-      await this.ejercicioService.crearEjerciciosEnLote(ejerciciosEjemplo);
-      console.log('Ejercicios de ejemplo creados exitosamente');
-    } catch (error) {
-      console.error('Error al crear ejercicios de ejemplo:', error);
-    }
-  }
-
-  /**
-   * Limpia todos los ejercicios
-   */
-  async limpiarTodosEjercicios() {
-    const confirmar = confirm('¿Estás seguro de que quieres eliminar TODOS los ejercicios? Esta acción no se puede deshacer.');
-    
-    if (confirmar) {
-      try {
-        const ejercicios = this.ejercicioService.ejercicios();
-        for (const ejercicio of ejercicios) {
-          await this.ejercicioService.eliminarEjercicio(ejercicio.id);
-        }
-        console.log('Todos los ejercicios eliminados');
-      } catch (error) {
-        console.error('Error al eliminar ejercicios:', error);
-      }
-    }
-  }
+  // ...existing code...
 
   /**
    * Obtiene la clase CSS para el badge de peso

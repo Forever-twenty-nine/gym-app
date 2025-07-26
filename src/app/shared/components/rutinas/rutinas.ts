@@ -1,4 +1,3 @@
-
 import { Component, inject, signal, computed, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RutinaService } from '../../services/rutina.service';
@@ -6,6 +5,7 @@ import { EjercicioService } from '../../services/ejercicio.service';
 import { RutinaCliente } from '../../models/rutina.model';
 import { EjercicioRutina } from '../../models/ejercicio.model';
 import { AuthService } from '../../services/auth.service';
+import { ClienteService } from '../../services/cliente.service';
 
 @Component({
   selector: 'app-rutinas',
@@ -13,10 +13,16 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './rutinas.html'
 })
 export class Rutinas {
-
-  permisos = signal<string[]>([]);
-
+  private clienteService = inject(ClienteService);
   private authService = inject(AuthService);
+  private permisos = signal<string[]>([]);
+
+  clientesDisponibles = computed(() => {
+    const gimnasioId = this.gimnasioId();
+    if (!gimnasioId) return [];
+    const clientesPorGimnasio = this.clienteService.clientesPorGimnasio(gimnasioId);
+    return clientesPorGimnasio ? clientesPorGimnasio() : [];
+  });
 
   tienePermisoCrearRutinas(): boolean {
     return this.permisos().includes('crear_rutinas');
@@ -47,7 +53,7 @@ export class Rutinas {
   // Datos del formulario
   nombre = signal<string>('');
   clienteId = signal<string>('');
-  plantillaRutinaId = signal<string>('');
+  // plantillaRutinaId eliminado
   gimnasioId = signal<string>('');
   activa = signal<boolean>(true);
   ejerciciosSeleccionados = signal<EjercicioRutina[]>([]);
@@ -111,7 +117,7 @@ export class Rutinas {
   limpiarFormulario() {
     this.nombre.set('');
     this.clienteId.set('');
-    this.plantillaRutinaId.set('');
+    // this.plantillaRutinaId eliminado
     this.gimnasioId.set('');
     this.activa.set(true);
     this.ejerciciosSeleccionados.set([]);
@@ -120,7 +126,7 @@ export class Rutinas {
   cargarDatosFormulario(rutina: RutinaCliente) {
     this.nombre.set(rutina.nombre);
     this.clienteId.set(rutina.clienteId);
-    this.plantillaRutinaId.set(rutina.plantillaRutinaId);
+    // this.plantillaRutinaId eliminado
     this.gimnasioId.set(rutina.gimnasioId || '');
     this.activa.set(rutina.activa);
     this.ejerciciosSeleccionados.set(rutina.ejercicios || []);
@@ -136,7 +142,7 @@ export class Rutinas {
         await this.rutinaService.actualizarRutina(rutinaEditando.id, {
           nombre: this.nombre(),
           clienteId: this.clienteId(),
-          plantillaRutinaId: this.plantillaRutinaId(),
+          // plantillaRutinaId eliminado
           gimnasioId: this.gimnasioId(),
           activa: this.activa(),
           ejercicios
@@ -146,7 +152,6 @@ export class Rutinas {
       } else {
         // Crear nueva rutina
         await this.rutinaService.asignarRutinaACliente(
-          this.plantillaRutinaId(),
           this.clienteId(),
           this.nombre(),
           ejercicios,
@@ -190,7 +195,7 @@ export class Rutinas {
   async duplicarRutina(rutina: RutinaCliente) {
     try {
       await this.rutinaService.asignarRutinaACliente(
-        rutina.plantillaRutinaId,
+        // rutina.plantillaRutinaId eliminado
         rutina.clienteId,
         `${rutina.nombre} (Copia)`,
         rutina.ejercicios,

@@ -12,23 +12,6 @@
         Nuevo Ejercicio
       </button>
     </div>
-  <!-- Botones de desarrollo al final de la página -->
-  <div class="fixed bottom-0 left-0 w-full flex justify-center z-40 pointer-events-none">
-    <div class="flex gap-2 mb-4 pointer-events-auto">
-      <button 
-        (click)="crearEjerciciosEjemplo()"
-        title="Crear ejercicios de ejemplo"
-        class="bg-yellow-500 hover:bg-yellow-700 text-white p-2 rounded-full transition-colors duration-200 flex items-center text-lg shadow-md">
-        <span>🧪</span>
-      </button>
-      <button 
-        (click)="limpiarTodosEjercicios()"
-        title="Limpiar todos los ejercicios"
-        class="bg-yellow-500 hover:bg-yellow-700 text-white p-2 rounded-full transition-colors duration-200 flex items-center text-lg shadow-md">
-        <span>🧹</span>
-      </button>
-    </div>
-  </div>
   </header>
 
   <!-- Loading state -->
@@ -45,35 +28,7 @@
     </div>
   }
 
-  <!-- Estadísticas -->
-  @if (!ejercicioService.loading()) {
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
-      <div class="bg-white p-4 rounded-lg shadow-md text-center">
-        <h3 class="text-2xl font-bold mb-1 text-blue-600">{{ totalEjercicios() }}</h3>
-        <p class="text-sm text-gray-600">Total</p>
-      </div>
-      <div class="bg-white p-4 rounded-lg shadow-md text-center">
-        <h3 class="text-2xl font-bold mb-1 text-green-600">{{ ejerciciosConPeso() }}</h3>
-        <p class="text-sm text-gray-600">Con Peso</p>
-      </div>
-      <div class="bg-white p-4 rounded-lg shadow-md text-center">
-        <h3 class="text-2xl font-bold mb-1 text-gray-500">{{ ejerciciosSinPeso() }}</h3>
-        <p class="text-sm text-gray-600">Corporal</p>
-      </div>
-      <div class="bg-white p-4 rounded-lg shadow-md text-center">
-        <h3 class="text-2xl font-bold mb-1 text-purple-600">{{ estadisticas().promedioSeries }}</h3>
-        <p class="text-sm text-gray-600">Avg Series</p>
-      </div>
-      <div class="bg-white p-4 rounded-lg shadow-md text-center">
-        <h3 class="text-2xl font-bold mb-1 text-orange-600">{{ estadisticas().promedioRepeticiones }}</h3>
-        <p class="text-sm text-gray-600">Avg Reps</p>
-      </div>
-      <div class="bg-white p-4 rounded-lg shadow-md text-center">
-        <h3 class="text-2xl font-bold mb-1 text-indigo-600">{{ estadisticas().promedioDescanso }}s</h3>
-        <p class="text-sm text-gray-600">Avg Rest</p>
-      </div>
-    </div>
-  }
+  <!-- ...existing code... -->
 
   <!-- Filtros y búsqueda -->
   @if (!ejercicioService.loading()) {
@@ -199,30 +154,26 @@
   <!-- Estado vacío -->
   @if (!ejercicioService.loading() && ejerciciosFiltrados().length === 0) {
     <div class="text-center py-16 px-5 bg-gray-100 rounded-lg">
-      @if (totalEjercicios() === 0) {
-        <h3 class="text-xl font-semibold text-gray-600 mb-2">No hay ejercicios creados</h3>
-        <p class="text-gray-500 mb-6">Comienza creando tu primera biblioteca de ejercicios</p>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-          <button 
-            (click)="abrirFormularioCrear()"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200">
-            Crear Primer Ejercicio
-          </button>
-          <button 
-            (click)="crearEjerciciosEjemplo()"
-            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors duration-200">
-            Cargar Ejercicios de Ejemplo
-          </button>
-        </div>
-      } @else {
-        <h3 class="text-xl font-semibold text-gray-600 mb-2">No se encontraron ejercicios</h3>
-        <p class="text-gray-500 mb-6">Prueba cambiando los filtros o el término de búsqueda</p>
+      <h3 class="text-xl font-semibold text-gray-600 mb-2">
+        {{ busquedaNombre() || filtroActivo() !== 'todos' ? 'No se encontraron ejercicios' : 'No hay ejercicios creados' }}
+      </h3>
+      <p class="text-gray-500 mb-6">
+        {{ busquedaNombre() || filtroActivo() !== 'todos' ? 'Prueba cambiando los filtros o el término de búsqueda' : 'Comienza creando tu primera biblioteca de ejercicios' }}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
         <button 
-          (click)="cambiarFiltro('todos'); busquedaNombre.set('')"
+          (click)="abrirFormularioCrear()"
           class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200">
-          Limpiar Filtros
+          Crear Ejercicio
         </button>
-      }
+        @if (busquedaNombre() || filtroActivo() !== 'todos') {
+          <button 
+            (click)="cambiarFiltro('todos'); busquedaNombre.set('')"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200">
+            Limpiar Filtros
+          </button>
+        }
+      </div>
     </div>
   }
 

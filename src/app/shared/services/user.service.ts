@@ -5,66 +5,49 @@ import { Permiso } from '../enums/permiso.enum';
 import { doc, setDoc } from 'firebase/firestore';
 import { Firestore } from '@angular/fire/firestore';
 
+// Tipo extendido para uso interno que incluye propiedades adicionales no declaradas en la interfaz User
+type ExtendedUser = User & {
+  gimnasioId?: string;
+  entrenadorId?: string;
+};
+
 const STORAGE_KEY = 'usuario';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   /**
-   * 📦 Señal privada que mantiene el estado del usuario actual (global)
+   * Señal privada que mantiene el estado del usuario actual (global)
    */
-  private readonly _usuario = signal<User | null>(null);
-
-  /**
-   * 📤 Señal pública de solo lectura que expone el usuario actual (reactiva)
-   */
+  private readonly _usuario = signal<ExtendedUser | null>(null);
   readonly usuario = this._usuario.asReadonly();
-
-  /**
-   * ✅ Indica si hay un usuario cargado en memoria (logueado)
-   */
   readonly estaLogueado = computed(() => !!this._usuario());
-
-  /**
-   * 🔄 Inyección de Firestore para operaciones de base de datos
-   */
   private readonly injector = inject(Injector);
-
-
-
-  /**
-   * 📋 Devuelve una lista de etiquetas legibles correspondientes a los roles del usuario actual
-   */
   readonly rolesLegibles = computed(() => {
     const roles = this._usuario()?.roles;
     return roles ? roles.map(rolToLabel) : [];
   });
-
-  /**
-   * 🔍 Devuelve el rol principal del usuario actual (el primero de la lista)
-   */
   readonly permisos = computed(() => this._usuario()?.permisos ?? []);
-
-  tienePermiso = (permiso: Permiso) => this.permisos().includes(permiso);
-
-  tienePermisos = (...permisos: Permiso[]) =>
-    permisos.some(p => this.tienePermiso(p));
+  public tienePermiso = (permiso: Permiso) => this.permisos().includes(permiso);
+  public tienePermisos = (...permisos: Permiso[]) =>
+    permisos.every(p => this.tienePermiso(p));
 
   /**
-   * 🏢 Devuelve el ID del gimnasio asociado al usuario actual (si existe
+   * Devuelve el ID del gimnasio asociado al usuario actual (si existe
    * y es un cliente o entrenador de gimnasio)
    */
-  readonly gimnasioId = computed(() => this._usuario()?.gimnasioId ?? null);
-  readonly entrenadorId = computed(() => this._usuario()?.entrenadorId ?? null);
+  readonly gimnasioId = computed(() => (this._usuario() as ExtendedUser | null)?.gimnasioId ?? null);
+  readonly entrenadorId = computed(() => (this._usuario() as ExtendedUser | null)?.entrenadorId ?? null);
 
   /**
-   * 🧑‍🏫 Devuelve el ID del entrenador asociado al usuario actual (si es un cliente)
+   * Devuelve el ID del gimnasio o entrenador asociado al usuario actual (prioriza gimnasioId si ambos existen)
    */
-  readonly idInvitador = computed(() =>
-    this._usuario()?.gimnasioId ?? this._usuario()?.entrenadorId ?? null
-  );
+  readonly idInvitador = computed(() => {
+    const usuario = this._usuario() as ExtendedUser | null;
+    return usuario?.gimnasioId ?? usuario?.entrenadorId ?? null;
+  });
 
   /**
-   * 🛠️ Constructor del servicio
+   * Constructor del servicio
    *
    * - Restaura el usuario desde localStorage (si existe y es válido)
    * - Configura un efecto reactivo que sincroniza el usuario con localStorage automáticamente
@@ -83,7 +66,7 @@ export class UserService {
   }
 
   /**
-   * 🔄 Intenta restaurar el usuario guardado en localStorage (si es válido)
+   * Intenta restaurar el usuario guardado en localStorage (si es válido)
    */
   private restaurar() {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -100,29 +83,12 @@ export class UserService {
   }
 
   /**
-   * 🔒 Establece el usuario actual de forma segura
-   *
-   * - Normaliza los roles y permisos
-   * - Actualiza la señal reactiva
-   * - Guarda en localStorage
-   *
-   * @param user Usuario a establecer
-   */
-  setUsuario(user: User) {
-    const usuarioNormalizado: User = {
-      ...user,
-      roles: [...(user.roles || [])]
-    };
-    this._usuario.set(usuarioNormalizado);
-  }
-  /**
-   * 🔒 Inicializa el usuario de forma segura, asegurando que el documento exista en Firestore
+   * Inicializa el usuario de forma segura, asegurando que el documento exista en Firestore
    *
    * @param user Usuario a inicializar
    */
-  async initUsuarioSeguro(user: User) {
+  async initUsuarioSeguro(user: User | ExtendedUser) {
     this.setUsuario(user);
-
     await runInInjectionContext(this.injector, async () => {
       const firestore = inject(Firestore);
       const userRef = doc(firestore, 'usuarios', user.uid);
@@ -131,7 +97,7 @@ export class UserService {
   }
 
   /**
-   * 🚪 Cierra sesión del usuario
+   * Cierra sesión del usuario
    *
    * - Borra el usuario actual de memoria
    * - El efecto elimina también el dato de localStorage
@@ -145,27 +111,32 @@ export class UserService {
    *
    * @param nombre Nuevo nombre a asignar
    */
-  cambiarNombre(nombre: string) {
-    const actual = this._usuario();
-    if (!actual) return;
+  // Eliminada propiedad firestore inyectada directamente
 
-    this._usuario.set({ ...actual, nombre });
+  setUsuario(user: User | ExtendedUser) {
+    const usuarioNormalizado: ExtendedUser = {
+      ...user,
+      roles: Array.isArray(user.roles) ? [...user.roles] : [],
+      permisos: Array.isArray(user.permisos) ? [...user.permisos] : []
+    };
+    this._usuario.set(usuarioNormalizado);
   }
 
   /**
-   * 📤 Devuelve el usuario actual de forma sincrónica
-   * 
-   * - No es reactivo
-   * - Útil para lógica imperativa
-   *
-   * @returns Usuario actual o `null` si no hay ninguno
+   * Devuelve el usuario actual de forma sincrónica.
+   * No es reactivo. Útil para lógica imperativa.
+   * @returns {ExtendedUser|null} Usuario actual o null si no hay ninguno
    */
-  getUsuarioActual(): User | null {
+  getUsuarioActual(): ExtendedUser | null {
     return this._usuario();
   }
 
-  /** 🧾 Asegura que el documento del usuario exista en Firestore */
-  async asegurarDocumentoEnFirestore(user: User) {
+  /**
+   * Asegura que el documento del usuario exista en Firestore.
+   * @param {User|ExtendedUser} user Usuario a asegurar en Firestore
+   * @returns {Promise<void>}
+   */
+  async asegurarDocumentoEnFirestore(user: User | ExtendedUser) {
     await runInInjectionContext(this.injector, async () => {
       const firestore = inject(Firestore);
       const userRef = doc(firestore, 'usuarios', user.uid);

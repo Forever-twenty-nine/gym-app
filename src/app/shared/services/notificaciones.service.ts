@@ -9,14 +9,14 @@ import {
     doc,
 } from '@angular/fire/firestore';
 import { Invitacion } from '../models/invitacion.model';
-import { InvitacionesService } from './invitaciones.service';
+import { InvitacionService } from './invitacion.service';
 import { ToastService } from './toast.service';
 import { UserService } from './user.service';
 
 /** 🔔 Servicio para notificaciones de invitaciones del usuario */
 @Injectable({ providedIn: 'root' })
 export class NotificacionesService {
-    private readonly invitacionesService = inject(InvitacionesService);
+    private readonly invitacionService = inject(InvitacionService);
     private readonly toast = inject(ToastService);
     private readonly userService = inject(UserService);
     private readonly injector = inject(Injector);
@@ -58,7 +58,7 @@ export class NotificacionesService {
         }
 
         if (estado === 'aceptada') {
-            await this.invitacionesService.procesarInvitacionAceptada(invitacion, userId);
+            await this.invitacionService.procesarInvitacionAceptada(invitacion, userId);
         }
 
         if (estado === 'rechazada') {

@@ -204,28 +204,21 @@
         </div>
 
         <div class="mb-5">
-          <label for="clienteId" class="block mb-2 font-semibold text-gray-700">ID del Cliente *</label>
-          <input 
+          <label for="clienteId" class="block mb-2 font-semibold text-gray-700">Cliente *</label>
+          <select 
             id="clienteId"
             name="clienteId"
-            type="text" 
-            [(ngModel)]="clienteId" 
-            placeholder="cliente-123"
+            [(ngModel)]="clienteId"
             required
-            class="w-full p-3 border border-gray-300 rounded-md text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none !bg-white">
+            class="w-full p-3 border border-gray-300 rounded-md text-base text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none !bg-white">
+            <option value="" disabled selected>Selecciona un cliente</option>
+            @for (cliente of clientesDisponibles(); track cliente.id) {
+              <option [value]="cliente.id">{{ cliente.id }}</option>
+            }
+          </select>
         </div>
 
-        <div class="mb-5">
-          <label for="plantillaRutinaId" class="block mb-2 font-semibold text-gray-700">ID de Plantilla de Rutina *</label>
-          <input 
-            id="plantillaRutinaId"
-            name="plantillaRutinaId"
-            type="text" 
-            [(ngModel)]="plantillaRutinaId" 
-            placeholder="plantilla-123"
-            required
-            class="w-full p-3 border border-gray-300 rounded-md text-base text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none !bg-white">
-        </div>
+        <!-- Campo de plantillaRutinaId eliminado por no ser relevante para el usuario -->
 
         <div class="mb-5">
           <label for="gimnasioId" class="block mb-2 font-semibold text-gray-700">ID del Gimnasio</label>

@@ -1,5 +1,5 @@
 export interface Gimnasio {
-  id?: string;
+  id: string;
   direccion: string;
   activo: boolean;
 }

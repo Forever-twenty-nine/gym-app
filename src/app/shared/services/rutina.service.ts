@@ -1,4 +1,5 @@
 import { Injectable, inject, signal, computed, effect, Injector, runInInjectionContext } from '@angular/core';
+import { ToastService } from '../services/toast.service';
 import { Firestore, collection, doc, addDoc, updateDoc, deleteDoc, getDocs, getDoc, query, where, orderBy, onSnapshot, Timestamp } from '@angular/fire/firestore';
 import { RutinaCliente } from '../models/rutina.model';
 
@@ -7,6 +8,7 @@ export class RutinaService {
 
     private firestore = inject(Firestore);
     private injector = inject(Injector);
+    private toast = inject(ToastService);
     private readonly collectionName = 'rutinas';
 
     // Signals para gestión de estado
@@ -63,9 +65,11 @@ export class RutinaService {
                 this._error.set(null);
             },
             (error) => {
+                const errMsg = (error as any).message || 'Error al cargar rutinas';
                 console.error('Error en listener de rutinas:', error);
-                this._error.set(error.message || 'Error al cargar rutinas');
+                this._error.set(errMsg);
                 this._loading.set(false);
+                this.toast.show(errMsg);
             }
         );
     }
@@ -104,8 +108,10 @@ export class RutinaService {
                     error.set(null);
                 },
                 (err) => {
-                    error.set(err.message || 'Error al cargar rutinas del cliente');
+                    const errMsg = (err as any).message || 'Error al cargar rutinas del cliente';
+                    error.set(errMsg);
                     loading.set(false);
+                    this.toast.show(errMsg);
                 }
             );
 
@@ -152,8 +158,10 @@ export class RutinaService {
                     error.set(null);
                 },
                 (err) => {
-                    error.set(err.message || 'Error al cargar rutinas del entrenador');
+                    const errMsg = (err as any).message || 'Error al cargar rutinas del entrenador';
+                    error.set(errMsg);
                     loading.set(false);
+                    this.toast.show(errMsg);
                 }
             );
 
@@ -188,10 +196,13 @@ export class RutinaService {
             }
 
             this._loading.set(false);
+            this.toast.show('Rutina no encontrada');
             return null;
-        } catch (error: any) {
-            this._error.set(error.message || 'Error al obtener rutina');
+        } catch (error) {
+            const errMsg = (error as any).message || 'Error al obtener rutina';
+            this._error.set(errMsg);
             this._loading.set(false);
+            this.toast.show(errMsg);
             throw error;
         }
     }
@@ -222,10 +233,13 @@ export class RutinaService {
             this._rutinas.set([nuevaRutina, ...rutinasActuales]);
 
             this._loading.set(false);
+            this.toast.show('Rutina creada correctamente');
             return nuevaRutina;
-        } catch (error: any) {
-            this._error.set(error.message || 'Error al crear rutina');
+        } catch (error) {
+            const errMsg = (error as any).message || 'Error al crear rutina';
+            this._error.set(errMsg);
             this._loading.set(false);
+            this.toast.show(errMsg);
             throw error;
         }
     }
@@ -258,9 +272,12 @@ export class RutinaService {
             }
 
             this._loading.set(false);
-        } catch (error: any) {
-            this._error.set(error.message || 'Error al actualizar rutina');
+            this.toast.show('Rutina actualizada correctamente');
+        } catch (error) {
+            const errMsg = (error as any).message || 'Error al actualizar rutina';
+            this._error.set(errMsg);
             this._loading.set(false);
+            this.toast.show(errMsg);
             throw error;
         }
     }
@@ -282,9 +299,12 @@ export class RutinaService {
             this._rutinas.set(rutinasNuevas);
 
             this._loading.set(false);
-        } catch (error: any) {
-            this._error.set(error.message || 'Error al eliminar rutina');
+            this.toast.show('Rutina eliminada correctamente');
+        } catch (error) {
+            const errMsg = (error as any).message || 'Error al eliminar rutina';
+            this._error.set(errMsg);
             this._loading.set(false);
+            this.toast.show(errMsg);
             throw error;
         }
     }
@@ -293,7 +313,6 @@ export class RutinaService {
      * Asigna una rutina a un cliente
      */
     async asignarRutinaACliente(
-        plantillaRutinaId: string,
         clienteId: string,
         nombre: string,
         ejercicios: any[] = [],
@@ -301,7 +320,6 @@ export class RutinaService {
         gimnasioId?: string
     ): Promise<RutinaCliente> {
         const nuevaRutina: Omit<RutinaCliente, 'id'> = {
-            plantillaRutinaId,
             clienteId,
             nombre,
             fechaAsignacion: new Date(),
@@ -392,8 +410,10 @@ export class RutinaService {
                     error.set(null);
                 },
                 (err) => {
-                    error.set(err.message || 'Error al cargar rutinas del gimnasio');
+                    const errMsg = (err as any).message || 'Error al cargar rutinas del gimnasio';
+                    error.set(errMsg);
                     loading.set(false);
+                    this.toast.show(errMsg);
                 }
             );
 

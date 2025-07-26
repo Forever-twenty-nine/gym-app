@@ -1,12 +1,14 @@
 import { Injectable, inject, signal, computed, effect, Injector, runInInjectionContext } from '@angular/core';
 import { Firestore, collection, doc, addDoc, updateDoc, deleteDoc, getDocs, getDoc, query, where, orderBy, onSnapshot, Timestamp } from '@angular/fire/firestore';
 import { EjercicioRutina } from '../models/ejercicio.model';
+import { ToastService } from './toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class EjercicioService {
 
     private firestore = inject(Firestore);
     private injector = inject(Injector);
+    private toastService = inject(ToastService);
     private readonly collectionName = 'ejercicios';
 
     // Signals para gestión de estado
@@ -71,7 +73,7 @@ export class EjercicioService {
                 this._error.set(null);
             },
             (error) => {
-                console.error('Error en listener de ejercicios:', error);
+                this.toastService.show('Error en listener de ejercicios: ' + (error.message || 'Error al cargar ejercicios'), 'error');
                 this._error.set(error.message || 'Error al cargar ejercicios');
                 this._loading.set(false);
             }
@@ -191,156 +193,179 @@ export class EjercicioService {
      * Obtiene un ejercicio por ID
      */
     async obtenerEjercicioPorId(id: string): Promise<EjercicioRutina | null> {
-        try {
-            this._loading.set(true);
-            const ejercicioRef = doc(this.firestore, this.collectionName, id);
-            const docSnap = await getDoc(ejercicioRef);
+        return runInInjectionContext(this.injector, async () => {
+            try {
+                this._loading.set(true);
+                const ejercicioRef = doc(this.firestore, this.collectionName, id);
+                const docSnap = await getDoc(ejercicioRef);
 
-            if (docSnap.exists()) {
-                const ejercicio = {
-                    id: docSnap.id,
-                    ...docSnap.data()
-                } as EjercicioRutina;
+                if (docSnap.exists()) {
+                    const ejercicio = {
+                        id: docSnap.id,
+                        ...docSnap.data()
+                    } as EjercicioRutina;
+
+                    this._loading.set(false);
+                    return ejercicio;
+                }
 
                 this._loading.set(false);
-                return ejercicio;
+                return null;
+            } catch (error: any) {
+                this._error.set(error.message || 'Error al obtener ejercicio');
+                this._loading.set(false);
+                throw error;
             }
-
-            this._loading.set(false);
-            return null;
-        } catch (error: any) {
-            this._error.set(error.message || 'Error al obtener ejercicio');
-            this._loading.set(false);
-            throw error;
-        }
+        });
     }
 
     /**
      * Crea un nuevo ejercicio
      */
     async crearEjercicio(ejercicio: Omit<EjercicioRutina, 'id'>): Promise<EjercicioRutina> {
-        try {
-            this._loading.set(true);
-            this._error.set(null);
+        return runInInjectionContext(this.injector, async () => {
+            try {
+                this._loading.set(true);
+                this._error.set(null);
 
-            const ejerciciosRef = collection(this.firestore, this.collectionName);
-            const ejercicioData = {
-                ...ejercicio,
-                nombre: ejercicio.nombre.trim(),
-                descripcion: ejercicio.descripcion?.trim() || '',
-                series: Math.max(1, ejercicio.series),
-                repeticiones: Math.max(1, ejercicio.repeticiones),
-                peso: ejercicio.peso || 0,
-                descansoSegundos: ejercicio.descansoSegundos || 60
-            };
+                const ejerciciosRef = collection(this.firestore, this.collectionName);
+                const ejercicioData = {
+                    ...ejercicio,
+                    nombre: ejercicio.nombre.trim(),
+                    descripcion: ejercicio.descripcion?.trim() || '',
+                    series: Math.max(1, ejercicio.series),
+                    repeticiones: Math.max(1, ejercicio.repeticiones),
+                    peso: ejercicio.peso || 0,
+                    descansoSegundos: ejercicio.descansoSegundos || 60
+                };
 
-            const docRef = await addDoc(ejerciciosRef, ejercicioData);
-            const nuevoEjercicio = {
-                id: docRef.id,
-                ...ejercicioData
-            };
+                const docRef = await addDoc(ejerciciosRef, ejercicioData);
+                const nuevoEjercicio = {
+                    id: docRef.id,
+                    ...ejercicioData
+                };
 
-            // No actualizar el signal local aquí, el listener lo hará automáticamente
-            this._loading.set(false);
-            return nuevoEjercicio;
-        } catch (error: any) {
-            this._error.set(error.message || 'Error al crear ejercicio');
-            this._loading.set(false);
-            throw error;
-        }
+                this.toastService.show('Ejercicio creado exitosamente', 'success');
+                this._loading.set(false);
+                return nuevoEjercicio;
+            } catch (error: any) {
+                this.toastService.show('Error al crear ejercicio: ' + (error.message || ''), 'error');
+                this._error.set(error.message || 'Error al crear ejercicio');
+                this._loading.set(false);
+                throw error;
+            }
+        });
     }
 
     /**
      * Actualiza un ejercicio existente
      */
     async actualizarEjercicio(id: string, ejercicio: Partial<EjercicioRutina>): Promise<void> {
-        try {
-            this._loading.set(true);
-            this._error.set(null);
+        return runInInjectionContext(this.injector, async () => {
+            try {
+                this._loading.set(true);
+                this._error.set(null);
 
-            const ejercicioRef = doc(this.firestore, this.collectionName, id);
-            const updateData: any = { ...ejercicio };
+                const ejercicioRef = doc(this.firestore, this.collectionName, id);
+                const updateData: any = { ...ejercicio };
 
-            // Validaciones y limpieza de datos
-            if (updateData.nombre) {
-                updateData.nombre = updateData.nombre.trim();
-            }
-            if (updateData.descripcion !== undefined) {
-                updateData.descripcion = updateData.descripcion.trim();
-            }
-            if (updateData.series !== undefined) {
-                updateData.series = Math.max(1, updateData.series);
-            }
-            if (updateData.repeticiones !== undefined) {
-                updateData.repeticiones = Math.max(1, updateData.repeticiones);
-            }
-            if (updateData.peso !== undefined) {
-                updateData.peso = Math.max(0, updateData.peso);
-            }
-            if (updateData.descansoSegundos !== undefined) {
-                updateData.descansoSegundos = Math.max(0, updateData.descansoSegundos);
-            }
+                // Validaciones y limpieza de datos
+                if (updateData.nombre) {
+                    updateData.nombre = updateData.nombre.trim();
+                }
+                if (updateData.descripcion !== undefined) {
+                    updateData.descripcion = updateData.descripcion.trim();
+                }
+                if (updateData.series !== undefined) {
+                    updateData.series = Math.max(1, updateData.series);
+                }
+                if (updateData.repeticiones !== undefined) {
+                    updateData.repeticiones = Math.max(1, updateData.repeticiones);
+                }
+                if (updateData.peso !== undefined) {
+                    updateData.peso = Math.max(0, updateData.peso);
+                }
+                if (updateData.descansoSegundos !== undefined) {
+                    updateData.descansoSegundos = Math.max(0, updateData.descansoSegundos);
+                }
 
-            await updateDoc(ejercicioRef, updateData);
+                await updateDoc(ejercicioRef, updateData);
 
-            // Actualizar el signal local
-            const ejerciciosActuales = this._ejercicios();
-            const index = ejerciciosActuales.findIndex(e => e.id === id);
-            if (index !== -1) {
-                const ejerciciosNuevos = [...ejerciciosActuales];
-                ejerciciosNuevos[index] = { ...ejerciciosNuevos[index], ...updateData };
-                this._ejercicios.set(ejerciciosNuevos);
+                // Actualizar el signal local
+                const ejerciciosActuales = this._ejercicios();
+                const index = ejerciciosActuales.findIndex(e => e.id === id);
+                if (index !== -1) {
+                    const ejerciciosNuevos = [...ejerciciosActuales];
+                    ejerciciosNuevos[index] = { ...ejerciciosNuevos[index], ...updateData };
+                    this._ejercicios.set(ejerciciosNuevos);
+                }
+
+                this.toastService.show('Ejercicio actualizado exitosamente', 'success');
+                this._loading.set(false);
+            } catch (error: any) {
+                this.toastService.show('Error al actualizar ejercicio: ' + (error.message || ''), 'error');
+                this._error.set(error.message || 'Error al actualizar ejercicio');
+                this._loading.set(false);
+                throw error;
             }
-
-            this._loading.set(false);
-        } catch (error: any) {
-            this._error.set(error.message || 'Error al actualizar ejercicio');
-            this._loading.set(false);
-            throw error;
-        }
+        });
     }
 
     /**
-     * Elimina un ejercicio
+     * Elimina un ejercicio 
+     * @param id 
+     * @returns 
      */
     async eliminarEjercicio(id: string): Promise<void> {
-        try {
-            this._loading.set(true);
-            this._error.set(null);
+        return runInInjectionContext(this.injector, async () => {
+            try {
+                this._loading.set(true);
+                this._error.set(null);
 
-            const ejercicioRef = doc(this.firestore, this.collectionName, id);
-            await deleteDoc(ejercicioRef);
+                const ejercicioRef = doc(this.firestore, this.collectionName, id);
+                await deleteDoc(ejercicioRef);
 
-            // Actualizar el signal local
-            const ejerciciosActuales = this._ejercicios();
-            const ejerciciosNuevos = ejerciciosActuales.filter(e => e.id !== id);
-            this._ejercicios.set(ejerciciosNuevos);
+                const ejerciciosActuales = this._ejercicios();
+                const ejerciciosNuevos = ejerciciosActuales.filter(e => e.id !== id);
+                this._ejercicios.set(ejerciciosNuevos);
 
-            this._loading.set(false);
-        } catch (error: any) {
-            this._error.set(error.message || 'Error al eliminar ejercicio');
-            this._loading.set(false);
-            throw error;
-        }
+                this.toastService.show('Ejercicio eliminado exitosamente', 'success');
+                this._loading.set(false);
+            } catch (error: any) {
+                this.toastService.show('Error al eliminar ejercicio: ' + (error.message || ''), 'error');
+                this._error.set(error.message || 'Error al eliminar ejercicio');
+                this._loading.set(false);
+                throw error;
+            }
+        });
     }
 
     /**
      * Duplica un ejercicio existente
      */
     async duplicarEjercicio(id: string, nuevoNombre?: string): Promise<EjercicioRutina> {
-        const ejercicioOriginal = await this.obtenerEjercicioPorId(id);
-        
-        if (!ejercicioOriginal) {
-            throw new Error('Ejercicio no encontrado');
-        }
+        return runInInjectionContext(this.injector, async () => {
+            try {
+                const ejercicioOriginal = await this.obtenerEjercicioPorId(id);
+                
+                if (!ejercicioOriginal) {
+                    throw new Error('Ejercicio no encontrado');
+                }
 
-        const ejercicioDuplicado: Omit<EjercicioRutina, 'id'> = {
-            ...ejercicioOriginal,
-            nombre: nuevoNombre || `${ejercicioOriginal.nombre} (Copia)`
-        };
+                const ejercicioDuplicado: Omit<EjercicioRutina, 'id'> = {
+                    ...ejercicioOriginal,
+                    nombre: nuevoNombre || `${ejercicioOriginal.nombre} (Copia)`
+                };
 
-        delete (ejercicioDuplicado as any).id;
-        return this.crearEjercicio(ejercicioDuplicado);
+                delete (ejercicioDuplicado as any).id;
+                const nuevo = await this.crearEjercicio(ejercicioDuplicado);
+                this.toastService.show('Ejercicio duplicado exitosamente', 'success');
+                return nuevo;
+            } catch (error: any) {
+                this.toastService.show('Error al duplicar ejercicio: ' + (error.message || ''), 'error');
+                throw error;
+            }
+        });
     }
 
     /**
@@ -426,39 +451,42 @@ export class EjercicioService {
      * Crea ejercicios en lote
      */
     async crearEjerciciosEnLote(ejercicios: Omit<EjercicioRutina, 'id'>[]): Promise<EjercicioRutina[]> {
-        try {
-            this._loading.set(true);
-            this._error.set(null);
+        return runInInjectionContext(this.injector, async () => {
+            try {
+                this._loading.set(true);
+                this._error.set(null);
 
-            const ejerciciosCreados: EjercicioRutina[] = [];
-            const ejerciciosRef = collection(this.firestore, this.collectionName);
+                const ejerciciosCreados: EjercicioRutina[] = [];
+                const ejerciciosRef = collection(this.firestore, this.collectionName);
 
-            for (const ejercicio of ejercicios) {
-                const ejercicioData = {
-                    ...ejercicio,
-                    nombre: ejercicio.nombre.trim(),
-                    descripcion: ejercicio.descripcion?.trim() || '',
-                    series: Math.max(1, ejercicio.series),
-                    repeticiones: Math.max(1, ejercicio.repeticiones),
-                    peso: ejercicio.peso || 0,
-                    descansoSegundos: ejercicio.descansoSegundos || 60
-                };
+                for (const ejercicio of ejercicios) {
+                    const ejercicioData = {
+                        ...ejercicio,
+                        nombre: ejercicio.nombre.trim(),
+                        descripcion: ejercicio.descripcion?.trim() || '',
+                        series: Math.max(1, ejercicio.series),
+                        repeticiones: Math.max(1, ejercicio.repeticiones),
+                        peso: ejercicio.peso || 0,
+                        descansoSegundos: ejercicio.descansoSegundos || 60
+                    };
 
-                const docRef = await addDoc(ejerciciosRef, ejercicioData);
-                ejerciciosCreados.push({
-                    id: docRef.id,
-                    ...ejercicioData
-                });
+                    const docRef = await addDoc(ejerciciosRef, ejercicioData);
+                    ejerciciosCreados.push({
+                        id: docRef.id,
+                        ...ejercicioData
+                    });
+                }
+
+                this.toastService.show('Ejercicios de ejemplo creados exitosamente', 'success');
+                this._loading.set(false);
+                return ejerciciosCreados;
+            } catch (error: any) {
+                this.toastService.show('Error al crear ejercicios de ejemplo: ' + (error.message || ''), 'error');
+                this._error.set(error.message || 'Error al crear ejercicios en lote');
+                this._loading.set(false);
+                throw error;
             }
-
-            // No actualizar el signal local aquí, el listener lo hará automáticamente
-            this._loading.set(false);
-            return ejerciciosCreados;
-        } catch (error: any) {
-            this._error.set(error.message || 'Error al crear ejercicios en lote');
-            this._loading.set(false);
-            throw error;
-        }
+        });
     }
 
     /**
