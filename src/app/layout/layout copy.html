@@ -1,0 +1,98 @@
+<ion-app>
+  <!-- Sidebar / Menu -->
+  <ion-menu content-id="main-content" side="start" menu-id="first" type="overlay">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Gym App</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <ion-list>
+        @if (usuario()) {
+
+        <!-- Cliente -->
+        @if (usuario()?.roles?.includes(Rol.CLIENTE)) {
+        <ion-item routerLink="/cliente" routerLinkActive="selected">
+          Inicio Cliente
+        </ion-item>
+        <ion-item routerLink="/cliente/rutinas" routerLinkActive="selected">
+          Rutinas
+        </ion-item>
+        <ion-item routerLink="/cliente/notificaciones" routerLinkActive="selected">
+          Notificaciones
+        </ion-item>
+        }
+
+        <!-- Entrenador -->
+        @if (usuario()?.roles?.includes(Rol.ENTRENADOR)) {
+        <ion-item routerLink="/entrenador" routerLinkActive="selected">
+          Entrenador
+        </ion-item>
+        <ion-item routerLink="/entrenador/rutinas" routerLinkActive="selected">
+          Crear Rutinas
+        </ion-item>
+        <ion-item routerLink="/entrenador/ejercicios" routerLinkActive="selected">
+          Ejercicios
+        </ion-item>
+        <ion-item routerLink="/entrenador/clientes" routerLinkActive="selected">
+          Clientes
+        </ion-item>
+        <ion-item routerLink="/entrenador/notificaciones" routerLinkActive="selected">
+          Notificaciones
+        </ion-item>
+        }
+
+        <!-- Gimnasio -->
+        @if (usuario()?.roles?.includes(Rol.GIMNASIO)) {
+        <ion-item routerLink="/gimnasio" routerLinkActive="selected">
+          Inicio Gimnasio
+        </ion-item>
+        <ion-item routerLink="/gimnasio/clientes" routerLinkActive="selected">
+          Clientes
+        </ion-item>
+        <ion-item routerLink="/gimnasio/entrenadores" routerLinkActive="selected">
+          Entrenadores
+        </ion-item>
+        <ion-item routerLink="/gimnasio/invitaciones" routerLinkActive="selected">
+          Invitaciones
+        </ion-item>
+        }
+
+        <!-- Personal Trainer -->
+        @if (usuario()?.roles?.includes(Rol.PERSONAL_TRAINER)) {
+        <ion-item routerLink="/personal-trainer" routerLinkActive="selected">
+          Inicio Personal Trainer
+        </ion-item>
+        <ion-item routerLink="/personal-trainer/clientes" routerLinkActive="selected">
+          Clientes
+        </ion-item>
+        <ion-item routerLink="/personal-trainer/rutinas" routerLinkActive="selected">
+          Rutinas
+        </ion-item>
+        <ion-item routerLink="/personal-trainer/ejercicios" routerLinkActive="selected">
+          Ejercicios
+        </ion-item>
+        <ion-item routerLink="/personal-trainer/invitaciones" routerLinkActive="selected">
+          Invitaciones
+        </ion-item>
+        }
+
+       }
+      </ion-list>
+
+      <ion-button expand="block" fill="solid" (click)="logout()">
+        🚪 Cerrar sesión
+      </ion-button>
+
+    </ion-content>
+  </ion-menu>
+
+  <!-- Main content -->
+  <main class="" id="main-content">
+
+
+    <router-outlet></router-outlet>
+
+  </main>
+</ion-app>

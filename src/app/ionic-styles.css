@@ -1,6 +1,22 @@
 /* ─────────────────────────────────────────────── */
 /* 📦 Ionic styles
 /* ─────────────────────────────────────────────── */
+
+/* Structure */
+
+ion-header{
+  box-shadow: none !important ;
+}
+
+ion-content,
+ion-toolbar,
+ion-tab-bar{
+  --background: var(--bg-app);
+  --color: var(--text);
+}
+
+
+
 /* Input */
 ion-input.gym-input {
   --border-color: var(--color-brand-secondary);
