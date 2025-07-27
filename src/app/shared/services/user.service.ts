@@ -57,11 +57,10 @@ export class UserService {
 
     effect(() => {
       const usuario = this._usuario();
-      if (usuario?.onboarded) {
+      if (usuario) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(usuario));
-      } else {
-        localStorage.removeItem(STORAGE_KEY);
       }
+      // Solo se borra en logout explícito
     });
   }
 

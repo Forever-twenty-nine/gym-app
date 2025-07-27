@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonHeader, IonIcon, IonBadge, IonChip, IonContent } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
+import { AuthService } from '../../shared/services/auth.service';
 import { notificationsOutline, diamondOutline, barbellOutline, analyticsOutline, calendarOutline } from 'ionicons/icons';
 import { NgOptimizedImage } from '@angular/common';
 
@@ -28,4 +29,12 @@ addIcons({
   templateUrl: './cliente.html',
   styleUrls: ['../../ionic-styles.css'],
 })
-export class Cliente {}
+export class Cliente {
+
+  private authService: AuthService = inject(AuthService);
+
+  cerrarSesion() {
+    this.authService.logout();
+
+  }
+}

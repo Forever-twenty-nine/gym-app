@@ -10,14 +10,12 @@ export const onBoardingGuard: CanActivateFn = () => {
 
   // Si no hay usuario, redirigir a login
   if (!user) {
-    router.navigate(['/auth/login']);
-    return false;
+    return router.createUrlTree(['/auth/login']);
   }
   // Si el usuario ya completó el onboarding, permitir acceso
   if (user.onboarded) {
     return true;
   }
   // Si no ha completado el onboarding, redirigir a la página de onboarding
-  router.navigate(['/onboarding']);
-  return false;
+  return router.createUrlTree(['/onboarding']);
 }

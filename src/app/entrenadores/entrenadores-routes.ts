@@ -6,11 +6,12 @@ import { Clientes } from '../shared/components/clientes/clientes';
 import { Notificaciones } from '../shared/components/notificaciones/notificaciones';
 
 const routes: Routes = [
-  { path: '', component: Entrenador },
-  { path: 'rutinas', component: Rutinas },
-  { path: 'ejercicios', component: Ejercicios },
-  { path: 'notificaciones', component: Notificaciones },
-  { path: 'clientes', component: Clientes }
+  { path: 'inicio-entrenador', component: Entrenador },
+  { path: 'rutinas-entrenador', component: Rutinas },
+  { path: 'ejercicios-entrenador', component: Ejercicios },
+  { path: 'clientes-entrenador', component: Clientes },
+  { path: 'notificaciones-entrenador', component: Notificaciones },
+  { path: '', redirectTo: 'inicio-entrenador', pathMatch: 'full' }
 ];
 
 export default routes;

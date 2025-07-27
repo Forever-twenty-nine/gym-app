@@ -1,105 +1,83 @@
-<ion-app>
+<ion-tabs>
 
-  <ion-tabs class="">
+  <ion-router-outlet></ion-router-outlet>
 
-    <router-outlet></router-outlet>
+  <ion-tab-bar slot="bottom">
 
-    <ion-tab-bar slot="bottom">
+    @if (usuario()) {
 
-      @if (usuario()) {
+    <!-- Cliente -->
+    @if (usuario()?.roles?.includes(Rol.CLIENTE)) {
+    <ion-tab-button tab="inicio-cliente">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>Inicio</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="rutinas-cliente">
+      <ion-icon name="barbell-outline"></ion-icon>
+      <ion-label>Rutinas</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="configuracion-cliente">
+      <ion-icon name="options-outline"></ion-icon>
+      <ion-label>Configuración</ion-label>
+    </ion-tab-button>
+    }
 
-        <!-- Cliente -->
-        @if (usuario()?.roles?.includes(Rol.CLIENTE)) {
-        <ion-tab-button routerLink="/cliente" routerLinkActive="selected">
-          <ion-icon name="home-outline"></ion-icon>
-          <ion-label>Inicio</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/cliente/rutinas" routerLinkActive="selected">
-          <ion-icon name="barbell-outline"></ion-icon>
-          <ion-label>Rutinas</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="#" routerLinkActive="selected">
-          <ion-icon name="options-outline"></ion-icon>
-          <ion-label>Configuración</ion-label>
-        </ion-tab-button>
-        }
+    <!-- Entrenador -->
+    @if (usuario()?.roles?.includes(Rol.ENTRENADOR)) {
+    <ion-tab-button tab="inicio-entrenador">
+      <ion-label>Entrenador</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="rutinas-entrenador">
+      <ion-label>Crear Rutinas</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="ejercicios-entrenador">
+      <ion-label>Ejercicios</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="clientes-entrenador">
+      <ion-label>Clientes</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="notificaciones-entrenador">
+      <ion-label>Notificaciones</ion-label>
+    </ion-tab-button>
+    }
 
-        <!-- Entrenador -->
-        @if (usuario()?.roles?.includes(Rol.ENTRENADOR)) {
-<<<<<<< HEAD
-        <ion-item routerLink="/entrenador" routerLinkActive="selected">
-          Entrenador
-        </ion-item>
-        <ion-item routerLink="/entrenador/rutinas" routerLinkActive="selected">
-          Rutinas
-        </ion-item>
-        <ion-item routerLink="/entrenador/ejercicios" routerLinkActive="selected">
-          Ejercicios
-        </ion-item>
-        <ion-item routerLink="/entrenador/clientes" routerLinkActive="selected">
-          Clientes
-        </ion-item>
-        <ion-item routerLink="/entrenador/notificaciones" routerLinkActive="selected">
-          Notificaciones
-        </ion-item>
-=======
-        <ion-tab-button routerLink="/entrenador" routerLinkActive="selected">
-          <ion-label>Entrenador</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/entrenador/rutinas" routerLinkActive="selected">
-          <ion-label>Crear Rutinas</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/entrenador/ejercicios" routerLinkActive="selected">
-          <ion-label>Ejercicios</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/entrenador/clientes" routerLinkActive="selected">
-          <ion-label>Clientes</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/entrenador/notificaciones" routerLinkActive="selected">
-          <ion-label>Notificaciones</ion-label>
-        </ion-tab-button>
->>>>>>> nati
-        }
+    <!-- Gimnasio -->
+    @if (usuario()?.roles?.includes(Rol.GIMNASIO)) {
+    <ion-tab-button tab="inicio">
+      <ion-label>Inicio Gimnasio</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="clientes">
+      <ion-label>Clientes</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="entrenadores">
+      <ion-label>Entrenadores</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="invitaciones">
+      <ion-label>Invitaciones</ion-label>
+    </ion-tab-button>
+    }
 
-        <!-- Gimnasio -->
-        @if (usuario()?.roles?.includes(Rol.GIMNASIO)) {
-        <ion-tab-button routerLink="/gimnasio" routerLinkActive="selected">
-          <ion-label>Inicio Gimnasio</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/gimnasio/clientes" routerLinkActive="selected">
-          <ion-label>Clientes</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/gimnasio/entrenadores" routerLinkActive="selected">
-          <ion-label>Entrenadores</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/gimnasio/invitaciones" routerLinkActive="selected">
-          <ion-label>Invitaciones</ion-label>
-        </ion-tab-button>
-        }
+    <!-- Personal Trainer -->
+    @if (usuario()?.roles?.includes(Rol.PERSONAL_TRAINER)) {
+    <ion-tab-button tab="inicio-pt">
+      <ion-label>Inicio Personal Trainer</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="clientes-pt">
+      <ion-label>Clientes</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="rutinas-pt">
+      <ion-label>Rutinas</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="ejercicios-pt">
+      <ion-label>Ejercicios</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="invitaciones-pt">
+      <ion-label>Invitaciones</ion-label>
+    </ion-tab-button>
+    }
 
-        <!-- Personal Trainer -->
-        @if (usuario()?.roles?.includes(Rol.PERSONAL_TRAINER)) {
-        <ion-tab-button routerLink="/personal-trainer" routerLinkActive="selected">
-          <ion-label>Inicio Personal Trainer</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/personal-trainer/clientes" routerLinkActive="selected">
-          <ion-label>Clientes</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/personal-trainer/rutinas" routerLinkActive="selected">
-          <ion-label>Rutinas</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/personal-trainer/ejercicios" routerLinkActive="selected">
-          <ion-label>Ejercicios</ion-label>
-        </ion-tab-button>
-        <ion-tab-button routerLink="/personal-trainer/invitaciones" routerLinkActive="selected">
-          <ion-label>Invitaciones</ion-label>
-        </ion-tab-button>
-        }
+    }
 
-       }
+  </ion-tab-bar>
 
-    </ion-tab-bar>
-
-  </ion-tabs>
-
-</ion-app>
+</ion-tabs>

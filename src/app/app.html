@@ -1,5 +1,5 @@
-<router-outlet />
-
-
-<ion-toast [isOpen]="toast.message() !== null" [message]="toast.message()" [color]="toast.color" [duration]="3000"
+<ion-app>
+  <router-outlet />
+  <ion-toast [isOpen]="toast.message() !== null" [message]="toast.message()" [color]="toast.color" [duration]="3000"
     (didDismiss)="toast.clear()" class="z-50"></ion-toast>
+</ion-app>

@@ -23,8 +23,14 @@ export const roleGuard =
       // 📦 Obtenemos el usuario actual desde la señal reactiva
       const user = userService.usuario();
 
+      // LOGS DE DEPURACIÓN
+      console.log('GUARD: Usuario actual:', user);
+      console.log('GUARD: Roles requeridos:', allowedRoles);
+      console.log('GUARD: Roles del usuario:', user?.roles);
+
       // 🔐 No hay usuario → redirige a login
       if (!user) {
+        console.warn('GUARD: No hay usuario logueado, redirigiendo a /auth/login');
         return router.createUrlTree(['/auth/login']);
       }
 
@@ -33,9 +39,11 @@ export const roleGuard =
 
       // 🚫 Usuario autenticado pero sin roles permitidos → onboarding
       if (!tieneRolPermitido) {
+        console.warn('GUARD: Usuario autenticado pero sin roles permitidos, redirigiendo a /onboarding');
         return router.createUrlTree(['/onboarding']);
       }
 
       // ✅ Usuario válido y autorizado
+      console.log('GUARD: Usuario autorizado, acceso permitido');
       return true;
     };

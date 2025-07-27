@@ -6,11 +6,12 @@ import { ToDatePipe } from '../../pipes/to-date.pipe';
 import { UserService } from '../../services/user.service';
 import { Permiso } from '../../enums/permiso.enum';
 import { ToastService } from '../../services/toast.service';
+import { IonContent } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-invitaciones',
   standalone: true,
-  imports: [CommonModule, FormsModule, ToDatePipe],
+  imports: [CommonModule, FormsModule, ToDatePipe, IonContent],
   templateUrl: './invitaciones.html'
 })
 

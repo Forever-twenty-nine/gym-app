@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { roleGuard } from './shared/guards/role.guard';
 import { Rol } from './shared/enums/rol.enum';
-import { onlyNotOnboardedGuard } from './shared/guards/onlyNotOnboarded.guard';
 import { onBoardingGuard } from './shared/guards/onBoarding.guard';
 
 export const routes: Routes = [
@@ -11,7 +10,7 @@ export const routes: Routes = [
   // 2️⃣ Carga el módulo de auth
   { path: 'auth', loadChildren: () => import('./auth/auth.routes').then(m => m.AuthRoutes) },
   // 3️⃣ Ruta de onboarding
-  { path: 'onboarding', loadComponent: () => import('./auth/onboarding/onboarding').then(m => m.Onboarding), canActivate: [onlyNotOnboardedGuard] },
+  { path: 'onboarding', loadComponent: () => import('./auth/onboarding/onboarding').then(m => m.Onboarding), canActivate: [onBoardingGuard] },
   // 4️⃣ Rutas protegidas por roles
   { path: '', loadComponent: () => import('./layout/layout').then(m => m.Layout), children: [
       {
@@ -26,8 +25,8 @@ export const routes: Routes = [
       },
       {
         path: 'gimnasio',
-        loadChildren: () => import('./gimnasios/gimnasios-routes').then(m => m.default),
-        canActivate: [roleGuard([Rol.GIMNASIO, Rol.PERSONAL_TRAINER]), onBoardingGuard]
+        canActivate: [roleGuard([Rol.GIMNASIO, Rol.PERSONAL_TRAINER]), onBoardingGuard],
+        loadChildren: () => import('./gimnasios/gimnasios-routes').then(m => m.default)
       },
       {
         path: 'personal-trainer',
