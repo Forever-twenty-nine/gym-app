@@ -33,8 +33,10 @@ export class InvitacionService {
    * @returns Observable con el array de invitaciones
    */
   listarInvitacionesPorEstado(estado: 'pendiente' | 'aceptada') {
-    const ref = collection(this.firestore, this.collectionName);
-    return collectionData(query(ref, where('estado', '==', estado)), { idField: 'id' }) as import('rxjs').Observable<Invitacion[]>;
+    return runInInjectionContext(this.injector, () => {
+      const ref = collection(this.firestore, this.collectionName);
+      return collectionData(query(ref, where('estado', '==', estado)), { idField: 'id' }) as import('rxjs').Observable<Invitacion[]>;
+    });
   }
 
   /**
@@ -92,60 +94,62 @@ export class InvitacionService {
    * @param userId ID del usuario que acepta la invitación
    */
   async procesarInvitacionAceptada(invitacion: Invitacion, userId: string) {
-    try {
-      this._loading.set(true);
-      this._error.set(null);
-      
-      // Verificar si el usuario existe
-      const userRef = doc(this.firestore, 'usuarios', userId);
-      const userSnap = await getDoc(userRef);
-      
-      if (!userSnap.exists()) {
-        throw new Error('Usuario no encontrado');
-      }
-      
-      // Verificar si el gimnasio existe
-      const gimnasioRef = doc(this.firestore, 'gimnasios', invitacion.invitadorId);
-      const gimnasioSnap = await getDoc(gimnasioRef);
-      
-      if (!gimnasioSnap.exists()) {
-        throw new Error('Gimnasio no encontrado');
-      }
-
-      if (invitacion.tipo === 'cliente') {
-        // Usar el servicio de cliente para crear el cliente
-        await this.clienteService.crearCliente(userId, invitacion.invitadorId);
+    return runInInjectionContext(this.injector, async () => {
+      try {
+        this._loading.set(true);
+        this._error.set(null);
         
-        // Actualizar el usuario con los roles y permisos
-        await this.actualizarUser(userId, {
-          roles: [Rol.CLIENTE],
-          permisos: [Permiso.EJECUTAR_RUTINAS],
-          onboarded: true
-        });
-      }
-
-      if (invitacion.tipo === 'entrenador') {
-        // Usar el servicio de entrenador para crear el entrenador
-        await this.entrenadorService.crearEntrenador(userId, invitacion.invitadorId);
+        // Verificar si el usuario existe
+        const userRef = doc(this.firestore, 'usuarios', userId);
+        const userSnap = await getDoc(userRef);
         
-        // Actualizar el usuario con los roles y permisos
-        await this.actualizarUser(userId, {
-          roles: [Rol.ENTRENADOR],
-          permisos: [Permiso.CREAR_RUTINAS],
-          onboarded: true
-        });
+        if (!userSnap.exists()) {
+          throw new Error('Usuario no encontrado');
+        }
+        
+        // Verificar si el gimnasio existe
+        const gimnasioRef = doc(this.firestore, 'gimnasios', invitacion.invitadorId);
+        const gimnasioSnap = await getDoc(gimnasioRef);
+        
+        if (!gimnasioSnap.exists()) {
+          throw new Error('Gimnasio no encontrado');
+        }
+
+        if (invitacion.tipo === 'cliente') {
+          // Usar el servicio de cliente para crear el cliente
+          await this.clienteService.crearCliente(userId, invitacion.invitadorId);
+          
+          // Actualizar el usuario con los roles y permisos
+          await this.actualizarUser(userId, {
+            roles: [Rol.CLIENTE],
+            permisos: [Permiso.EJECUTAR_RUTINAS],
+            onboarded: true
+          });
+        }
+
+        if (invitacion.tipo === 'entrenador') {
+          // Usar el servicio de entrenador para crear el entrenador
+          await this.entrenadorService.crearEntrenador(userId, invitacion.invitadorId);
+          
+          // Actualizar el usuario con los roles y permisos
+          await this.actualizarUser(userId, {
+            roles: [Rol.ENTRENADOR],
+            permisos: [Permiso.CREAR_RUTINAS],
+            onboarded: true
+          });
+        }
+        
+        await this.marcarInvitacionComoAceptada(invitacion.id!);
+        this.toast.show('🎉 Invitación aceptada correctamente', 'success');
+        this._loading.set(false);
+      } catch (error: any) {
+        console.error('Error al procesar invitación:', error);
+        this._error.set(error.message || 'Error al procesar la invitación');
+        this._loading.set(false);
+        this.toast.show('❌ Error al procesar la invitación: ' + error.message, 'error');
+        throw error;
       }
-      
-      await this.marcarInvitacionComoAceptada(invitacion.id!);
-      this.toast.show('🎉 Invitación aceptada correctamente', 'success');
-      this._loading.set(false);
-    } catch (error: any) {
-      console.error('Error al procesar invitación:', error);
-      this._error.set(error.message || 'Error al procesar la invitación');
-      this._loading.set(false);
-      this.toast.show('❌ Error al procesar la invitación: ' + error.message, 'error');
-      throw error;
-    }
+    });
   }
 
   /**
@@ -177,20 +181,22 @@ export class InvitacionService {
    * @param id ID de la invitación a rechazar
    */
   async rechazarInvitacion(id: string) {
-    try {
-      this._loading.set(true);
-      const invitacionRef = doc(this.firestore, this.collectionName, id);
-      await updateDoc(invitacionRef, {
-        estado: 'rechazada',
-        fechaRespuesta: new Date()
-      });
-      this._loading.set(false);
-      this.toast.show('✅ Invitación rechazada', 'success');
-    } catch (error: any) {
-      this._error.set(error.message || 'Error al rechazar la invitación');
-      this._loading.set(false);
-      this.toast.show('❌ Error al rechazar la invitación', 'error');
-      throw error;
-    }
+    return runInInjectionContext(this.injector, async () => {
+      try {
+        this._loading.set(true);
+        const invitacionRef = doc(this.firestore, this.collectionName, id);
+        await updateDoc(invitacionRef, {
+          estado: 'rechazada',
+          fechaRespuesta: new Date()
+        });
+        this._loading.set(false);
+        this.toast.show('✅ Invitación rechazada', 'success');
+      } catch (error: any) {
+        this._error.set(error.message || 'Error al rechazar la invitación');
+        this._loading.set(false);
+        this.toast.show('❌ Error al rechazar la invitación', 'error');
+        throw error;
+      }
+    });
   }
 }

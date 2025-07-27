@@ -51,33 +51,39 @@ export class EjercicioService {
      * Inicializa el listener en tiempo real para todos los ejercicios
      */
     private inicializarListenerEjercicios(): void {
-        this._loading.set(true);
-        this._error.set(null);
+        runInInjectionContext(this.injector, () => {
+            this._loading.set(true);
+            this._error.set(null);
 
-        const ejerciciosRef = collection(this.firestore, this.collectionName);
-        // Consulta simple sin ordenamiento complejo
-        const q = query(ejerciciosRef);
+            const ejerciciosRef = collection(this.firestore, this.collectionName);
+            // Consulta simple sin ordenamiento complejo
+            const q = query(ejerciciosRef);
 
-        this.unsubscribeEjercicios = onSnapshot(q,
-            (snapshot) => {
-                const ejercicios = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                })) as EjercicioRutina[];
+            this.unsubscribeEjercicios = onSnapshot(q,
+                (snapshot) => {
+                    runInInjectionContext(this.injector, () => {
+                        const ejercicios = snapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        })) as EjercicioRutina[];
 
-                // Ordenar localmente por nombre
-                ejercicios.sort((a, b) => a.nombre.localeCompare(b.nombre));
+                        // Ordenar localmente por nombre
+                        ejercicios.sort((a, b) => a.nombre.localeCompare(b.nombre));
 
-                this._ejercicios.set(ejercicios);
-                this._loading.set(false);
-                this._error.set(null);
-            },
-            (error) => {
-                this.toastService.show('Error en listener de ejercicios: ' + (error.message || 'Error al cargar ejercicios'), 'error');
-                this._error.set(error.message || 'Error al cargar ejercicios');
-                this._loading.set(false);
-            }
-        );
+                        this._ejercicios.set(ejercicios);
+                        this._loading.set(false);
+                        this._error.set(null);
+                    });
+                },
+                (error) => {
+                    runInInjectionContext(this.injector, () => {
+                        this.toastService.show('Error en listener de ejercicios: ' + (error.message || 'Error al cargar ejercicios'), 'error');
+                        this._error.set(error.message || 'Error al cargar ejercicios');
+                        this._loading.set(false);
+                    });
+                }
+            );
+        });
     }
 
     /**

@@ -42,36 +42,42 @@ export class RutinaService {
      * Inicializa el listener en tiempo real para todas las rutinas
      */
     private inicializarListenerRutinas(): void {
-        this._loading.set(true);
-        this._error.set(null);
+        runInInjectionContext(this.injector, () => {
+            this._loading.set(true);
+            this._error.set(null);
 
-        const rutinasRef = collection(this.firestore, this.collectionName);
-        // Simplificar consulta - solo ordenar, sin filtros complejos
-        const q = query(rutinasRef);
+            const rutinasRef = collection(this.firestore, this.collectionName);
+            // Simplificar consulta - solo ordenar, sin filtros complejos
+            const q = query(rutinasRef);
 
-        this.unsubscribeRutinas = onSnapshot(q,
-            (snapshot) => {
-                const rutinas = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                    fechaAsignacion: doc.data()['fechaAsignacion']?.toDate() || new Date()
-                })) as RutinaCliente[];
+            this.unsubscribeRutinas = onSnapshot(q,
+                (snapshot) => {
+                    runInInjectionContext(this.injector, () => {
+                        const rutinas = snapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data(),
+                            fechaAsignacion: doc.data()['fechaAsignacion']?.toDate() || new Date()
+                        })) as RutinaCliente[];
 
-                // Ordenar localmente por fecha
-                rutinas.sort((a, b) => b.fechaAsignacion.getTime() - a.fechaAsignacion.getTime());
+                        // Ordenar localmente por fecha
+                        rutinas.sort((a, b) => b.fechaAsignacion.getTime() - a.fechaAsignacion.getTime());
 
-                this._rutinas.set(rutinas);
-                this._loading.set(false);
-                this._error.set(null);
-            },
-            (error) => {
-                const errMsg = (error as any).message || 'Error al cargar rutinas';
-                console.error('Error en listener de rutinas:', error);
-                this._error.set(errMsg);
-                this._loading.set(false);
-                this.toast.show(errMsg);
-            }
-        );
+                        this._rutinas.set(rutinas);
+                        this._loading.set(false);
+                        this._error.set(null);
+                    });
+                },
+                (error) => {
+                    runInInjectionContext(this.injector, () => {
+                        const errMsg = (error as any).message || 'Error al cargar rutinas';
+                        console.error('Error en listener de rutinas:', error);
+                        this._error.set(errMsg);
+                        this._loading.set(false);
+                        this.toast.show(errMsg);
+                    });
+                }
+            );
+        });
     }
 
     /**
@@ -178,135 +184,143 @@ export class RutinaService {
      * Obtiene una rutina por ID
      */
     async obtenerRutinaPorId(id: string): Promise<RutinaCliente | null> {
-        try {
-            this._loading.set(true);
-            const rutinaRef = doc(this.firestore, this.collectionName, id);
-            const docSnap = await getDoc(rutinaRef);
+        return runInInjectionContext(this.injector, async () => {
+            try {
+                this._loading.set(true);
+                const rutinaRef = doc(this.firestore, this.collectionName, id);
+                const docSnap = await getDoc(rutinaRef);
 
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                const rutina = {
-                    id: docSnap.id,
-                    ...data,
-                    fechaAsignacion: data['fechaAsignacion']?.toDate() || new Date()
-                } as RutinaCliente;
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const rutina = {
+                        id: docSnap.id,
+                        ...data,
+                        fechaAsignacion: data['fechaAsignacion']?.toDate() || new Date()
+                    } as RutinaCliente;
+
+                    this._loading.set(false);
+                    return rutina;
+                }
 
                 this._loading.set(false);
-                return rutina;
+                this.toast.show('Rutina no encontrada');
+                return null;
+            } catch (error) {
+                const errMsg = (error as any).message || 'Error al obtener rutina';
+                this._error.set(errMsg);
+                this._loading.set(false);
+                this.toast.show(errMsg);
+                throw error;
             }
-
-            this._loading.set(false);
-            this.toast.show('Rutina no encontrada');
-            return null;
-        } catch (error) {
-            const errMsg = (error as any).message || 'Error al obtener rutina';
-            this._error.set(errMsg);
-            this._loading.set(false);
-            this.toast.show(errMsg);
-            throw error;
-        }
+        });
     }
 
     /**
      * Crea una nueva rutina
      */
     async crearRutina(rutina: Omit<RutinaCliente, 'id'>): Promise<RutinaCliente> {
-        try {
-            this._loading.set(true);
-            this._error.set(null);
+        return runInInjectionContext(this.injector, async () => {
+            try {
+                this._loading.set(true);
+                this._error.set(null);
 
-            const rutinasRef = collection(this.firestore, this.collectionName);
-            const rutinaData = {
-                ...rutina,
-                fechaAsignacion: Timestamp.fromDate(rutina.fechaAsignacion || new Date())
-            };
+                const rutinasRef = collection(this.firestore, this.collectionName);
+                const rutinaData = {
+                    ...rutina,
+                    fechaAsignacion: Timestamp.fromDate(rutina.fechaAsignacion || new Date())
+                };
 
-            const docRef = await addDoc(rutinasRef, rutinaData);
-            const nuevaRutina = {
-                id: docRef.id,
-                ...rutina,
-                fechaAsignacion: rutina.fechaAsignacion || new Date()
-            };
+                const docRef = await addDoc(rutinasRef, rutinaData);
+                const nuevaRutina = {
+                    id: docRef.id,
+                    ...rutina,
+                    fechaAsignacion: rutina.fechaAsignacion || new Date()
+                };
 
-            // Actualizar el signal local
-            const rutinasActuales = this._rutinas();
-            this._rutinas.set([nuevaRutina, ...rutinasActuales]);
+                // Actualizar el signal local
+                const rutinasActuales = this._rutinas();
+                this._rutinas.set([nuevaRutina, ...rutinasActuales]);
 
-            this._loading.set(false);
-            this.toast.show('Rutina creada correctamente');
-            return nuevaRutina;
-        } catch (error) {
-            const errMsg = (error as any).message || 'Error al crear rutina';
-            this._error.set(errMsg);
-            this._loading.set(false);
-            this.toast.show(errMsg);
-            throw error;
-        }
+                this._loading.set(false);
+                this.toast.show('Rutina creada correctamente');
+                return nuevaRutina;
+            } catch (error) {
+                const errMsg = (error as any).message || 'Error al crear rutina';
+                this._error.set(errMsg);
+                this._loading.set(false);
+                this.toast.show(errMsg);
+                throw error;
+            }
+        });
     }
 
     /**
      * Actualiza una rutina existente
      */
     async actualizarRutina(id: string, rutina: Partial<RutinaCliente>): Promise<void> {
-        try {
-            this._loading.set(true);
-            this._error.set(null);
+        return runInInjectionContext(this.injector, async () => {
+            try {
+                this._loading.set(true);
+                this._error.set(null);
 
-            const rutinaRef = doc(this.firestore, this.collectionName, id);
-            const updateData: any = { ...rutina };
+                const rutinaRef = doc(this.firestore, this.collectionName, id);
+                const updateData: any = { ...rutina };
 
-            // Convertir fechas a Timestamp si existen
-            if (updateData.fechaAsignacion) {
-                updateData.fechaAsignacion = Timestamp.fromDate(updateData.fechaAsignacion);
+                // Convertir fechas a Timestamp si existen
+                if (updateData.fechaAsignacion) {
+                    updateData.fechaAsignacion = Timestamp.fromDate(updateData.fechaAsignacion);
+                }
+
+                await updateDoc(rutinaRef, updateData);
+
+                // Actualizar el signal local
+                const rutinasActuales = this._rutinas();
+                const index = rutinasActuales.findIndex(r => r.id === id);
+                if (index !== -1) {
+                    const rutinasNuevas = [...rutinasActuales];
+                    rutinasNuevas[index] = { ...rutinasNuevas[index], ...rutina };
+                    this._rutinas.set(rutinasNuevas);
+                }
+
+                this._loading.set(false);
+                this.toast.show('Rutina actualizada correctamente');
+            } catch (error) {
+                const errMsg = (error as any).message || 'Error al actualizar rutina';
+                this._error.set(errMsg);
+                this._loading.set(false);
+                this.toast.show(errMsg);
+                throw error;
             }
-
-            await updateDoc(rutinaRef, updateData);
-
-            // Actualizar el signal local
-            const rutinasActuales = this._rutinas();
-            const index = rutinasActuales.findIndex(r => r.id === id);
-            if (index !== -1) {
-                const rutinasNuevas = [...rutinasActuales];
-                rutinasNuevas[index] = { ...rutinasNuevas[index], ...rutina };
-                this._rutinas.set(rutinasNuevas);
-            }
-
-            this._loading.set(false);
-            this.toast.show('Rutina actualizada correctamente');
-        } catch (error) {
-            const errMsg = (error as any).message || 'Error al actualizar rutina';
-            this._error.set(errMsg);
-            this._loading.set(false);
-            this.toast.show(errMsg);
-            throw error;
-        }
+        });
     }
 
     /**
      * Elimina una rutina
      */
     async eliminarRutina(id: string): Promise<void> {
-        try {
-            this._loading.set(true);
-            this._error.set(null);
+        return runInInjectionContext(this.injector, async () => {
+            try {
+                this._loading.set(true);
+                this._error.set(null);
 
-            const rutinaRef = doc(this.firestore, this.collectionName, id);
-            await deleteDoc(rutinaRef);
+                const rutinaRef = doc(this.firestore, this.collectionName, id);
+                await deleteDoc(rutinaRef);
 
-            // Actualizar el signal local
-            const rutinasActuales = this._rutinas();
-            const rutinasNuevas = rutinasActuales.filter(r => r.id !== id);
-            this._rutinas.set(rutinasNuevas);
+                // Actualizar el signal local
+                const rutinasActuales = this._rutinas();
+                const rutinasNuevas = rutinasActuales.filter(r => r.id !== id);
+                this._rutinas.set(rutinasNuevas);
 
-            this._loading.set(false);
-            this.toast.show('Rutina eliminada correctamente');
-        } catch (error) {
-            const errMsg = (error as any).message || 'Error al eliminar rutina';
-            this._error.set(errMsg);
-            this._loading.set(false);
-            this.toast.show(errMsg);
-            throw error;
-        }
+                this._loading.set(false);
+                this.toast.show('Rutina eliminada correctamente');
+            } catch (error) {
+                const errMsg = (error as any).message || 'Error al eliminar rutina';
+                this._error.set(errMsg);
+                this._loading.set(false);
+                this.toast.show(errMsg);
+                throw error;
+            }
+        });
     }
 
     /**
@@ -344,36 +358,38 @@ export class RutinaService {
      * Obtiene la rutina activa de un cliente
      */
     async obtenerRutinaActivaCliente(clienteId: string): Promise<RutinaCliente | null> {
-        try {
-            this._loading.set(true);
-            const rutinasRef = collection(this.firestore, this.collectionName);
-            const q = query(rutinasRef,
-                where('clienteId', '==', clienteId),
-                where('activa', '==', true)
-            );
+        return runInInjectionContext(this.injector, async () => {
+            try {
+                this._loading.set(true);
+                const rutinasRef = collection(this.firestore, this.collectionName);
+                const q = query(rutinasRef,
+                    where('clienteId', '==', clienteId),
+                    where('activa', '==', true)
+                );
 
-            const snapshot = await getDocs(q);
+                const snapshot = await getDocs(q);
 
-            if (!snapshot.empty) {
-                const doc = snapshot.docs[0];
-                const data = doc.data();
-                const rutina = {
-                    id: doc.id,
-                    ...data,
-                    fechaAsignacion: data['fechaAsignacion']?.toDate() || new Date()
-                } as RutinaCliente;
+                if (!snapshot.empty) {
+                    const doc = snapshot.docs[0];
+                    const data = doc.data();
+                    const rutina = {
+                        id: doc.id,
+                        ...data,
+                        fechaAsignacion: data['fechaAsignacion']?.toDate() || new Date()
+                    } as RutinaCliente;
+
+                    this._loading.set(false);
+                    return rutina;
+                }
 
                 this._loading.set(false);
-                return rutina;
+                return null;
+            } catch (error: any) {
+                this._error.set(error.message || 'Error al obtener rutina activa');
+                this._loading.set(false);
+                throw error;
             }
-
-            this._loading.set(false);
-            return null;
-        } catch (error: any) {
-            this._error.set(error.message || 'Error al obtener rutina activa');
-            this._loading.set(false);
-            throw error;
-        }
+        });
     }
 
     /**

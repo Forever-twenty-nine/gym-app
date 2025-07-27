@@ -119,10 +119,10 @@ export class AuthService {
    * @returns {Promise<void>} Una promesa que se resuelve cuando el onboarding es exitoso.
    */
   async completarOnboarding(nombre: string, rol: Rol, objetivo: Objetivo | null) {
-    const currentUser = this.auth.currentUser;
-    if (!currentUser) throw new Error('No hay usuario autenticado');
-
     return runInInjectionContext(this.injector, async () => {
+      const currentUser = this.auth.currentUser;
+      if (!currentUser) throw new Error('No hay usuario autenticado');
+
       const uid = currentUser.uid;
       const email = currentUser.email ?? '';
       const nombreFinal = nombre.trim();
@@ -196,7 +196,9 @@ export class AuthService {
    * @returns {Promise<void>} Una promesa que se resuelve cuando el correo es enviado.
    */
   resetPassword(email: string) {
-    return sendPasswordResetEmail(this.auth, email);
+    return runInInjectionContext(this.injector, () => {
+      return sendPasswordResetEmail(this.auth, email);
+    });
   }
 
   /**
@@ -286,13 +288,15 @@ export class AuthService {
    * @returns {Promise<void>}
    */
   private async cargarDatosCliente(user: User): Promise<void> {
-    // El ID del documento es igual al UID del usuario
-    const ref = doc(this.firestore, 'clientes', user.uid);
-    const snap = await getDoc(ref);
-    if (snap.exists()) {
-      const clienteData = snap.data() as Cliente;
-      // En el futuro podemos cargar datos específicos del cliente si es necesario
-    }
+    return runInInjectionContext(this.injector, async () => {
+      // El ID del documento es igual al UID del usuario
+      const ref = doc(this.firestore, 'clientes', user.uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const clienteData = snap.data() as Cliente;
+        // En el futuro podemos cargar datos específicos del cliente si es necesario
+      }
+    });
   }
 
   /**
@@ -302,13 +306,15 @@ export class AuthService {
    * @returns {Promise<void>}
    */
   private async cargarDatosEntrenador(user: User): Promise<void> {
-    // El ID del documento es igual al UID del usuario
-    const ref = doc(this.firestore, 'entrenadores', user.uid);
-    const snap = await getDoc(ref);
-    if (snap.exists()) {
-      const entrenadorData = snap.data() as Entrenador;
-      // En el futuro podemos cargar datos específicos del entrenador si es necesario
-    }
+    return runInInjectionContext(this.injector, async () => {
+      // El ID del documento es igual al UID del usuario
+      const ref = doc(this.firestore, 'entrenadores', user.uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const entrenadorData = snap.data() as Entrenador;
+        // En el futuro podemos cargar datos específicos del entrenador si es necesario
+      }
+    });
   }
 
   /**
@@ -318,13 +324,15 @@ export class AuthService {
    * @returns {Promise<void>}
    */
   private async cargarDatosGimnasio(user: User): Promise<void> {
-    // El ID del documento es igual al UID del usuario
-    const ref = doc(this.firestore, 'gimnasios', user.uid);
-    const snap = await getDoc(ref);
-    if (snap.exists()) {
-      const gimnasioData = snap.data() as Gimnasio;
-      // En el futuro podemos cargar datos específicos del gimnasio si es necesario
-    }
+    return runInInjectionContext(this.injector, async () => {
+      // El ID del documento es igual al UID del usuario
+      const ref = doc(this.firestore, 'gimnasios', user.uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const gimnasioData = snap.data() as Gimnasio;
+        // En el futuro podemos cargar datos específicos del gimnasio si es necesario
+      }
+    });
   }
 
   /**
@@ -366,10 +374,9 @@ export class AuthService {
    * @returns {Promise<void>} Una promesa que se resuelve cuando el documento es creado o ya existe.
    */
   private async crearGimnasioSiNoExiste(user: User) {
-    await runInInjectionContext(this.injector, async () => {
-      const firestore = inject(Firestore);
+    return runInInjectionContext(this.injector, async () => {
       if (hasRol(user, Rol.GIMNASIO) || hasRol(user, Rol.PERSONAL_TRAINER)) {
-        const ref = doc(firestore, 'gimnasios', user.uid);
+        const ref = doc(this.firestore, 'gimnasios', user.uid);
         const snap = await getDoc(ref);
         if (!snap.exists()) {
           await setDoc(ref, {
