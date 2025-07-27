@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { inject, computed } from '@angular/core';
 import { EjercicioService } from '../../shared/services/ejercicio.service';
 import { RouterModule } from '@angular/router';
+import { IonContent } from "@ionic/angular/standalone";
 
 
 @Component({
   selector: 'app-entrenador',
-  imports: [RouterModule],
+  imports: [RouterModule, IonContent],
   templateUrl: './entrenador.html'
 })
 export class Entrenador {

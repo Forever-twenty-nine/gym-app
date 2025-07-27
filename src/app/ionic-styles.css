@@ -1,6 +1,28 @@
 /* ─────────────────────────────────────────────── */
 /* 📦 Ionic styles
 /* ─────────────────────────────────────────────── */
+
+/* Structure */
+
+ion-header{
+  box-shadow: none !important ;
+}
+
+ion-content,
+ion-toolbar,
+ion-tab-bar{
+  --background: var(--bg-app);
+  --color: var(--text);
+}
+
+/* Ion-chip */
+ion-chip{
+  --background: var(--color-brand-secondary);
+  --color: var(--text);
+  border-radius: 0 14px 14px 0;
+  padding: 2px 10px;
+}
+
 /* Input */
 ion-input.gym-input {
   --border-color: var(--color-brand-secondary);

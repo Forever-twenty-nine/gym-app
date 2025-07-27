@@ -19,11 +19,14 @@
 
 
   /* Components */
+  --bg-app: var(--color-brand-primary);
+
   --font-base: 'Manrope', system-ui, sans-serif;
   --font-heading: 'Exo', system-ui, sans-serif;
 
   --text: var(--color-brand-dark);
   --text-light: var(--color-brand-secondary);
+
 
 
   --input-rounded: 10px;

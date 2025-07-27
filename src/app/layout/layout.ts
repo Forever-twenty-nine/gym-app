@@ -6,26 +6,26 @@ import { NgIf } from '@angular/common';
 import { Auth, signOut } from '@angular/fire/auth';
 import { AuthService } from '../shared/services/auth.service';
 import { UserService } from '../shared/services/user.service';
-import { IonApp, IonHeader, IonToolbar, IonTitle, IonMenu, IonMenuButton, IonContent, IonItem, IonList, IonButton, IonButtons } from '@ionic/angular/standalone';
+import { IonApp, IonTabBar, IonTabButton, IonLabel, IonTabs, IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { homeOutline, barbellOutline, optionsOutline, } from 'ionicons/icons';
 
+addIcons({
+  'home-outline': homeOutline,
+  'barbell-outline': barbellOutline,
+  'options-outline': optionsOutline
+});
 
 @Component({
   selector: 'app-layout',
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive,
     IonApp,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonMenu,
-    IonMenuButton,
-    IonContent,
-    IonItem,
-    IonList,
-    IonButton,
-    IonButtons,
-  ],
+    IonIcon,
+    IonTabs,
+    IonTabBar, IonTabButton, IonLabel, IonTabs],
   templateUrl: './layout.html',
+  styleUrls: ['../ionic-styles.css'],
 })
 export class Layout {
   private auth = inject(Auth);
