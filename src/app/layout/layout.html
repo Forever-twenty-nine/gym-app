@@ -1,24 +1,26 @@
 <ion-app>
 
-  <ion-content class="min-h-dvh">
-    <router-outlet></router-outlet>
-  </ion-content>
-
   <ion-tabs class="">
-    <ion-tab-bar slot="bottom" class=" ">
+
+    <router-outlet></router-outlet>
+
+    <ion-tab-bar slot="bottom">
 
       @if (usuario()) {
 
         <!-- Cliente -->
         @if (usuario()?.roles?.includes(Rol.CLIENTE)) {
         <ion-tab-button routerLink="/cliente" routerLinkActive="selected">
+          <ion-icon name="home-outline"></ion-icon>
           <ion-label>Inicio</ion-label>
         </ion-tab-button>
         <ion-tab-button routerLink="/cliente/rutinas" routerLinkActive="selected">
+          <ion-icon name="barbell-outline"></ion-icon>
           <ion-label>Rutinas</ion-label>
         </ion-tab-button>
-        <ion-tab-button routerLink="/cliente/notificaciones" routerLinkActive="selected">
-          <ion-label>Notificaciones</ion-label>
+        <ion-tab-button routerLink="#" routerLinkActive="selected">
+          <ion-icon name="options-outline"></ion-icon>
+          <ion-label>Configuración</ion-label>
         </ion-tab-button>
         }
 
@@ -78,9 +80,8 @@
 
        }
 
-
     </ion-tab-bar>
-  </ion-tabs>
 
+  </ion-tabs>
 
 </ion-app>

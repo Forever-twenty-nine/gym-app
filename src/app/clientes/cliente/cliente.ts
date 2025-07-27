@@ -1,20 +1,31 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { IonToolbar, IonHeader, IonIcon, IonBadge } from "@ionic/angular/standalone";
+import { IonHeader, IonIcon, IonBadge, IonChip, IonContent } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
-import { notificationsOutline, personCircle } from 'ionicons/icons';
+import { notificationsOutline, diamondOutline, barbellOutline, analyticsOutline, calendarOutline } from 'ionicons/icons';
+import { NgOptimizedImage } from '@angular/common';
 
 addIcons({
   'notifications-outline': notificationsOutline,
-  'person-circle': personCircle,
+  'diamond-outline': diamondOutline,
+  'calendar-outline': calendarOutline,
+  'barbell-outline': barbellOutline,
+  'analytics-outline': analyticsOutline
+
 });
 
 @Component({
   selector: 'app-cliente',
-  imports: [RouterModule, IonToolbar, IonHeader, IonIcon, IonBadge],
+  imports: [
+    RouterModule,
+    NgOptimizedImage,
+    IonHeader,
+    IonIcon,
+    IonBadge,
+    IonChip,
+    IonContent
+],
   templateUrl: './cliente.html',
   styleUrls: ['../../ionic-styles.css'],
 })
-export class Cliente {
-
-}
+export class Cliente {}

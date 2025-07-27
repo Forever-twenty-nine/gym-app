@@ -1,38 +1,107 @@
-<ion-header class="px-4 py-4 ">
-  <div class="flex items-center justify-between">
-    <p>Hola Francisco,</p>
-    <a routerLink="/cliente/notificaciones" class="relative flex justify-center items-end w-8 h-8 ">
-      <ion-icon name="notifications-outline" class="text-2xl"></ion-icon>
-      <ion-badge class="bg-red-600 p-0.5 min-w-4 min-h-2 absolute top-0 right-0">7</ion-badge>
-    </a>
+<ion-content>
 
+  <ion-header class="px-5 pt-5 pb-2 ">
+    <div class="flex items-start justify-between">
+      <div class="flex items-center gap-4">
+        <img [ngSrc]="'/assets/images/foto.png'" width="60" height="60" alt="Fondo" priority class="rounded-full" />
+        <div>
+          <p class="text-lg font-heading text-gray-400">
+            Hola Juan!
+          </p>
+        </div>
+      </div>
 
-  </div>
-</ion-header>
+      <a routerLink="/cliente/notificaciones" class="relative flex justify-center items-end w-8 h-8 ">
+        <ion-icon name="notifications-outline" class="text-2xl"></ion-icon>
+        <ion-badge class="bg-red-600 p-0.5 min-w-4 min-h-2 absolute top-0 right-0">7</ion-badge>
+      </a>
 
-<main class="cliente-dashboard">
-
-  <div class="p-4">
-    <div class="p-4 rounded-2xl bg-white/20 flex justify-between items-center ">
-      <div class="w-12 h-12 rounded-full bg-red-200"></div>
-      <h2>Mi perfil</h2>
-      <p>></p>
     </div>
-  </div>
+  </ion-header>
 
-  <div class="p-4 flex gap-6">
-    <a routerLink="/cliente/rutinas" class="rounded-2xl p-4 w-full bg-white/20">
-      <p>icon</p>
-      <p>Rutinas</p>
-    </a>
-    <a routerLink="/cliente/notificaciones" class="rounded-2xl p-4 w-full bg-white/20">
-      <p>icon</p>
-      <p>Notificaciones</p>
-    </a>
-  </div>
+  <main class="cliente-dashboard">
 
-</main>
+    <div class="p-5">
+      <div class="p-5 flex justify-between items-start border border-solid border-white/10 rounded-xl mb-4">
+        <div class="">
+          <h1 class="text-xl mb-3 font-heading">
+            Bienvenido a <br> <span class="text-brand-accent font-bold">NombreDelGym</span>
+          </h1>
+        </div>
+        <div>
+          <img [ngSrc]="'/assets/images/logo.png'" width="80" height="80" alt="Fondo" priority class="mb-2" />
+        </div>
+      </div>
 
+      <div class="w-4/5 -mt-8 mx-auto p-2 border border-solid border-white/10 rounded-xl bg-brand-secondary">
+          <div class="flex items-center gap-2">
+            <div class="w-auto">
+              <img [ngSrc]="'/assets/images/foto-2.png'" width="50" height="50" alt="Fondo" priority class="rounded-full" />
+            </div>
+            <div class="w-full">
+              <p class="font-bold">
+                Francisco García <br><span class="text-gray-400 text-sm font-light">es tu entrenador asignado</span>
+              </p>
+            </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="px-5 py-2">
+      <h2 class="mb-2 text-lg font-heading">
+        Plan de entrenamiento
+      </h2>
+      <a routerLink="/cliente/rutinas" class="bg-[url('/assets/images/gym-2.png')] bg-cover bg-right rounded-xl p-4 relative h-48 flex items-end overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/60 to-black pointer-events-none z-0"></div>
+        <div class="z-10">
+          <ion-chip class="absolute top-6 left-0 ">
+            Intermedio
+          </ion-chip>
+          <div>
+            <p class="text-brand-accent font-bold font-heading text-lg">
+              Aumentar Masa Muscular
+            </p>
+            <div class="flex items-center gap-2 text-gray-400 text-sm">
+              <ion-icon name="analytics-outline"></ion-icon>
+              <span>6 semanas</span>
+              <span></span>
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>5 días x semana</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <h2 class="mb-2 mt-6 text-lg font-heading">
+        Otro item
+      </h2>
+      <a routerLink="/cliente/rutinas" class="bg-[url('/assets/images/gym-2.png')] bg-cover bg-right rounded-xl p-4 relative h-48 flex items-end overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/60 to-black pointer-events-none z-0"></div>
+        <div class="z-10">
+          <ion-chip class="absolute top-6 left-0 ">
+            Intermedio
+          </ion-chip>
+          <div>
+            <p class="text-brand-accent font-bold font-heading text-lg">
+              Aumentar Masa Muscular
+            </p>
+            <div class="flex items-center gap-2 text-gray-400 text-sm">
+              <ion-icon name="analytics-outline"></ion-icon>
+              <span>6 semanas</span>
+              <span></span>
+              <ion-icon name="calendar-outline"></ion-icon>
+              <span>5 días x semana</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+  </main>
+
+</ion-content>
 
 
 
