@@ -2,20 +2,18 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
     @if (permisoGestionarClientes) {
-    <form (ngSubmit)="enviarInvitacionCliente()"
+    <form (ngSubmit)="enviarInvitacion('cliente')"
       class="bg-white dark:bg-zinc-900 rounded-lg shadow p-6 flex flex-col gap-4">
       <h3 class="text-lg font-bold text-blue-700 dark:text-blue-300">
         Enviar invitación a Cliente
       </h3>
-
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Email del cliente:
         </label>
-        <input name="emailCliente" [(ngModel)]="emailCliente" required type="email"
+        <input name="email" [(ngModel)]="email" required type="email"
           class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white" />
       </div>
-
       <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
         Enviar invitación
       </button>
@@ -23,20 +21,18 @@
     }
 
     @if (permisoGestionarEntrenadores) {
-    <form (ngSubmit)="enviarInvitacionEntrenador()"
+    <form (ngSubmit)="enviarInvitacion('entrenador')"
       class="bg-white dark:bg-zinc-900 rounded-lg shadow p-6 flex flex-col gap-4">
       <h3 class="text-lg font-bold text-green-700 dark:text-green-300">
         Enviar invitación a Entrenador
       </h3>
-
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Email del entrenador:
         </label>
-        <input name="emailEntrenador" [(ngModel)]="emailEntrenador" required type="email"
+        <input name="email" [(ngModel)]="email" required type="email"
           class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-400 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white" />
       </div>
-
       <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
         Enviar invitación
       </button>
@@ -45,38 +41,48 @@
 
   </div>
   <!-- Listado de invitaciones -->
-  <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow p-6">
-      <h3 class="text-lg font-bold mb-4 text-blue-700 dark:text-blue-300">Invitaciones pendientes</h3>
-      <ul *ngIf="invitacionesPendientes().length; else noPendientes">
-        <li *ngFor="let inv of invitacionesPendientes()" class="border-b border-zinc-200 dark:border-zinc-700 py-2">
-          <span class="font-medium">{{ inv.email }}</span>
-          <span class="ml-2 text-xs text-gray-500">({{ inv.tipo }})</span>
+<div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- Invitaciones pendientes -->
+<div class="bg-white dark:bg-zinc-900 rounded-lg shadow p-6">
+  <h3 class="text-lg font-bold mb-4 text-blue-700 dark:text-blue-300">Invitaciones pendientes</h3>
+
+  @if (invitacionesPendientes().length > 0) {
+    <ul>
+      @for (inv of invitacionesPendientes(); track inv.id) {
+        <li class="border-b border-zinc-200 dark:border-zinc-700 py-2">
+          <span class="font-medium">{{ inv['email'] }}</span>
+          <span class="ml-2 text-xs text-gray-500">({{ inv['tipo'] }})</span>
           <span class="ml-2 text-xs text-gray-400">
-            Enviada:
-            {{ inv.fechaEnvio | toDate | date:'short' }}
+            Enviada: {{ inv['fechaEnvio'] | toDate | date:'short' }}
           </span>
         </li>
-      </ul>
-      <ng-template #noPendientes>
-        <div class="text-gray-500 text-sm">No hay invitaciones pendientes.</div>
-      </ng-template>
-    </div>
-    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow p-6">
-      <h3 class="text-lg font-bold mb-4 text-green-700 dark:text-green-300">Invitaciones aceptadas</h3>
-      <ul *ngIf="invitacionesAceptadas().length; else noAceptadas">
-        <li *ngFor="let inv of invitacionesAceptadas()" class="border-b border-zinc-200 dark:border-zinc-700 py-2">
-          <span class="font-medium">{{ inv.email }}</span>
-          <span class="ml-2 text-xs text-gray-500">({{ inv.tipo }})</span>
+      }
+    </ul>
+  } @else {
+    <div class="text-gray-500 text-sm">No hay invitaciones pendientes.</div>
+  }
+</div>
+
+<!-- Invitaciones aceptadas -->
+<div class="bg-white dark:bg-zinc-900 rounded-lg shadow p-6">
+  <h3 class="text-lg font-bold mb-4 text-green-700 dark:text-green-300">Invitaciones aceptadas</h3>
+
+  @if (invitacionesAceptadas().length > 0) {
+    <ul>
+      @for (inv of invitacionesAceptadas(); track inv.id) {
+        <li class="border-b border-zinc-200 dark:border-zinc-700 py-2">
+          <span class="font-medium">{{ inv['email'] }}</span>
+          <span class="ml-2 text-xs text-gray-500">({{ inv['tipo'] }})</span>
           <span class="ml-2 text-xs text-gray-400">
-            Aceptada:
-            {{ inv.fechaRespuesta | toDate | date:'short' }}
+            Aceptada: {{ inv['fechaRespuesta'] | toDate | date:'short' }}
           </span>
         </li>
-      </ul>
-      <ng-template #noAceptadas>
-        <div class="text-gray-500 text-sm">No hay invitaciones aceptadas.</div>
-      </ng-template>
-    </div>
-  </div>
+      }
+    </ul>
+  } @else {
+    <div class="text-gray-500 text-sm">No hay invitaciones aceptadas.</div>
+  }
+</div>
+
+
 </div>

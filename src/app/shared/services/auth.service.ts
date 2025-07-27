@@ -93,7 +93,7 @@ export class AuthService {
    * @param {string} password - Contraseña del usuario.
    * @returns {Promise<void>} Una promesa que se resuelve cuando el registro es exitoso.
    */
-  async register(email: string, password: string) {
+  async register(email: string, password: string): Promise<void> {
     await runInInjectionContext(this.injector, async () => {
       const cred = await createUserWithEmailAndPassword(this.auth, email, password);
       const uid = cred.user.uid;
@@ -118,7 +118,7 @@ export class AuthService {
    * @param {Objetivo | null} objetivo - Objetivo del usuario (solo para clientes).
    * @returns {Promise<void>} Una promesa que se resuelve cuando el onboarding es exitoso.
    */
-  async completarOnboarding(nombre: string, rol: Rol, objetivo: Objetivo | null) {
+  async completarOnboarding(nombre: string, rol: Rol, objetivo: Objetivo | null): Promise<void> {
     return runInInjectionContext(this.injector, async () => {
       const currentUser = this.auth.currentUser;
       if (!currentUser) throw new Error('No hay usuario autenticado');
@@ -147,7 +147,6 @@ export class AuthService {
         },
       };
 
-      // Crear perfil base del usuario - SOLO datos de autenticación y acceso
       let perfil: User = {
         uid,
         email,
@@ -156,19 +155,16 @@ export class AuthService {
         ...rolConfig[rol]
       };
 
-      // Actualiza el documento del usuario en Firestore con los datos del onboarding
       await setDoc(doc(this.firestore, 'usuarios', uid), perfil, { merge: true });
       
-      // Crear documentos específicos según el rol
       if (rol === Rol.CLIENTE) {
         const cliente: Cliente = {
           id: uid,
-          gimnasioId: '', // Se asignará cuando se una a un gimnasio
+          gimnasioId: '', 
           activo: true,
           fechaRegistro: new Date()
         };
         
-        // Si hay objetivo, se guarda en el documento del cliente
         if (objetivo) {
           cliente.objetivo = objetivo;
         }
@@ -178,7 +174,7 @@ export class AuthService {
       else if (rol === Rol.ENTRENADOR || rol === Rol.PERSONAL_TRAINER) {
         const entrenador: Entrenador = {
           id: uid,
-          gimnasioId: rol === Rol.PERSONAL_TRAINER ? uid : '', // Para PERSONAL_TRAINER es su propio gimnasio
+          gimnasioId: rol === Rol.PERSONAL_TRAINER ? uid : '', 
           activo: true
         };
         await setDoc(doc(this.firestore, 'entrenadores', uid), entrenador);
@@ -195,7 +191,7 @@ export class AuthService {
    * @param {string} email - Email del usuario.
    * @returns {Promise<void>} Una promesa que se resuelve cuando el correo es enviado.
    */
-  resetPassword(email: string) {
+  resetPassword(email: string): Promise<void> {
     return runInInjectionContext(this.injector, () => {
       return sendPasswordResetEmail(this.auth, email);
     });
@@ -205,7 +201,7 @@ export class AuthService {
    * Cierra la sesión del usuario y navega al login.
    * @returns {Promise<void>} Una promesa que se resuelve cuando el logout es exitoso.
    */
-  async logout() {
+  async logout(): Promise<void> {
     return runInInjectionContext(this.injector, async () => {
       await signOut(this.auth);
       this.userService.logout();
@@ -373,7 +369,7 @@ export class AuthService {
    * @param {User} user - Perfil del usuario.
    * @returns {Promise<void>} Una promesa que se resuelve cuando el documento es creado o ya existe.
    */
-  private async crearGimnasioSiNoExiste(user: User) {
+  private async crearGimnasioSiNoExiste(user: User): Promise<void> {
     return runInInjectionContext(this.injector, async () => {
       if (hasRol(user, Rol.GIMNASIO) || hasRol(user, Rol.PERSONAL_TRAINER)) {
         const ref = doc(this.firestore, 'gimnasios', user.uid);

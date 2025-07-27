@@ -1,5 +1,5 @@
-import { Injectable, inject, Injector, runInInjectionContext } from '@angular/core';
-import { Firestore, collection, addDoc, doc, updateDoc, setDoc, collectionData, query, where, getDoc } from '@angular/fire/firestore';
+import { Injectable, inject, Injector, runInInjectionContext, signal } from '@angular/core';
+import { Firestore, collection, addDoc, doc, updateDoc, setDoc, collectionData, query, where, getDoc,DocumentReference } from '@angular/fire/firestore';
 import { Invitacion } from '../models/invitacion.model';
 import { UserService } from './user.service';
 import { ClienteService } from './cliente.service';
@@ -8,7 +8,7 @@ import { Permiso } from '../enums/permiso.enum';
 import { ToastService } from './toast.service';
 import { User } from '../models/user.model';
 import { Rol } from '../enums/rol.enum';
-import { signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class InvitacionService {
@@ -19,23 +19,24 @@ export class InvitacionService {
   private readonly injector = inject(Injector);
   private readonly firestore = inject(Firestore);
   private readonly collectionName = 'invitaciones';
-  
+
   // Estados para seguimiento
   private _loading = signal<boolean>(false);
   private _error = signal<string | null>(null);
-  
   public loading = this._loading.asReadonly();
   public error = this._error.asReadonly();
 
   /**
+  /**
    * Obtiene las invitaciones filtradas por estado ('pendiente' o 'aceptada').
    * @param estado Estado de la invitación ('pendiente' o 'aceptada')
-   * @returns Observable con el array de invitaciones
+   * @returns Signal reactivo con el array de invitaciones actualizadas desde Firestore
    */
   listarInvitacionesPorEstado(estado: 'pendiente' | 'aceptada') {
     return runInInjectionContext(this.injector, () => {
       const ref = collection(this.firestore, this.collectionName);
-      return collectionData(query(ref, where('estado', '==', estado)), { idField: 'id' }) as import('rxjs').Observable<Invitacion[]>;
+      const invitaciones$ = collectionData(query(ref, where('estado', '==', estado)), { idField: 'id' });
+      return toSignal(invitaciones$, { initialValue: [] });
     });
   }
 
@@ -45,42 +46,45 @@ export class InvitacionService {
    * @param invitacion Objeto con los datos de la invitación (sin id, estado ni fechaEnvio)
    * @throws Error si el usuario no tiene permisos suficientes
    */
+  /**
+   * Envía una invitación y devuelve un resultado estructurado.
+   * @returns { success: boolean, id?: string, error?: string }
+   */
   async enviarInvitacion(
     invitacion: Omit<Invitacion, 'id' | 'estado' | 'fechaEnvio'> & {
       email: string;
       tipo: 'cliente' | 'entrenador';
     }
-  ) {
+  ): Promise<{ success: boolean; id?: string; error?: string }> {
     const permisoNecesario =
       invitacion.tipo === 'cliente'
         ? Permiso.GESTIONAR_CLIENTES
         : Permiso.GESTIONAR_ENTRENADORES;
 
     if (!this.userService.tienePermiso(permisoNecesario)) {
-      this.toast.show(`🚫 No tienes permiso para invitar ${invitacion.tipo}s`, 'error');
-      throw new Error('No autorizado');
+      const errorMsg = `No tienes permiso para invitar ${invitacion.tipo}s`;
+      this._error.set(errorMsg);
+      this._loading.set(false);
+      return { success: false, error: errorMsg };
     }
 
     try {
       this._loading.set(true);
-      
+      let docRef: DocumentReference | undefined;
       await runInInjectionContext(this.injector, async () => {
         const ref = collection(this.firestore, this.collectionName);
-
-        await addDoc(ref, {
+        docRef = await addDoc(ref, {
           ...invitacion,
           estado: 'pendiente',
           fechaEnvio: new Date()
         });
       });
-      
       this._loading.set(false);
-      this.toast.show(`✅ Invitación enviada a ${invitacion.email}`, 'success');
+      return { success: true, id: docRef?.id };
     } catch (error: any) {
       this._error.set(error.message || 'Error al enviar invitación');
       this._loading.set(false);
-      this.toast.show('❌ Error al enviar invitación: ' + error.message, 'error');
-      throw error;
+      return { success: false, error: error.message || 'Error al enviar invitación' };
     }
   }
 
@@ -98,19 +102,19 @@ export class InvitacionService {
       try {
         this._loading.set(true);
         this._error.set(null);
-        
+
         // Verificar si el usuario existe
         const userRef = doc(this.firestore, 'usuarios', userId);
         const userSnap = await getDoc(userRef);
-        
+
         if (!userSnap.exists()) {
           throw new Error('Usuario no encontrado');
         }
-        
+
         // Verificar si el gimnasio existe
         const gimnasioRef = doc(this.firestore, 'gimnasios', invitacion.invitadorId);
         const gimnasioSnap = await getDoc(gimnasioRef);
-        
+
         if (!gimnasioSnap.exists()) {
           throw new Error('Gimnasio no encontrado');
         }
@@ -118,7 +122,7 @@ export class InvitacionService {
         if (invitacion.tipo === 'cliente') {
           // Usar el servicio de cliente para crear el cliente
           await this.clienteService.crearCliente(userId, invitacion.invitadorId);
-          
+
           // Actualizar el usuario con los roles y permisos
           await this.actualizarUser(userId, {
             roles: [Rol.CLIENTE],
@@ -130,7 +134,7 @@ export class InvitacionService {
         if (invitacion.tipo === 'entrenador') {
           // Usar el servicio de entrenador para crear el entrenador
           await this.entrenadorService.crearEntrenador(userId, invitacion.invitadorId);
-          
+
           // Actualizar el usuario con los roles y permisos
           await this.actualizarUser(userId, {
             roles: [Rol.ENTRENADOR],
@@ -138,7 +142,7 @@ export class InvitacionService {
             onboarded: true
           });
         }
-        
+
         await this.marcarInvitacionComoAceptada(invitacion.id!);
         this.toast.show('🎉 Invitación aceptada correctamente', 'success');
         this._loading.set(false);
@@ -175,7 +179,7 @@ export class InvitacionService {
       fechaRespuesta: new Date()
     });
   }
-  
+
   /**
    * Rechaza una invitación
    * @param id ID de la invitación a rechazar

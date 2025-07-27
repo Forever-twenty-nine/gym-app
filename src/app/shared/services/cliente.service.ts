@@ -2,20 +2,20 @@ import { Injectable, inject, signal, computed, runInInjectionContext, Injector }
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { Cliente } from '../models/cliente.model';
-import { 
-  Firestore, 
-  collection, 
-  query, 
-  where, 
-  onSnapshot, 
-  addDoc, 
-  doc, 
-  updateDoc, 
+import {
+  Firestore,
+  collection,
+  query,
+  where,
+  onSnapshot,
+  addDoc,
+  doc,
+  updateDoc,
   deleteDoc,
   getDoc,
   setDoc,
   DocumentSnapshot,
-  QuerySnapshot 
+  QuerySnapshot
 } from '@angular/fire/firestore';
 
 @Injectable({ providedIn: 'root' })
@@ -38,8 +38,8 @@ export class ClienteService {
   private unsubscribeClientes?: () => void;
 
   constructor() {
-    runInInjectionContext(this.injector, () => {
-      onAuthStateChanged(this.auth, (user) => {
+    onAuthStateChanged(this.auth, (user) => {
+      runInInjectionContext(this.injector, () => {
         if (user) {
           this.inicializarListenerClientes();
         } else {
@@ -60,34 +60,31 @@ export class ClienteService {
       this._error.set(null);
 
       const userId = this.auth.currentUser?.uid;
-      
+
       if (!userId) {
         this._error.set('No hay usuario autenticado');
         this._loading.set(false);
         return;
       }
-      
+
       try {
-        // Obtener el usuario para determinar el rol y filtrar según corresponda
         const userRef = doc(this.firestore, 'usuarios', userId);
         const userSnap = await getDoc(userRef);
-        
+
         if (!userSnap.exists()) {
           this._error.set('Usuario no encontrado');
           this._loading.set(false);
           return;
         }
-        
+
         const userData = userSnap.data();
         const roles = userData?.['roles'] || [];
         let clientesQuery;
-        const clientesRef = collection(this.firestore, this.collectionName);
-        
+        const clientesRef = runInInjectionContext(this.injector, () => collection(this.firestore, this.collectionName));
+
         if (roles.includes('GIMNASIO')) {
-          // Si es gimnasio, mostrar todos los clientes asociados a este gimnasio
           clientesQuery = query(clientesRef, where('gimnasioId', '==', userId));
         } else if (roles.includes('ENTRENADOR')) {
-          // Para entrenadores, primero necesitamos obtener su gimnasioId
           const entrenadorSnap = await getDoc(doc(this.firestore, 'entrenadores', userId));
           if (entrenadorSnap.exists()) {
             const entrenadorData = entrenadorSnap.data();
@@ -105,19 +102,18 @@ export class ClienteService {
             return;
           }
         } else if (roles.includes('CLIENTE')) {
-          // Si es cliente, solo ver su propio perfil - El id del documento es igual al userId
+
           clientesQuery = query(clientesRef, where('id', '==', userId));
         } else if (roles.includes('PERSONAL_TRAINER')) {
-          // Personal trainer actúa como su propio gimnasio
+
           clientesQuery = query(clientesRef, where('gimnasioId', '==', userId));
         } else {
-          // Rol no reconocido
+
           this._loading.set(false);
           this._clientes.set([]);
           return;
         }
-        
-        // Configurar el listener directamente aquí
+
         this.unsubscribeClientes = onSnapshot(clientesQuery,
           (snapshot: QuerySnapshot) => {
             runInInjectionContext(this.injector, () => {
@@ -145,7 +141,7 @@ export class ClienteService {
       }
     });
   }
-  
+
   /**
    * Devuelve los clientes asociados a un gimnasio específico (reactivo)
    */
@@ -187,7 +183,7 @@ export class ClienteService {
       }
     });
   }
-  
+
   /**
    * Asocia un cliente a un gimnasio específico
    * @param clienteId ID del cliente a asociar
@@ -198,29 +194,29 @@ export class ClienteService {
     return runInInjectionContext(this.injector, async () => {
       try {
         this._loading.set(true);
-        
+
         // Verificar que el cliente existe
         const clienteRef = doc(this.firestore, this.collectionName, clienteId);
         const clienteSnap = await getDoc(clienteRef);
-        
+
         if (!clienteSnap.exists()) {
           throw new Error('Cliente no encontrado');
         }
-        
+
         // Verificar que el gimnasio existe
         const gimnasioRef = doc(this.firestore, 'gimnasios', gimnasioId);
         const gimnasioSnap = await getDoc(gimnasioRef);
-        
+
         if (!gimnasioSnap.exists()) {
           throw new Error('Gimnasio no encontrado');
         }
-        
+
         // Actualizar el cliente con el nuevo gimnasioId
-        await updateDoc(clienteRef, { 
-          gimnasioId, 
-          fechaAsociacion: new Date() 
+        await updateDoc(clienteRef, {
+          gimnasioId,
+          fechaAsociacion: new Date()
         });
-        
+
         this._loading.set(false);
       } catch (error: any) {
         this._error.set(error.message || 'Error al asociar cliente al gimnasio');
@@ -256,7 +252,7 @@ export class ClienteService {
       }
     });
   }
-  
+
   /**
    * Crea un nuevo cliente y lo asocia a un gimnasio si se proporciona un gimnasioId
    * @param userId ID del usuario asociado al cliente
@@ -267,25 +263,25 @@ export class ClienteService {
     return runInInjectionContext(this.injector, async () => {
       try {
         this._loading.set(true);
-        
+
         // Verificar si el usuario existe
         const userRef = doc(this.firestore, 'usuarios', userId);
         const userSnap = await getDoc(userRef);
-        
+
         if (!userSnap.exists()) {
           throw new Error('Usuario no encontrado');
         }
-        
+
         // Si se proporciona gimnasioId, verificar que exista
         if (gimnasioId) {
           const gimnasioRef = doc(this.firestore, 'gimnasios', gimnasioId);
           const gimnasioSnap = await getDoc(gimnasioRef);
-          
+
           if (!gimnasioSnap.exists()) {
             throw new Error('Gimnasio no encontrado');
           }
         }
-        
+
         // Crear el cliente - Usamos el userId como id del documento
         const nuevoCliente: Cliente = {
           id: userId,
@@ -293,11 +289,11 @@ export class ClienteService {
           activo: true,
           fechaRegistro: new Date()
         };
-        
+
         // Usar setDoc en lugar de addDoc para establecer el ID manualmente
         const clienteRef = doc(this.firestore, this.collectionName, userId);
         await setDoc(clienteRef, nuevoCliente);
-        
+
         this._loading.set(false);
         return userId;
       } catch (error: any) {
