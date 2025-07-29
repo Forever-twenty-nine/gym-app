@@ -15,7 +15,7 @@
     </p>
     <!-- Botón Registrarse -->
     <ion-button type="button" expand="block" fill="solid" size="large" shape="round" class="gym-btn-accent mb-1"
-      [routerLink]="['/auth/register']">
+      (click)="goToRegister()">
       Registrarte
     </ion-button>
     <div class="flex justify-center items-center">
@@ -24,7 +24,7 @@
       </p>
       <!-- Botón Iniciar Sesión -->
       <ion-button type="button" expand="" fill="clean" size="default" class="gym-btn-link"
-        [routerLink]="['/auth/login']">
+        (click)="goToLogin()">
         Inicia Sesión
       </ion-button>
     </div>

@@ -3,9 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { ToastService } from '../../shared/services/toast.service';
-import { Firestore, doc, getDoc } from '@angular/fire/firestore';
-import { User } from '../../shared/models/user.model';
-import { UserService } from '../../shared/services/user.service';
 import { IonButton, IonButtons, IonBackButton, IonInput } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -29,18 +26,13 @@ export class Login {
   private auth = inject(AuthService);
   private toast = inject(ToastService);
   private router = inject(Router);
-  private firestore = inject(Firestore);
-  private userService = inject(UserService);
   
-  // Variable para manejar el estado de carga
   loading = signal(false);
-  // Formulario de inicio de sesión
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  // Método para verificar si el usuario ya existe en Firestore
   submit() {
     if (this.form.invalid) return;
 
@@ -56,13 +48,10 @@ export class Login {
         this.loading.set(false);
       });
   }
-
-  // Método para verificar si el usuario ya existe en Firestore
   goTo(path: string) {
-    this.router.navigateByUrl(`/auth/${path}`);
+    this.router.navigateByUrl(`/auth/${path}`,);
   }
 
-  // Método para iniciar sesión con Google
   loginConGoogle() {
     this.loading.set(true);
 

@@ -1,14 +1,13 @@
-
 import { Component } from '@angular/core';
 import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 
 @Component({
-  selector: 'app-clientes',
+  selector: 'app-entrenadores',
   standalone: true,
-  templateUrl: './clientes.html',
-  imports: [ IonHeader, IonToolbar, IonTitle, IonContent]
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent],
+  templateUrl: './entrenadores.html',
+  
 })
-export class Clientes {
-
+export class Entrenadores {
   
 }

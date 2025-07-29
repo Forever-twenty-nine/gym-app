@@ -46,20 +46,15 @@ export class AuthService {
 
     onAuthStateChanged(auth, (firebaseUser) => {
       runInInjectionContext(injector, () => {
-        const url = this.router.url;
-
-        if (firebaseUser) {
-          runInInjectionContext(this.injector, () => {
-            this.loadUser(firebaseUser);
-          });
-        } else {
+        if (!firebaseUser) {
           this.userService.logout();
-          if (!url.startsWith('/auth') && !url.startsWith('/onboarding')) {
-            this.router.navigateByUrl('/auth/login');
+          if (!this.router.url.startsWith('/auth') && !this.router.url.startsWith('/onboarding')) {
+            this.router.navigateByUrl('/auth/login', { replaceUrl: true });
           }
         }
       });
     });
+
   }
 
   /**
@@ -71,9 +66,10 @@ export class AuthService {
   async login(email: string, password: string): Promise<void> {
     return runInInjectionContext(this.injector, async () => {
       const cred = await signInWithEmailAndPassword(this.auth, email, password);
+      await this.finalizarLogin(cred.user);
     });
-
   }
+
 
   /**
    * Inicia sesión con Google.
@@ -83,9 +79,10 @@ export class AuthService {
     return runInInjectionContext(this.injector, async () => {
       const provider = new GoogleAuthProvider();
       const cred = await signInWithPopup(this.auth, provider);
+      await this.finalizarLogin(cred.user);
     });
-
   }
+
 
   /**
    * Registra un usuario con email y contraseña.
@@ -156,30 +153,30 @@ export class AuthService {
       };
 
       await setDoc(doc(this.firestore, 'usuarios', uid), perfil, { merge: true });
-      
+
       if (rol === Rol.CLIENTE) {
         const cliente: Cliente = {
           id: uid,
-          gimnasioId: '', 
+          gimnasioId: '',
           activo: true,
           fechaRegistro: new Date()
         };
-        
+
         if (objetivo) {
           cliente.objetivo = objetivo;
         }
-        
+
         await setDoc(doc(this.firestore, 'clientes', uid), cliente);
-      } 
+      }
       else if (rol === Rol.ENTRENADOR || rol === Rol.PERSONAL_TRAINER) {
         const entrenador: Entrenador = {
           id: uid,
-          gimnasioId: rol === Rol.PERSONAL_TRAINER ? uid : '', 
+          gimnasioId: rol === Rol.PERSONAL_TRAINER ? uid : '',
           activo: true
         };
         await setDoc(doc(this.firestore, 'entrenadores', uid), entrenador);
       }
-      
+
       await this.userService.initUsuarioSeguro(perfil);
       await this.crearGimnasioSiNoExiste(perfil);
       this.redirectToSection(perfil);
@@ -205,17 +202,14 @@ export class AuthService {
     return runInInjectionContext(this.injector, async () => {
       await signOut(this.auth);
       this.userService.logout();
-      // Limpia listeners de notificaciones para evitar errores de permisos
       try {
         const notificacionesService = this.injector.get<any>(
-          // Evita error de import circular
           (await import('./notificaciones.service')).NotificacionesService
         );
         notificacionesService.limpiar();
       } catch (e) {
-        // Ignora si no está disponible
       }
-      this.router.navigateByUrl('/auth/login');
+      this.router.navigateByUrl('/auth/login', { replaceUrl: true });
     });
   }
 
@@ -233,11 +227,11 @@ export class AuthService {
 
       if (snap.exists()) {
         perfil = snap.data() as User;
-        
+
         // Cargar datos relacionados según el rol
         if (hasRol(perfil, Rol.CLIENTE)) {
           await this.cargarDatosCliente(perfil);
-        } 
+        }
         else if (hasRol(perfil, Rol.ENTRENADOR) || hasRol(perfil, Rol.PERSONAL_TRAINER)) {
           await this.cargarDatosEntrenador(perfil);
         }
@@ -254,7 +248,7 @@ export class AuthService {
           permisos: [Permiso.EJECUTAR_RUTINAS],
         };
         await setDoc(ref, perfil);
-        
+
         // Crear documento de cliente por defecto
         const cliente: Cliente = {
           id: firebaseUser.uid,
@@ -321,12 +315,10 @@ export class AuthService {
    */
   private async cargarDatosGimnasio(user: User): Promise<void> {
     return runInInjectionContext(this.injector, async () => {
-      // El ID del documento es igual al UID del usuario
       const ref = doc(this.firestore, 'gimnasios', user.uid);
       const snap = await getDoc(ref);
       if (snap.exists()) {
         const gimnasioData = snap.data() as Gimnasio;
-        // En el futuro podemos cargar datos específicos del gimnasio si es necesario
       }
     });
   }
@@ -338,19 +330,19 @@ export class AuthService {
   redirectToSection(user: User) {
     switch (true) {
       case hasRol(user, Rol.CLIENTE):
-        this.router.navigateByUrl('/cliente');
+        this.router.navigateByUrl('/cliente', { replaceUrl: true });
         break;
       case hasRol(user, Rol.ENTRENADOR):
-        this.router.navigateByUrl('/entrenador');
+        this.router.navigateByUrl('/entrenador', { replaceUrl: true });
         break;
       case hasRol(user, Rol.GIMNASIO):
-        this.router.navigateByUrl('/gimnasio');
+        this.router.navigateByUrl('/gimnasio', { replaceUrl: true });
         break;
       case hasRol(user, Rol.PERSONAL_TRAINER):
-        this.router.navigateByUrl('/gimnasio');
+        this.router.navigateByUrl('/personal-trainer', { replaceUrl: true });
         break;
       default:
-        this.router.navigateByUrl('/onboarding');
+        this.router.navigateByUrl('/onboarding', { replaceUrl: true });
         break;
     }
   }
@@ -387,5 +379,36 @@ export class AuthService {
       }
     });
   }
+
+  /** 🔁 Finaliza el proceso de login: carga perfil y redirige */
+  private async finalizarLogin(usuarioFirebase: FirebaseUser): Promise<void> {
+    const ref = doc(this.firestore, 'usuarios', usuarioFirebase.uid);
+    const snap = await getDoc(ref);
+
+    let perfil: User;
+
+    if (snap.exists()) {
+      perfil = snap.data() as User;
+    } else {
+      perfil = {
+        uid: usuarioFirebase.uid,
+        email: usuarioFirebase.email ?? '',
+        nombre: usuarioFirebase.displayName ?? '',
+        roles: [Rol.CLIENTE],
+        permisos: [Permiso.EJECUTAR_RUTINAS],
+      };
+      await setDoc(ref, perfil);
+    }
+
+    await this.userService.initUsuarioSeguro(perfil);
+    this.usuarioSignal.set(perfil);
+
+    if (this.needsOnboarding(perfil)) {
+      this.router.navigateByUrl('/onboarding', { replaceUrl: true });
+    } else {
+      this.redirectToSection(perfil);
+    }
+  }
+
 
 }

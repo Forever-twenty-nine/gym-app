@@ -11,6 +11,7 @@ export function rolToLabel(rol: Rol): string {
 /**
  * Verifica si un usuario tiene un rol específico
  */
-export function hasRol(user: { roles: Rol[] }, rol: Rol): boolean {
-    return user.roles?.includes(rol);
+export function hasRol(user: { roles: Rol[] } | null | undefined, rol: Rol): boolean {
+  return !!user?.roles.includes(rol);
 }
+

@@ -1,21 +1,19 @@
-import { CanActivateFn,Router } from "@angular/router";
+import { CanActivateFn, Router } from "@angular/router";
 import { inject } from "@angular/core";
 import { UserService } from "../services/user.service";
-
+/**
+  * Guard para proteger rutas que requieren que el usuario haya completado el onboarding.
+  * Redirige a la página de onboarding si el usuario no ha completado el proceso.
+  */
 export const onBoardingGuard: CanActivateFn = () => {
-  const userService = inject(UserService);
   const router = inject(Router);
+  const userService = inject(UserService);
+  const usuario = userService.getUsuarioActual();
 
-  const user = userService.usuario();
+  console.log("🔐 onBoardingGuard:", usuario?.onboarded);
 
-  // Si no hay usuario, redirigir a login
-  if (!user) {
-    return router.createUrlTree(['/auth/login']);
-  }
-  // Si el usuario ya completó el onboarding, permitir acceso
-  if (user.onboarded) {
-    return true;
-  }
-  // Si no ha completado el onboarding, redirigir a la página de onboarding
-  return router.createUrlTree(['/onboarding']);
+  if (!usuario) return router.navigateByUrl('/auth/login', { replaceUrl: true });
+  if (!usuario.onboarded) return router.navigateByUrl('/onboarding', { replaceUrl: true });
+
+  return true;
 }

@@ -1,10 +1,10 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { IonBadge, IonContent, IonHeader, IonIcon} from "@ionic/angular/standalone";
+import { Router } from '@angular/router';
+import { IonBadge, IonButton, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonTitle, IonToolbar} from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
 import { analyticsOutline, barbellOutline, calendarOutline, diamondOutline, notificationsOutline } from 'ionicons/icons';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../shared/services/auth.service';
 
 addIcons({
   'notifications-outline': notificationsOutline,
@@ -17,13 +17,22 @@ addIcons({
 
 @Component({
   selector: 'app-gimnasio',
-  imports: [RouterModule,IonContent,IonHeader,IonBadge,NgOptimizedImage,IonIcon],
+  standalone: true,
+  imports: [
+    IonHeader, 
+    IonToolbar, 
+    IonTitle, 
+    IonContent, 
+    IonButton,
+    IonIcon,
+  ],
   templateUrl: './gimnasio.html',
-  styleUrls: ['../../ionic-styles.css'],
 })
 export class Gimnasio {
 
   private AuthService = inject(AuthService);
+  private router = inject(Router);
+
 
   logout() {
     this.AuthService.logout();

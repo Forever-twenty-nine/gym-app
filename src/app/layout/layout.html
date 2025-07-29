@@ -1,4 +1,5 @@
-<ion-tabs>
+
+<!-- <ion-tabs>
 
   <ion-router-outlet></ion-router-outlet>
 
@@ -6,7 +7,6 @@
 
     @if (usuario()) {
 
-    <!-- Cliente -->
     @if (usuario()?.roles?.includes(Rol.CLIENTE)) {
     <ion-tab-button tab="inicio-cliente">
       <ion-icon name="home-outline"></ion-icon>
@@ -22,7 +22,6 @@
     </ion-tab-button>
     }
 
-    <!-- Entrenador -->
     @if (usuario()?.roles?.includes(Rol.ENTRENADOR)) {
     <ion-tab-button tab="inicio-entrenador">
       <ion-label>Entrenador</ion-label>
@@ -41,23 +40,20 @@
     </ion-tab-button>
     }
 
-    <!-- Gimnasio -->
     @if (usuario()?.roles?.includes(Rol.GIMNASIO)) {
-    <ion-tab-button tab="inicio">
+    <ion-tab-button tab="inicio" [routerLink]="['gimnasio']">
       <ion-label>Inicio Gimnasio</ion-label>
     </ion-tab-button>
-    <ion-tab-button tab="clientes">
+    <ion-tab-button tab="clientes" [routerLink]="['clientes']">
       <ion-label>Clientes</ion-label>
     </ion-tab-button>
-    <ion-tab-button tab="entrenadores">
+    <ion-tab-button tab="entrenadores" [routerLink]="['entrenadores']">
       <ion-label>Entrenadores</ion-label>
     </ion-tab-button>
-    <ion-tab-button tab="invitaciones">
+    <ion-tab-button tab="invitaciones" [routerLink]="['invitaciones']">
       <ion-label>Invitaciones</ion-label>
     </ion-tab-button>
     }
-
-    <!-- Personal Trainer -->
     @if (usuario()?.roles?.includes(Rol.PERSONAL_TRAINER)) {
     <ion-tab-button tab="inicio-pt">
       <ion-label>Inicio Personal Trainer</ion-label>
@@ -80,4 +76,4 @@
 
   </ion-tab-bar>
 
-</ion-tabs>
+</ion-tabs> -->
